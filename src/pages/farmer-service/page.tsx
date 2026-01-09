@@ -1,0 +1,389 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import RoleSwitcher from '../../components/feature/RoleSwitcher';
+import BackButton from '../../components/shared/BackButton';
+
+type TabType = 'shifts' | 'tasks' | 'wallet';
+
+interface Shift {
+  id: string;
+  date: string;
+  day: string;
+  startTime: string;
+  endTime: string;
+  position: string;
+  location: string;
+  status: 'upcoming' | 'in-progress' | 'completed';
+  checkedIn?: boolean;
+  checkedInTime?: string;
+}
+
+interface ServiceTask {
+  id: string;
+  type: 'housekeeping' | 'chef' | 'tour-guide' | 'reception';
+  title: string;
+  location: string;
+  checklist: Array<{ id: string; item: string; completed: boolean }>;
+  deadline: string;
+  status: 'pending' | 'in-progress' | 'completed';
+  photos?: string[];
+}
+
+export default function FarmerServicePage() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<TabType>('shifts');
+  const [currentMode, setCurrentMode] = useState<'farm' | 'service'>('service');
+
+  // Mock data
+  const shifts: Shift[] = [
+    {
+      id: 'S001',
+      date: '2024-11-25',
+      day: 'Thứ 2',
+      startTime: '08:00',
+      endTime: '12:00',
+      position: 'Trực Lễ tân',
+      location: 'Cổng vào',
+      status: 'completed',
+      checkedIn: true,
+      checkedInTime: '07:55',
+    },
+    {
+      id: 'S002',
+      date: '2024-11-26',
+      day: 'Thứ 3',
+      startTime: '14:00',
+      endTime: '17:00',
+      position: 'Dẫn đoàn khách',
+      location: 'Vườn Sâm',
+      status: 'upcoming',
+      checkedIn: false,
+    },
+    {
+      id: 'S003',
+      date: '2024-11-27',
+      day: 'Thứ 4',
+      startTime: '09:00',
+      endTime: '15:00',
+      position: 'Dọn buồng phòng',
+      location: 'Khu Bungalow',
+      status: 'upcoming',
+      checkedIn: false,
+    },
+  ];
+
+  const serviceTasks: ServiceTask[] = [
+    {
+      id: 'T001',
+      type: 'housekeeping',
+      title: 'Dọn dẹp Bungalow 01, 02',
+      location: 'Khu Bungalow',
+      checklist: [
+        { id: 'c1', item: 'Thay ga giường', completed: false },
+        { id: 'c2', item: 'Thay khăn tắm', completed: false },
+        { id: 'c3', item: 'Đặt 2 chai nước', completed: false },
+        { id: 'c4', item: 'Lau dọn phòng tắm', completed: false },
+        { id: 'c5', item: 'Chụp ảnh phòng hoàn thiện', completed: false },
+      ],
+      deadline: '2024-11-25 16:00',
+      status: 'pending',
+    },
+    {
+      id: 'T002',
+      type: 'chef',
+      title: 'Chuẩn bị bữa trưa cho đoàn 10 khách',
+      location: 'Nhà bếp',
+      checklist: [
+        { id: 'c1', item: 'Chuẩn bị 2 con gà', completed: false },
+        { id: 'c2', item: 'Chuẩn bị 0.5kg sâm', completed: false },
+        { id: 'c3', item: 'Nấu món Gà nướng Sâm', completed: false },
+        { id: 'c4', item: 'Bày biện bàn ăn', completed: false },
+      ],
+      deadline: '2024-11-25 12:00',
+      status: 'pending',
+    },
+  ];
+
+  const serviceWallet = {
+    hourlyWage: 200000,
+    totalHours: 15,
+    bonus: 50000,
+    tips: 100000,
+    total: 3150000,
+    recentTips: [
+      { date: '24/11', amount: 50000, service: 'Dẫn tour', customer: 'Anh Minh' },
+      { date: '23/11', amount: 30000, service: 'Dọn phòng', customer: 'Chị Lan' },
+    ],
+  };
+
+  const toggleChecklistItem = (taskId: string, itemId: string) => {
+    // Handle checklist toggle
+    console.log('Toggle', taskId, itemId);
+  };
+
+  return (
+    <div className="min-h-screen bg-white pb-24">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-orange-500 to-amber-600 text-white px-4 sm:px-6 pt-6 sm:pt-8 pb-6 sm:pb-10">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+            <BackButton className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2 truncate">Chế độ Dịch vụ</h1>
+              <p className="text-orange-100 text-xs sm:text-sm md:text-base truncate">Xin chào, Anh Minh</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/farmer')}
+              className="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-all"
+            >
+              <i className="ri-plant-line mr-2"></i>
+              Nông trại
+            </button>
+            <RoleSwitcher />
+          </div>
+        </div>
+
+        {/* Mode Switcher */}
+        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-orange-100 mb-1">Chế độ hiện tại</p>
+              <p className="text-lg font-bold">Dịch vụ</p>
+            </div>
+            <button
+              onClick={() => navigate('/farmer')}
+              className="px-4 py-2 bg-white text-orange-600 rounded-lg font-semibold hover:bg-orange-50 transition-all"
+            >
+              <i className="ri-arrow-left-right-line mr-2"></i>
+              Chuyển sang Nông trại
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="px-4 py-4">
+        <div className="bg-white rounded-2xl p-1 shadow-md flex gap-1">
+          <button
+            onClick={() => setActiveTab('shifts')}
+            className={`flex-1 py-3 rounded-xl font-semibold text-sm transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'shifts'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-md'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <i className="ri-calendar-todo-line mr-1"></i>
+            Lịch Ca Trực
+          </button>
+          <button
+            onClick={() => setActiveTab('tasks')}
+            className={`flex-1 py-3 rounded-xl font-semibold text-sm transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'tasks'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-md'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <i className="ri-task-line mr-1"></i>
+            Nhiệm vụ
+          </button>
+          <button
+            onClick={() => setActiveTab('wallet')}
+            className={`flex-1 py-3 rounded-xl font-semibold text-sm transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'wallet'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-md'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <i className="ri-wallet-3-line mr-1"></i>
+            Ví Dịch vụ
+          </button>
+        </div>
+      </div>
+
+      <div className="px-4 space-y-4">
+        {/* Shifts Tab */}
+        {activeTab === 'shifts' && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Lịch làm việc Tuần này</h2>
+              <div className="space-y-3">
+                {shifts.map((shift) => (
+                  <div
+                    key={shift.id}
+                    className={`border-2 rounded-xl p-4 ${
+                      shift.status === 'completed'
+                        ? 'bg-green-50 border-green-200'
+                        : shift.status === 'in-progress'
+                        ? 'bg-blue-50 border-blue-200'
+                        : 'bg-white border-gray-200'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-gray-900 text-lg">{shift.position}</h3>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            shift.status === 'completed'
+                              ? 'bg-green-100 text-green-700'
+                              : shift.status === 'in-progress'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}>
+                            {shift.status === 'completed' ? 'Đã hoàn thành' :
+                             shift.status === 'in-progress' ? 'Đang làm' : 'Sắp tới'}
+                          </span>
+                        </div>
+                        <div className="space-y-1 text-sm text-gray-600">
+                          <div className="flex items-center gap-2">
+                            <i className="ri-calendar-line"></i>
+                            <span>{shift.day}, {shift.date}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <i className="ri-time-line"></i>
+                            <span>{shift.startTime} - {shift.endTime}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <i className="ri-map-pin-line"></i>
+                            <span>{shift.location}</span>
+                          </div>
+                          {shift.checkedIn && shift.checkedInTime && (
+                            <div className="flex items-center gap-2 text-green-600">
+                              <i className="ri-checkbox-circle-line"></i>
+                              <span>Đã check-in lúc {shift.checkedInTime}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    {shift.status === 'upcoming' && (
+                      <div className="flex gap-2 mt-3">
+                        <button className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600">
+                          <i className="ri-login-box-line mr-2"></i>
+                          Check-in vào ca
+                        </button>
+                        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200">
+                          <i className="ri-exchange-line mr-2"></i>
+                          Đề nghị đổi ca
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tasks Tab */}
+        {activeTab === 'tasks' && (
+          <div className="space-y-4">
+            {serviceTasks.map((task) => (
+              <div key={task.id} className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-lg mb-1">{task.title}</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <i className="ri-map-pin-line"></i>
+                      <span>{task.location}</span>
+                      <span>•</span>
+                      <i className="ri-time-line"></i>
+                      <span>Hạn: {task.deadline}</span>
+                    </div>
+                  </div>
+                  <span className={`px-3 py-1 rounded text-xs font-medium ${
+                    task.type === 'housekeeping' ? 'bg-blue-100 text-blue-700' :
+                    task.type === 'chef' ? 'bg-orange-100 text-orange-700' :
+                    task.type === 'tour-guide' ? 'bg-green-100 text-green-700' :
+                    'bg-purple-100 text-purple-700'
+                  }`}>
+                    {task.type === 'housekeeping' ? 'Buồng phòng' :
+                     task.type === 'chef' ? 'Bếp' :
+                     task.type === 'tour-guide' ? 'Hướng dẫn viên' : 'Lễ tân'}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Check-list (Bắt buộc tích):</p>
+                  {task.checklist.map((item) => (
+                    <label
+                      key={item.id}
+                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={item.completed}
+                        onChange={() => toggleChecklistItem(task.id, item.id)}
+                        className="w-5 h-5 text-orange-600 rounded border-gray-300 focus:ring-orange-500"
+                      />
+                      <span className={`flex-1 ${item.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
+                        {item.item}
+                      </span>
+                      {item.id === 'c5' && task.type === 'housekeeping' && (
+                        <button className="px-3 py-1 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600">
+                          <i className="ri-camera-line mr-1"></i>
+                          Chụp ảnh
+                        </button>
+                      )}
+                    </label>
+                  ))}
+                </div>
+                <button className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-600 text-white rounded-lg font-semibold hover:shadow-lg">
+                  <i className="ri-check-line mr-2"></i>
+                  Hoàn thành nhiệm vụ
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Wallet Tab */}
+        {activeTab === 'wallet' && (
+          <div className="space-y-4">
+            <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl shadow-xl p-6 text-white">
+              <h2 className="text-xl font-bold mb-4">Ví Dịch vụ</h2>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span>Lương theo giờ</span>
+                  <span className="text-xl font-bold">{serviceWallet.hourlyWage.toLocaleString('vi-VN')} đ/giờ</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Tổng giờ làm: {serviceWallet.totalHours} giờ</span>
+                  <span className="text-lg font-semibold">{(serviceWallet.hourlyWage * serviceWallet.totalHours).toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Thưởng doanh số Tour</span>
+                  <span className="text-lg font-semibold">{serviceWallet.bonus.toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-white/30 pt-3">
+                  <span className="text-lg font-semibold">Tiền Tip từ khách</span>
+                  <span className="text-2xl font-bold text-yellow-300">{serviceWallet.tips.toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-white/30 pt-3 mt-3">
+                  <span className="text-xl font-bold">Tổng thu nhập</span>
+                  <span className="text-3xl font-bold">{serviceWallet.total.toLocaleString('vi-VN')} đ</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="font-bold text-gray-900 mb-4">Tip gần đây</h3>
+              <div className="space-y-3">
+                {serviceWallet.recentTips.map((tip, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <div>
+                      <p className="font-medium text-gray-900">{tip.service}</p>
+                      <p className="text-sm text-gray-600">{tip.customer} • {tip.date}</p>
+                    </div>
+                    <div className="text-lg font-bold text-green-600">+{tip.amount.toLocaleString('vi-VN')} đ</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+

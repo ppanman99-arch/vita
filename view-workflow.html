@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITA COOP - Sơ đồ Workflow Hệ thống</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .toc {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .toc h2 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .toc ul {
+            list-style: none;
+        }
+        
+        .toc li {
+            padding: 8px 0;
+        }
+        
+        .toc a {
+            color: #059669;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .toc a:hover {
+            color: #10b981;
+            text-decoration: underline;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section h2 {
+            color: #10b981;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d1fae5;
+        }
+        
+        .section h3 {
+            color: #059669;
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .mermaid {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #e5e7eb;
+            overflow-x: auto;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info-box h4 {
+            color: #059669;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .info-box a {
+            color: #059669;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+            margin-top: 50px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 VITA COOP</h1>
+            <p class="subtitle">Sơ đồ Workflow Hệ thống - Tổng quan trực quan toàn bộ dự án</p>
+        </header>
+        
+        <div class="toc">
+            <h2>📋 Mục lục</h2>
+            <ul>
+                <li><a href="#overview">1. Tổng quan Hệ thống</a></li>
+                <li><a href="#portals">2. Các Portal & Người dùng</a></li>
+                <li><a href="#workflows">3. Workflow Chính</a>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>3.1. Khởi tạo & Số hóa</li>
+                        <li>3.2. Kích hoạt Thị trường & Khớp lệnh</li>
+                        <li>3.3. Triển khai Sản xuất & Giám sát</li>
+                        <li>3.4. Thu hoạch, Thương mại & Tái đầu tư ⭐ MỚI</li>
+                    </ul>
+                </li>
+                <li><a href="#auth">4. Luồng Đăng nhập & Đăng ký</a></li>
+                <li><a href="#production">5. Luồng Sản xuất & Quản lý</a></li>
+                <li><a href="#architecture">6. Kiến trúc Hệ thống</a></li>
+            </ul>
+        </div>
+        
+        <div id="overview" class="section">
+            <h2>1. Tổng quan Hệ thống</h2>
+            <div class="mermaid">
+graph TB
+    subgraph "Entry Points"
+        Landing[Landing Page /]
+        Home[Home Page /home]
+        Login[Login Page /login]
+    end
+    
+    subgraph "VITA FARMER - Nông dân"
+        FarmerDash[Farmer Dashboard]
+        FarmerDiary[Nhật ký Điện tử]
+        FarmerWallet[Ví Nông dân]
+        FarmerFarm[Quản lý Nông trại]
+        FarmerForestry[Lâm nghiệp]
+    end
+    
+    subgraph "VITA ADMIN - HTX"
+        AdminDash[Admin Dashboard]
+        AdminGIS[GIS & Bản đồ]
+        AdminWarehouse[Kho vận]
+        AdminFinance[Tài chính]
+        AdminMembers[Xã viên]
+        AdminProduction[Sản xuất]
+        AdminForestry[Lâm nghiệp]
+    end
+    
+    subgraph "VITA RESEARCH - Nghiên cứu"
+        ResearchLab[Research Lab]
+        GeneNursery[Gene Nursery Hub]
+        SeedMarketplace[Seed Marketplace]
+        ExpertPortal[Expert Portal]
+    end
+    
+    subgraph "VITA PARTNER - Đối tác B2B"
+        PartnerDash[Partner Dashboard]
+        PartnerOrder[Đặt hàng]
+        PartnerTrace[Traceability]
+    end
+    
+    subgraph "VITA ENTERPRISE - Doanh nghiệp"
+        EnterpriseProc[Procurement]
+        EnterpriseMatch[Matching]
+        EnterpriseNegot[Negotiation]
+    end
+    
+    subgraph "VITA INVESTMENT - Đầu tư"
+        InvestorPortal[Investor Portal]
+        ESGPortal[ESG Portal]
+        TimberTrading[Timber Trading]
+    end
+    
+    subgraph "VITA GOVERNMENT - Chính phủ"
+        GovPortal[Gov Portal]
+        GovOnboarding[Onboarding]
+    end
+    
+    subgraph "GREENLIGHT - Điều hành"
+        Greenlight[GreenLight Command]
+    end
+    
+    Landing --> Home
+    Home --> Login
+    Login --> FarmerDash
+    Login --> AdminDash
+    Login --> ResearchLab
+    Login --> PartnerDash
+    Login --> EnterpriseProc
+    
+    FarmerDash --> FarmerDiary
+    FarmerDash --> FarmerWallet
+    FarmerDash --> FarmerFarm
+    FarmerDash --> FarmerForestry
+    
+    AdminDash --> AdminGIS
+    AdminDash --> AdminWarehouse
+    AdminDash --> AdminFinance
+    AdminDash --> AdminMembers
+    AdminDash --> AdminProduction
+    
+    style Landing fill:#10b981
+    style Home fill:#10b981
+    style Greenlight fill:#1f2937
+    style FarmerDash fill:#22c55e
+    style AdminDash fill:#3b82f6
+    style ResearchLab fill:#a855f7
+    style PartnerDash fill:#6366f1
+    style InvestorPortal fill:#f59e0b
+            </div>
+        </div>
+        
+        <div id="portals" class="section">
+            <h2>2. Các Portal & Người dùng</h2>
+            <div class="mermaid">
+mindmap
+  root((VITA COOP))
+    Xã viên Nội bộ
+      Nông dân & Cộng sự
+        Farmer Dashboard
+        Nhật ký Điện tử
+        Ví Nông dân
+        Quản lý Nông trại
+      Chủ rừng & Chủ đất
+        Quản lý Tài sản
+        Ví Carbon
+        Dịch vụ Môi trường
+      Nhà đầu tư & Góp vốn
+        Danh mục Đầu tư
+        Báo cáo Tài chính
+        Nhận Cổ tức
+    Quản trị
+      HTX Admin
+        Dashboard
+        GIS & Bản đồ
+        Kho vận
+        Tài chính
+        Xã viên
+        Sản xuất
+      GreenLight Command
+        Điều hành & Giám sát
+        Phân bổ Nguồn lực
+    Đối tác B2B
+      Doanh nghiệp
+        Procurement
+        Matching
+        Negotiation
+      Nghiên cứu
+        Research Lab
+        Gene Nursery
+        Seed Marketplace
+        Expert Portal
+      Thầy thuốc
+        Physician Portal
+        Kiểm định Lâm sàng
+      Partner Dashboard
+        Đặt hàng
+        Traceability
+    Đầu tư & Tác động
+      Investor Portal
+        Danh mục Đầu tư
+        Báo cáo Hiệu suất
+      ESG Portal
+        Dự án Tác động
+        Báo cáo ESG
+      Timber Trading
+        Gỗ Nguyên liệu
+        Thương mại
+    Chính phủ
+      Gov Portal
+        Xã Nông Thôn Mới Số
+        Quản lý Địa phương
+            </div>
+        </div>
+        
+        <div id="workflows" class="section">
+            <h2>3. Workflow Chính</h2>
+            
+            <h3>3.1. Workflow Khởi tạo & Số hóa (Phần 1)</h3>
+            <div class="mermaid">
+flowchart TD
+    Start([Người dùng truy cập]) --> Onboarding{Onboarding Gateway}
+    
+    Onboarding --> |Góp Sức| Producer[Đăng ký Nông dân]
+    Onboarding --> |Góp Đất| LandDigit[Land Digitization]
+    Onboarding --> |Góp Vốn| InvestorReg[Đăng ký Nhà đầu tư]
+    
+    Producer --> SelectCoop[Chọn HTX]
+    SelectCoop --> MemberHub[Member Hub]
+    
+    LandDigit --> |Số hóa đất rừng| LandDB[(Cơ sở dữ liệu Đất)]
+    LandDigit --> SeedListing[Seed Listing]
+    
+    SeedListing --> SeedMarket[Seed Marketplace]
+    
+    InvestorReg --> InvestorPortal[Investor Portal]
+    
+    MemberHub --> FarmerDash[Farmer Dashboard]
+    
+    style Onboarding fill:#10b981
+    style LandDigit fill:#f59e0b
+    style SeedMarket fill:#22c55e
+    style InvestorPortal fill:#3b82f6
+            </div>
+            
+            <h3>3.2. Workflow Kích hoạt Thị trường & Khớp lệnh (Phần 2)</h3>
+            <div class="mermaid">
+flowchart LR
+    subgraph "Tạo Nhu cầu"
+        Offtake[Offtake Booking]
+        ESG[ESG Project Creation]
+    end
+    
+    subgraph "Thanh toán & Đảm bảo"
+        Escrow[Escrow Wallet]
+        Crowd[Crowd Investment]
+    end
+    
+    subgraph "Khớp Lệnh"
+        Matching[Enterprise Matching]
+        Negotiation[Negotiation]
+    end
+    
+    Offtake --> Escrow
+    ESG --> Escrow
+    ESG --> Crowd
+    
+    Escrow --> Matching
+    Crowd --> Matching
+    
+    Matching --> Negotiation
+    Negotiation --> Contract[(Hợp đồng)]
+    
+    style Offtake fill:#22c55e
+    style ESG fill:#10b981
+    style Escrow fill:#f59e0b
+    style Matching fill:#3b82f6
+    style Contract fill:#6366f1
+            </div>
+            
+            <h3>3.3. Workflow Triển khai Sản xuất & Giám sát (Phần 3)</h3>
+            <div class="mermaid">
+flowchart TD
+    Contract[(Hợp đồng)] --> Input[Input Sourcing]
+    
+    Input --> TaskAlloc[Task Allocator]
+    
+    TaskAlloc --> Monitoring[Monitoring & Tracking]
+    TaskAlloc --> Production[Sản xuất]
+    
+    Monitoring --> SmartDisp[Smart Disbursement]
+    Production --> SmartDisp
+    
+    SmartDisp --> Warehouse[Kho vận]
+    Warehouse --> Traceability[Traceability]
+    
+    Traceability --> DigitalHarvest[Digital Harvest]
+    
+    Production --> AdminDash[Admin Dashboard]
+    Monitoring --> FarmerDash[Farmer Dashboard]
+    
+    style Contract fill:#6366f1
+    style Input fill:#22c55e
+    style TaskAlloc fill:#3b82f6
+    style Monitoring fill:#10b981
+    style SmartDisp fill:#f59e0b
+    style Traceability fill:#a855f7
+    style DigitalHarvest fill:#ec4899
+            </div>
+            
+            <h3>3.4. Workflow Thu hoạch, Thương mại & Tái đầu tư (Phần 4) ⭐ MỚI</h3>
+            <div class="mermaid">
+flowchart LR
+    DigitalHarvest[Digital Harvest<br/>Thu hoạch số] --> QualityGate[Quality Gate<br/>Cổng chất lượng]
+    
+    QualityGate --> TradeExec[Trade Execution<br/>Thực thi giao dịch]
+    
+    TradeExec --> ProfitSplit[Profit Split<br/>Chia lợi nhuận]
+    
+    ProfitSplit --> Reinvestment[Reinvestment Loop<br/>Vòng lặp tái đầu tư]
+    
+    Reinvestment --> Onboarding{Onboarding Gateway}
+    Onboarding --> LandDigit[Land Digitization]
+    
+    ProfitSplit --> FarmerWallet[Farmer Wallet]
+    ProfitSplit --> AdminFinance[Admin Finance]
+    ProfitSplit --> InvestorReturn[Investor Returns]
+    
+    style DigitalHarvest fill:#ec4899
+    style QualityGate fill:#8b5cf6
+    style TradeExec fill:#06b6d4
+    style ProfitSplit fill:#f59e0b
+    style Reinvestment fill:#10b981
+    style FarmerWallet fill:#22c55e
+    style AdminFinance fill:#3b82f6
+    style InvestorReturn fill:#6366f1
+            </div>
+        </div>
+        
+        <div id="auth" class="section">
+            <h2>4. Luồng Đăng nhập & Đăng ký</h2>
+            <div class="mermaid">
+stateDiagram-v2
+    [*] --> Landing: Truy cập /
+    Landing --> Home: Chọn Portal
+    Home --> Login: Click Đăng nhập
+    Home --> Register: Click Đăng ký
+    
+    Login --> RoleSelection: Chọn vai trò
+    
+    RoleSelection --> FarmerLogin: Nông dân
+    RoleSelection --> CoopLogin: HTX
+    RoleSelection --> ResearchLogin: Nghiên cứu
+    RoleSelection --> EnterpriseLogin: Doanh nghiệp
+    RoleSelection --> PhysicianLogin: Thầy thuốc
+    RoleSelection --> AdminLogin: Admin
+    
+    FarmerLogin --> MemberHub: Đăng nhập thành công
+    CoopLogin --> AdminDash: Đăng nhập thành công
+    ResearchLogin --> ResearchLab: Đăng nhập thành công
+    EnterpriseLogin --> PartnerDash: Đăng nhập thành công
+    PhysicianLogin --> PhysicianPortal: Đăng nhập thành công
+    AdminLogin --> Greenlight: Đăng nhập thành công
+    
+    Register --> RegSelection: Chọn loại đăng ký
+    
+    RegSelection --> ForestOwnerReg: Chủ rừng
+    RegSelection --> CoopReg: HTX
+    RegSelection --> EnterpriseReg: Doanh nghiệp
+    RegSelection --> ResearchReg: Đối tác Nghiên cứu
+    RegSelection --> PhysicianReg: Thầy thuốc
+    
+    ForestOwnerReg --> Onboarding: Hoàn tất
+    CoopReg --> Onboarding: Hoàn tất
+    EnterpriseReg --> Onboarding: Hoàn tất
+    ResearchReg --> Onboarding: Hoàn tất
+    PhysicianReg --> Onboarding: Hoàn tất
+            </div>
+        </div>
+        
+        <div id="production" class="section">
+            <h2>5. Luồng Sản xuất & Quản lý</h2>
+            
+            <h3>5.1. Luồng Đối tác Doanh nghiệp</h3>
+            <div class="mermaid">
+graph TD
+    Enterprise[Enterprise Portal] --> Proc[Procurement<br/>Đặt hàng]
+    
+    Proc --> Match[Matching<br/>Khớp với HTX]
+    
+    Match --> Potential[Potential Map<br/>Xem Tiềm năng]
+    
+    Potential --> Negot[Negotiation<br/>Đàm phán]
+    
+    Negot --> Contract[Ký Hợp đồng]
+    
+    Contract --> Order[Partner Order<br/>Theo dõi Đơn hàng]
+    
+    Order --> Trace[Traceability<br/>Truy xuất Nguồn gốc]
+    
+    Trace --> Delivery[Giao hàng]
+    
+    Delivery --> Payment[Thanh toán]
+    
+    style Enterprise fill:#6366f1
+    style Proc fill:#3b82f6
+    style Match fill:#22c55e
+    style Negot fill:#f59e0b
+    style Contract fill:#10b981
+    style Trace fill:#a855f7
+            </div>
+        </div>
+        
+        <div id="architecture" class="section">
+            <h2>6. Kiến trúc Hệ thống</h2>
+            <div class="mermaid">
+graph TB
+    subgraph "Frontend - React + TypeScript"
+        React[React Application]
+        Router[React Router]
+        I18n[i18next]
+        UI[UI Components]
+    end
+    
+    subgraph "State Management"
+        Redux[Redux Toolkit]
+        LocalState[Local State]
+    end
+    
+    subgraph "Backend Services"
+        Firebase[Firebase<br/>Authentication & Storage]
+        Supabase[Supabase<br/>Database & Realtime]
+        Stripe[Stripe<br/>Payment]
+    end
+    
+    subgraph "External Services"
+        Maps[GIS/Maps APIs]
+        Payment[Payment Gateways]
+        Notification[Push Notifications]
+    end
+    
+    React --> Router
+    React --> I18n
+    React --> UI
+    React --> Redux
+    React --> LocalState
+    
+    React --> Firebase
+    React --> Supabase
+    React --> Stripe
+    
+    Firebase --> Maps
+    Supabase --> Payment
+    Firebase --> Notification
+    
+    style React fill:#61dafb
+    style Firebase fill:#ffca28
+    style Supabase fill:#3ecf8e
+    style Stripe fill:#635bff
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>📝 Hướng dẫn sử dụng</h4>
+            <p>File này hiển thị toàn bộ workflow của hệ thống VITA COOP bằng các sơ đồ Mermaid. Để xem file gốc với đầy đủ thông tin, hãy mở file <strong>WORKFLOW_DIAGRAM.md</strong>.</p>
+            <br>
+            <p><strong>Các cách xem sơ đồ:</strong></p>
+            <ul>
+                <li><strong>File HTML này</strong>: Mở trực tiếp trong trình duyệt (file này)</li>
+                <li><strong>VS Code</strong>: Cài extension "Markdown Preview Mermaid Support"</li>
+                <li><strong>GitHub</strong>: Tự động render khi push lên GitHub</li>
+                <li><strong>Online</strong>: Copy code Mermaid và paste vào <a href="https://mermaid.live/" target="_blank">mermaid.live</a></li>
+            </ul>
+            <br>
+            <p><strong>Export ảnh:</strong> Sử dụng <a href="https://mermaid.live/" target="_blank">mermaid.live</a> để export PNG/SVG từ code Mermaid.</p>
+        </div>
+        
+        <footer>
+            <p><strong>VITA COOP</strong> - Hệ thống Quản lý Hợp tác xã Nông Lâm nghiệp</p>
+            <p>Version 1.0 | 2024</p>
+        </footer>
+    </div>
+    
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#10b981',
+                primaryTextColor: '#ffffff',
+                primaryBorderColor: '#059669',
+                lineColor: '#6b7280',
+                secondaryColor: '#ecfdf5',
+                tertiaryColor: '#f0fdf4'
+            }
+        });
+    </script>
+</body>
+</html>
+

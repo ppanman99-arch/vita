@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Gemini Imagen API</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #10b981;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #374151;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    button {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #059669;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .results {
+      margin-top: 30px;
+    }
+    .result-item {
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      background: #f9fafb;
+      border-left: 4px solid #10b981;
+    }
+    .result-item.error {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+    .image-preview {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #10b981;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    pre {
+      background: #1f2937;
+      color: #f9fafb;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 15px;
+      font-size: 12px;
+    }
+    .info {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Test Gemini Imagen API</h1>
+    
+    <div class="info">
+      <strong>Lưu ý:</strong> API key được lấy từ environment variable <code>VITE_GEMINI_API_KEY</code>.
+      Nếu test trong browser, cần build app với Vite để có access đến env vars.
+    </div>
+
+    <div class="form-group">
+      <label>API Key:</label>
+      <input type="text" id="apiKey" placeholder="Nhập API key hoặc để trống để dùng từ .env" value="">
+    </div>
+
+    <div class="form-group">
+      <label>Prompt (Mô tả ảnh):</label>
+      <textarea id="prompt" placeholder="Ví dụ: Vietnamese forest with medicinal plants, sustainable agriculture, modern technology, professional illustration">Vietnamese forest with medicinal plants growing under tall trees, sustainable agroforestry system, misty morning light, vibrant green colors, professional photography</textarea>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+      <div class="form-group">
+        <label>Width:</label>
+        <input type="number" id="width" value="1024" min="256" max="2048">
+      </div>
+      <div class="form-group">
+        <label>Height:</label>
+        <input type="number" id="height" value="768" min="256" max="2048">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Aspect Ratio:</label>
+      <select id="aspectRatio">
+        <option value="16:9">16:9 (Landscape)</option>
+        <option value="9:16">9:16 (Portrait)</option>
+        <option value="1:1">1:1 (Square)</option>
+        <option value="4:3">4:3</option>
+        <option value="3:4">3:4</option>
+      </select>
+    </div>
+
+    <div>
+      <button id="testImagen">Test Imagen API</button>
+      <button id="testGeminiPrompt">Test Gemini Prompt</button>
+      <button id="testReaddyFallback">Test Readdy.ai Fallback</button>
+    </div>
+
+    <div id="status" style="margin-top: 20px;"></div>
+    <div id="results" class="results"></div>
+  </div>
+
+  <script type="module">
+    // Lấy API key từ env hoặc input
+    function getApiKey() {
+      const inputKey = document.getElementById('apiKey').value.trim();
+      // Trong production, sẽ lấy từ import.meta.env.VITE_GEMINI_API_KEY
+      return inputKey || 'AIzaSyBrexkvgD6VM85hp11LaTxlutO2DqKbePM';
+    }
+
+    // Test Gemini API (tạo prompt)
+    async function testGeminiPrompt() {
+      const apiKey = getApiKey();
+      const prompt = document.getElementById('prompt').value;
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+
+      statusEl.innerHTML = '<p>🔄 Đang tạo prompt với Gemini...</p>';
+
+      try {
+        const response = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-goog-api-key': apiKey,
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: `You are an expert at creating detailed image prompts. Create a detailed, vivid description for an illustration based on: ${prompt}. Requirements: Describe in English, include visual elements, colors, composition, lighting, suitable for Vietnamese agricultural/technology context, professional and modern aesthetic, 50-100 words`
+                }]
+              }]
+            })
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const generatedPrompt = data.candidates?.[0]?.content?.parts?.[0]?.text || prompt;
+
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.innerHTML = `
+          <strong>✅ Gemini Prompt Generated</strong><br>
+          <pre>${generatedPrompt}</pre>
+        `;
+        resultsEl.appendChild(resultItem);
+
+        statusEl.innerHTML = '<p>✅ Prompt đã được tạo!</p>';
+      } catch (error) {
+        statusEl.innerHTML = `<p>❌ Lỗi: ${error.message}</p>`;
+      }
+    }
+
+    // Test Imagen API
+    async function testImagen() {
+      const apiKey = getApiKey();
+      const prompt = document.getElementById('prompt').value;
+      const width = parseInt(document.getElementById('width').value);
+      const height = parseInt(document.getElementById('height').value);
+      const aspectRatio = document.getElementById('aspectRatio').value;
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+
+      statusEl.innerHTML = '<p>🔄 Đang generate ảnh với Imagen API...</p>';
+
+      try {
+        // Thử endpoint Imagen
+        const response = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:generateImages',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-goog-api-key': apiKey,
+            },
+            body: JSON.stringify({
+              prompt: prompt,
+              number_of_images: 1,
+              aspect_ratio: aspectRatio,
+              safety_filter_level: 'block_some',
+              person_generation: 'allow_all',
+            })
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Imagen API error: ${response.status} ${response.statusText}\n${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('Imagen response:', data);
+
+        // Xử lý response
+        let imageUrl = '';
+        if (data.generatedImages && data.generatedImages.length > 0) {
+          const imageData = data.generatedImages[0];
+          if (imageData.imageBase64) {
+            imageUrl = `data:image/png;base64,${imageData.imageBase64}`;
+          } else if (imageData.imageUrl) {
+            imageUrl = imageData.imageUrl;
+          }
+        } else if (data.imageBase64) {
+          imageUrl = `data:image/png;base64,${data.imageBase64}`;
+        }
+
+        if (!imageUrl) {
+          throw new Error('No image data in response. Response: ' + JSON.stringify(data, null, 2));
+        }
+
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.innerHTML = `
+          <strong>✅ Imagen API Success</strong><br>
+          <img src="${imageUrl}" class="image-preview" alt="Generated image">
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+        resultsEl.appendChild(resultItem);
+
+        statusEl.innerHTML = '<p>✅ Ảnh đã được generate!</p>';
+      } catch (error) {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item error';
+        resultItem.innerHTML = `
+          <strong>❌ Imagen API Error</strong><br>
+          <p>${error.message}</p>
+          <p><strong>Lưu ý:</strong> Imagen API có thể cần endpoint khác hoặc authentication khác. Code sẽ tự động fallback về readdy.ai.</p>
+        `;
+        resultsEl.appendChild(resultItem);
+        statusEl.innerHTML = `<p>❌ Lỗi: ${error.message}</p>`;
+      }
+    }
+
+    // Test Readdy.ai fallback
+    async function testReaddyFallback() {
+      const prompt = document.getElementById('prompt').value;
+      const width = document.getElementById('width').value;
+      const height = document.getElementById('height').value;
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+
+      statusEl.innerHTML = '<p>🔄 Đang test readdy.ai fallback...</p>';
+
+      try {
+        const encodedPrompt = encodeURIComponent(prompt);
+        const imageUrl = `https://readdy.ai/api/search-image?query=${encodedPrompt}&width=${width}&height=${height}&seq=test&orientation=landscape`;
+
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.innerHTML = `
+          <strong>✅ Readdy.ai Fallback</strong><br>
+          <img src="${imageUrl}" class="image-preview" alt="Fallback image" onerror="this.parentElement.innerHTML += '<p style=\\'color:red\\'>⚠️ Image failed to load. readdy.ai may be unavailable.</p>'">
+          <p><small>URL: ${imageUrl}</small></p>
+        `;
+        resultsEl.appendChild(resultItem);
+
+        statusEl.innerHTML = '<p>✅ Fallback URL đã được tạo!</p>';
+      } catch (error) {
+        statusEl.innerHTML = `<p>❌ Lỗi: ${error.message}</p>`;
+      }
+    }
+
+    // Event listeners
+    document.getElementById('testImagen').addEventListener('click', testImagen);
+    document.getElementById('testGeminiPrompt').addEventListener('click', testGeminiPrompt);
+    document.getElementById('testReaddyFallback').addEventListener('click', testReaddyFallback);
+  </script>
+</body>
+</html>
+
+
+

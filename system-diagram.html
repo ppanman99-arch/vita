@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITA COOP - Sơ đồ Hệ thống Toàn diện</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: auto;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #10b981;
+        }
+
+        .header h1 {
+            color: #1f2937;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.2em;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #10b981;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn.active {
+            background: #047857;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            min-height: 800px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+            overflow: auto;
+        }
+
+        canvas {
+            display: block;
+            cursor: move;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #1e40af;
+        }
+
+        .instructions strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e3a8a;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 300px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .info-panel.show {
+            display: block;
+        }
+
+        .info-panel h3 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .info-panel p {
+            color: #6b7280;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌿 VITA COOP</h1>
+            <p>Hệ Sinh Thái Rừng Dược Sinh Quốc Gia - Sơ đồ Hệ thống Toàn diện</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn active" data-view="overview" onclick="showView('overview', this)">Tổng quan</button>
+            <button class="btn" data-view="portals" onclick="showView('portals', this)">Các Portal</button>
+            <button class="btn" data-view="workflows" onclick="showView('workflows', this)">Workflows</button>
+            <button class="btn" data-view="architecture" onclick="showView('architecture', this)">Kiến trúc</button>
+            <button class="btn" onclick="resetZoom()">Reset Zoom</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="systemCanvas"></canvas>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #22c55e;"></div>
+                <span>Xã viên Nội bộ</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3b82f6;"></div>
+                <span>Quản trị HTX</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #a855f7;"></div>
+                <span>Đối tác Hệ sinh thái</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f59e0b;"></div>
+                <span>GreenLight & Đầu tư</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #6366f1;"></div>
+                <span>Đầu Ra Hệ sinh thái</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ec4899;"></div>
+                <span>Workflows</span>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <strong>📖 Hướng dẫn sử dụng:</strong>
+            <ul style="margin-left: 20px; margin-top: 8px;">
+                <li><strong>Click vào các nút</strong> ở trên để chuyển đổi giữa các view (Tổng quan, Các Portal, Workflows, Kiến trúc)</li>
+                <li><strong>Click vào các khối</strong> trên canvas để xem thông tin chi tiết</li>
+                <li><strong>Kéo thả</strong> canvas để di chuyển xung quanh</li>
+                <li><strong>Cuộn chuột</strong> để zoom in/out</li>
+                <li><strong>Reset Zoom</strong> để quay về vị trí mặc định</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <button class="close-btn" onclick="closeInfoPanel()">×</button>
+        <h3 id="infoTitle"></h3>
+        <p id="infoDescription"></p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('systemCanvas');
+        const ctx = canvas.getContext('2d');
+        const infoPanel = document.getElementById('infoPanel');
+        
+        let currentView = 'overview';
+        let scale = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        let hoveredNode = null;
+
+        // Resize canvas
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            // Adjust canvas size based on current view
+            let minWidth = 2400;
+            let minHeight = 1600;
+            
+            if (currentView === 'portals') {
+                minWidth = 2200;
+                minHeight = 1200;
+            } else if (currentView === 'workflows') {
+                minWidth = 1600;
+                minHeight = 1200;
+            } else if (currentView === 'architecture') {
+                minWidth = 1600;
+                minHeight = 800;
+            }
+            
+            canvas.width = Math.max(container.clientWidth, minWidth);
+            canvas.height = Math.max(container.clientHeight, minHeight);
+            draw();
+        }
+
+        // Color scheme
+        const colors = {
+            member: '#22c55e',
+            admin: '#3b82f6',
+            partner: '#a855f7',
+            investment: '#f59e0b',
+            output: '#6366f1',
+            workflow: '#ec4899',
+            greenlight: '#1f2937'
+        };
+
+        // System data
+        const systemData = {
+            overview: {
+                nodes: [
+                    // Xã viên Nội bộ
+                    { id: 'farmer', x: 200, y: 200, w: 180, h: 100, color: colors.member, label: 'Nông dân & Cộng sự', desc: 'Nhật ký canh tác điện tử • Báo cáo sâu bệnh • Quy trình kỹ thuật' },
+                    { id: 'resource', x: 200, y: 350, w: 180, h: 100, color: colors.member, label: 'Chủ rừng & Chủ đất', desc: 'Quản lý tài sản đất rừng • Giám sát hộ nhận khoán • Ví Carbon' },
+                    { id: 'investor_member', x: 200, y: 500, w: 180, h: 100, color: colors.member, label: 'Nhà đầu tư & Góp vốn', desc: 'Theo dõi danh mục đầu tư • Báo cáo tài chính HTX • Nhận cổ tức' },
+                    
+                    // Quản trị HTX
+                    { id: 'coop', x: 500, y: 275, w: 180, h: 100, color: colors.admin, label: 'Hợp tác xã', desc: 'Quản lý danh sách xã viên • Phân bổ chỉ tiêu sản xuất • Quản lý kho vận' },
+                    
+                    // Đối tác Hệ sinh thái
+                    { id: 'research', x: 800, y: 150, w: 180, h: 100, color: colors.partner, label: 'Trung tâm Gen & Khoa học', desc: 'Cấp mã định danh nguồn giống • Cập nhật quy trình canh tác (SOP)' },
+                    { id: 'expert', x: 800, y: 300, w: 180, h: 100, color: colors.partner, label: 'VITA Expert Hub', desc: 'Cổng làm việc chuyên gia • Tư vấn kỹ thuật từ xa • Kê đơn số' },
+                    { id: 'gov', x: 800, y: 450, w: 180, h: 100, color: colors.partner, label: 'VITA GOV Portal', desc: 'Cổng quản trị số chính quyền Xã • Giám sát kinh tế-xã hội' },
+                    { id: 'creator', x: 800, y: 600, w: 180, h: 100, color: colors.partner, label: 'VITA Creator Hub', desc: 'Cổng KOL/KOC • Kho tài nguyên số • Chiến dịch Marketing' },
+                    
+                    // GreenLight & Đầu tư
+                    { id: 'greenlight', x: 1100, y: 250, w: 180, h: 100, color: colors.greenlight, label: 'GreenLight Command', desc: 'Dashboard tổng quan hệ sinh thái • Giám sát tuân thủ & Cảnh báo rủi ro' },
+                    { id: 'investor_portal', x: 1100, y: 400, w: 180, h: 100, color: colors.investment, label: 'Investor Relations Portal', desc: 'Virtual Data Room • Valuation Simulator • Lộ trình IPO' },
+                    
+                    // Đầu Ra Hệ sinh thái
+                    { id: 'enterprise', x: 1400, y: 200, w: 180, h: 100, color: colors.output, label: 'Đối tác Thu mua (B2B)', desc: 'Đặt hàng bao tiêu (Booking) • Truy xuất nguồn gốc (Traceability)' },
+                    { id: 'esg', x: 1400, y: 350, w: 180, h: 100, color: colors.output, label: 'Cổng Đầu tư ESG', desc: 'Dự án trồng rừng • Tín chỉ Carbon • Giám sát thời gian thực' },
+                    { id: 'timber', x: 1400, y: 500, w: 180, h: 100, color: colors.output, label: 'Cổng Giao dịch Gỗ', desc: 'Đặt hàng rừng trồng • Chứng chỉ FSC/PEFC • Tính toán hiệu suất' },
+                    { id: 'physician', x: 1400, y: 650, w: 180, h: 100, color: colors.output, label: 'Thầy thuốc & Bệnh viện', desc: 'Tra cứu hồ sơ dược liệu • Gửi phản hồi lâm sàng • Đặt hàng thuốc mẫu' },
+                    
+                    // Workflows - Phần 1: Khởi tạo
+                    { id: 'onboarding', x: 200, y: 800, w: 150, h: 80, color: colors.workflow, label: 'Onboarding Gateway', desc: 'Cổng đăng ký và khởi tạo' },
+                    { id: 'land_digit', x: 400, y: 800, w: 150, h: 80, color: colors.workflow, label: 'Land Digitization', desc: 'Số hóa đất rừng' },
+                    { id: 'seed_listing', x: 600, y: 800, w: 150, h: 80, color: colors.workflow, label: 'Seed Listing', desc: 'Đăng ký giống cây trồng' },
+                    
+                    // Workflows - Phần 2: Kích hoạt Thị trường
+                    { id: 'offtake', x: 850, y: 800, w: 150, h: 80, color: colors.workflow, label: 'Offtake Booking', desc: 'Đặt hàng bao tiêu' },
+                    { id: 'esg_project', x: 1050, y: 800, w: 150, h: 80, color: colors.workflow, label: 'ESG Project Creation', desc: 'Tạo dự án ESG' },
+                    { id: 'escrow', x: 1250, y: 800, w: 150, h: 80, color: colors.workflow, label: 'Escrow Wallet', desc: 'Ví ký quỹ' },
+                    { id: 'crowd_invest', x: 1450, y: 800, w: 150, h: 80, color: colors.workflow, label: 'Crowd Investment', desc: 'Đầu tư cộng đồng' },
+                    
+                    // Workflows - Phần 3: Sản xuất
+                    { id: 'input_sourcing', x: 200, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Input Sourcing', desc: 'Tìm nguồn vật tư đầu vào' },
+                    { id: 'task_alloc', x: 400, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Task Allocator', desc: 'Phân bổ công việc' },
+                    { id: 'monitoring', x: 600, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Monitoring', desc: 'Giám sát sản xuất' },
+                    { id: 'smart_disp', x: 800, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Smart Disbursement', desc: 'Chi trả thông minh' },
+                    
+                    // Workflows - Phần 4: Thu hoạch & Thương mại
+                    { id: 'digital_harvest', x: 1050, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Digital Harvest', desc: 'Thu hoạch số' },
+                    { id: 'quality_gate', x: 1250, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Quality Gate', desc: 'Cổng chất lượng' },
+                    { id: 'trade_exec', x: 1450, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Trade Execution', desc: 'Thực thi giao dịch' },
+                    { id: 'profit_split', x: 1650, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Profit Split', desc: 'Chia lợi nhuận' },
+                    { id: 'reinvest', x: 1850, y: 950, w: 150, h: 80, color: colors.workflow, label: 'Reinvestment Loop', desc: 'Vòng lặp tái đầu tư' },
+                ],
+                connections: [
+                    // Xã viên -> HTX
+                    { from: 'farmer', to: 'coop' },
+                    { from: 'resource', to: 'coop' },
+                    { from: 'investor_member', to: 'coop' },
+                    
+                    // HTX -> GreenLight
+                    { from: 'coop', to: 'greenlight' },
+                    
+                    // Đối tác -> HTX
+                    { from: 'research', to: 'coop' },
+                    { from: 'expert', to: 'coop' },
+                    { from: 'gov', to: 'coop' },
+                    
+                    // GreenLight -> Đầu ra
+                    { from: 'greenlight', to: 'enterprise' },
+                    { from: 'greenlight', to: 'esg' },
+                    { from: 'greenlight', to: 'timber' },
+                    
+                    // Workflow connections
+                    { from: 'onboarding', to: 'land_digit' },
+                    { from: 'land_digit', to: 'seed_listing' },
+                    { from: 'seed_listing', to: 'offtake' },
+                    { from: 'offtake', to: 'esg_project' },
+                    { from: 'esg_project', to: 'escrow' },
+                    { from: 'escrow', to: 'input_sourcing' },
+                    { from: 'input_sourcing', to: 'task_alloc' },
+                    { from: 'task_alloc', to: 'monitoring' },
+                    { from: 'monitoring', to: 'smart_disp' },
+                    { from: 'smart_disp', to: 'digital_harvest' },
+                    { from: 'digital_harvest', to: 'quality_gate' },
+                    { from: 'quality_gate', to: 'trade_exec' },
+                    { from: 'trade_exec', to: 'profit_split' },
+                    { from: 'profit_split', to: 'reinvest' },
+                    { from: 'reinvest', to: 'onboarding' },
+                ]
+            },
+            portals: {
+                nodes: [
+                    // VITA FARMER
+                    { id: 'farmer_dash', x: 100, y: 100, w: 200, h: 120, color: colors.member, label: 'Farmer Dashboard', desc: 'Trang chủ nông dân • Tổng quan nông trại • Thông báo' },
+                    { id: 'farmer_diary', x: 100, y: 250, w: 200, h: 120, color: colors.member, label: 'Nhật ký Điện tử', desc: 'Ghi chép canh tác • Báo cáo sâu bệnh • Lịch làm việc' },
+                    { id: 'farmer_wallet', x: 100, y: 400, w: 200, h: 120, color: colors.member, label: 'Ví Nông dân', desc: 'Quản lý tài chính • Thanh toán • Lịch sử giao dịch' },
+                    { id: 'farmer_farm', x: 100, y: 550, w: 200, h: 120, color: colors.member, label: 'Quản lý Nông trại', desc: 'Thông tin nông trại • Diện tích • Cây trồng' },
+                    { id: 'farmer_forestry', x: 100, y: 700, w: 200, h: 120, color: colors.member, label: 'Lâm nghiệp', desc: 'Quản lý rừng • Khai thác • Chứng chỉ' },
+                    
+                    // VITA ADMIN
+                    { id: 'admin_dash', x: 400, y: 100, w: 200, h: 120, color: colors.admin, label: 'Admin Dashboard', desc: 'Tổng quan HTX • Thống kê • Báo cáo' },
+                    { id: 'admin_gis', x: 400, y: 250, w: 200, h: 120, color: colors.admin, label: 'GIS & Bản đồ', desc: 'Bản đồ số • Quản lý đất đai • Phân vùng' },
+                    { id: 'admin_warehouse', x: 400, y: 400, w: 200, h: 120, color: colors.admin, label: 'Kho vận', desc: 'Quản lý kho • Nhập/Xuất • Tồn kho' },
+                    { id: 'admin_finance', x: 400, y: 550, w: 200, h: 120, color: colors.admin, label: 'Tài chính', desc: 'Kế toán • Báo cáo tài chính • Thanh toán' },
+                    { id: 'admin_members', x: 400, y: 700, w: 200, h: 120, color: colors.admin, label: 'Xã viên', desc: 'Danh sách xã viên • Quản lý thành viên • Phân quyền' },
+                    { id: 'admin_production', x: 400, y: 850, w: 200, h: 120, color: colors.admin, label: 'Sản xuất', desc: 'Kế hoạch sản xuất • Phân bổ • Theo dõi' },
+                    
+                    // VITA RESEARCH
+                    { id: 'research_lab', x: 700, y: 100, w: 200, h: 120, color: colors.partner, label: 'Research Lab', desc: 'Phòng thí nghiệm số • Dữ liệu nghiên cứu • Thí nghiệm' },
+                    { id: 'gene_nursery', x: 700, y: 250, w: 200, h: 120, color: colors.partner, label: 'Gene Nursery Hub', desc: 'Quản lý gen • Vườn ươm • Chất lượng giống' },
+                    { id: 'seed_marketplace', x: 700, y: 400, w: 200, h: 120, color: colors.partner, label: 'Seed Marketplace', desc: 'Sàn giao dịch giống • Mua bán • Truy xuất' },
+                    { id: 'expert_portal', x: 700, y: 550, w: 200, h: 120, color: colors.partner, label: 'Expert Portal', desc: 'Cổng chuyên gia • Tư vấn • SOP' },
+                    
+                    // VITA PARTNER & ENTERPRISE
+                    { id: 'partner_dash', x: 1000, y: 100, w: 200, h: 120, color: colors.output, label: 'Partner Dashboard', desc: 'Dashboard đối tác • Đơn hàng • Thống kê' },
+                    { id: 'partner_order', x: 1000, y: 250, w: 200, h: 120, color: colors.output, label: 'Đặt hàng', desc: 'Tạo đơn hàng • Theo dõi • Quản lý' },
+                    { id: 'partner_trace', x: 1000, y: 400, w: 200, h: 120, color: colors.output, label: 'Traceability', desc: 'Truy xuất nguồn gốc • QR Code • Lịch sử' },
+                    { id: 'enterprise_proc', x: 1000, y: 550, w: 200, h: 120, color: colors.output, label: 'Enterprise Procurement', desc: 'Mua sắm doanh nghiệp • Đấu thầu • Hợp đồng' },
+                    { id: 'enterprise_match', x: 1000, y: 700, w: 200, h: 120, color: colors.output, label: 'Enterprise Matching', desc: 'Khớp đơn hàng • Tìm đối tác • Đàm phán' },
+                    
+                    // INVESTMENT PORTALS
+                    { id: 'investor_portal_detail', x: 1300, y: 100, w: 200, h: 120, color: colors.investment, label: 'Investor Portal', desc: 'Quan hệ nhà đầu tư • Valuation • IPO' },
+                    { id: 'esg_portal_detail', x: 1300, y: 250, w: 200, h: 120, color: colors.investment, label: 'ESG Portal', desc: 'Đầu tư tác động • Carbon • Báo cáo ESG' },
+                    { id: 'timber_trading_detail', x: 1300, y: 400, w: 200, h: 120, color: colors.investment, label: 'Timber Trading', desc: 'Giao dịch gỗ • FSC/PEFC • Khai thác' },
+                    
+                    // GOVERNMENT & OTHERS
+                    { id: 'gov_portal_detail', x: 1600, y: 100, w: 200, h: 120, color: colors.partner, label: 'Gov Portal', desc: 'Xã Nông Thôn Mới Số • Quản lý địa phương' },
+                    { id: 'physician_portal_detail', x: 1600, y: 250, w: 200, h: 120, color: colors.output, label: 'Physician Portal', desc: 'Kiểm định • Lâm sàng • Dược liệu' },
+                    { id: 'creator_hub_detail', x: 1600, y: 400, w: 200, h: 120, color: colors.partner, label: 'Creator Hub', desc: 'KOL/KOC • Marketing • Content' },
+                    { id: 'greenlight_detail', x: 1600, y: 550, w: 200, h: 120, color: colors.greenlight, label: 'GreenLight Command', desc: 'Điều hành hệ thống • Giám sát • Báo cáo' },
+                ],
+                connections: [
+                    // Farmer connections
+                    { from: 'farmer_dash', to: 'farmer_diary' },
+                    { from: 'farmer_dash', to: 'farmer_wallet' },
+                    { from: 'farmer_dash', to: 'farmer_farm' },
+                    { from: 'farmer_farm', to: 'farmer_forestry' },
+                    
+                    // Admin connections
+                    { from: 'admin_dash', to: 'admin_gis' },
+                    { from: 'admin_dash', to: 'admin_warehouse' },
+                    { from: 'admin_dash', to: 'admin_finance' },
+                    { from: 'admin_dash', to: 'admin_members' },
+                    { from: 'admin_dash', to: 'admin_production' },
+                    
+                    // Research connections
+                    { from: 'research_lab', to: 'gene_nursery' },
+                    { from: 'gene_nursery', to: 'seed_marketplace' },
+                    { from: 'expert_portal', to: 'research_lab' },
+                    
+                    // Partner connections
+                    { from: 'partner_dash', to: 'partner_order' },
+                    { from: 'partner_order', to: 'partner_trace' },
+                    { from: 'enterprise_proc', to: 'enterprise_match' },
+                    
+                    // Investment connections
+                    { from: 'investor_portal_detail', to: 'esg_portal_detail' },
+                    { from: 'esg_portal_detail', to: 'timber_trading_detail' },
+                    
+                    // Cross connections
+                    { from: 'admin_dash', to: 'greenlight_detail' },
+                    { from: 'farmer_dash', to: 'admin_dash' },
+                    { from: 'seed_marketplace', to: 'farmer_farm' },
+                ]
+            },
+            workflows: {
+                nodes: [
+                    // Phần 1: Khởi tạo & Số hóa
+                    { id: 'w1_onboarding', x: 200, y: 200, w: 180, h: 100, color: colors.workflow, label: 'Onboarding Gateway', desc: 'Cổng đăng ký • Chọn vai trò • Khởi tạo tài khoản' },
+                    { id: 'w1_land', x: 450, y: 200, w: 180, h: 100, color: colors.workflow, label: 'Land Digitization', desc: 'Số hóa đất rừng • GPS • Bản đồ số' },
+                    { id: 'w1_seed', x: 700, y: 200, w: 180, h: 100, color: colors.workflow, label: 'Seed Listing', desc: 'Đăng ký giống • Mã gen • Chứng nhận' },
+                    
+                    // Phần 2: Kích hoạt Thị trường
+                    { id: 'w2_offtake', x: 200, y: 400, w: 180, h: 100, color: colors.workflow, label: 'Offtake Booking', desc: 'Đặt hàng bao tiêu • Hợp đồng • Cam kết' },
+                    { id: 'w2_esg', x: 450, y: 400, w: 180, h: 100, color: colors.workflow, label: 'ESG Project Creation', desc: 'Tạo dự án ESG • Carbon • Tác động' },
+                    { id: 'w2_escrow', x: 700, y: 400, w: 180, h: 100, color: colors.workflow, label: 'Escrow Wallet', desc: 'Ví ký quỹ • Thanh toán • Bảo đảm' },
+                    { id: 'w2_crowd', x: 950, y: 400, w: 180, h: 100, color: colors.workflow, label: 'Crowd Investment', desc: 'Đầu tư cộng đồng • Góp vốn • ROI' },
+                    
+                    // Phần 3: Sản xuất & Giám sát
+                    { id: 'w3_input', x: 200, y: 600, w: 180, h: 100, color: colors.workflow, label: 'Input Sourcing', desc: 'Tìm nguồn vật tư • Đặt hàng • Nhập kho' },
+                    { id: 'w3_task', x: 450, y: 600, w: 180, h: 100, color: colors.workflow, label: 'Task Allocator', desc: 'Phân bổ công việc • Lịch trình • Nhân sự' },
+                    { id: 'w3_monitor', x: 700, y: 600, w: 180, h: 100, color: colors.workflow, label: 'Monitoring', desc: 'Giám sát sản xuất • IoT • Báo cáo' },
+                    { id: 'w3_disp', x: 950, y: 600, w: 180, h: 100, color: colors.workflow, label: 'Smart Disbursement', desc: 'Chi trả thông minh • Tự động • Minh bạch' },
+                    
+                    // Phần 4: Thu hoạch & Thương mại
+                    { id: 'w4_harvest', x: 200, y: 800, w: 180, h: 100, color: colors.workflow, label: 'Digital Harvest', desc: 'Thu hoạch số • Ghi nhận • Chứng nhận' },
+                    { id: 'w4_quality', x: 450, y: 800, w: 180, h: 100, color: colors.workflow, label: 'Quality Gate', desc: 'Kiểm tra chất lượng • Chứng nhận • Phê duyệt' },
+                    { id: 'w4_trade', x: 700, y: 800, w: 180, h: 100, color: colors.workflow, label: 'Trade Execution', desc: 'Thực thi giao dịch • Giao hàng • Thanh toán' },
+                    { id: 'w4_profit', x: 950, y: 800, w: 180, h: 100, color: colors.workflow, label: 'Profit Split', desc: 'Chia lợi nhuận • Tự động • Công bằng' },
+                    { id: 'w4_reinvest', x: 1200, y: 800, w: 180, h: 100, color: colors.workflow, label: 'Reinvestment Loop', desc: 'Tái đầu tư • Vòng lặp • Mở rộng' },
+                ],
+                connections: [
+                    // Phần 1
+                    { from: 'w1_onboarding', to: 'w1_land' },
+                    { from: 'w1_land', to: 'w1_seed' },
+                    
+                    // Phần 2
+                    { from: 'w1_seed', to: 'w2_offtake' },
+                    { from: 'w2_offtake', to: 'w2_esg' },
+                    { from: 'w2_esg', to: 'w2_escrow' },
+                    { from: 'w2_esg', to: 'w2_crowd' },
+                    
+                    // Phần 3
+                    { from: 'w2_escrow', to: 'w3_input' },
+                    { from: 'w3_input', to: 'w3_task' },
+                    { from: 'w3_task', to: 'w3_monitor' },
+                    { from: 'w3_monitor', to: 'w3_disp' },
+                    
+                    // Phần 4
+                    { from: 'w3_disp', to: 'w4_harvest' },
+                    { from: 'w4_harvest', to: 'w4_quality' },
+                    { from: 'w4_quality', to: 'w4_trade' },
+                    { from: 'w4_trade', to: 'w4_profit' },
+                    { from: 'w4_profit', to: 'w4_reinvest' },
+                    { from: 'w4_reinvest', to: 'w1_onboarding' },
+                ]
+            },
+            architecture: {
+                nodes: [
+                    // Frontend Layer
+                    { id: 'frontend', x: 200, y: 100, w: 300, h: 150, color: '#61dafb', label: 'Frontend Layer\nReact + TypeScript', desc: 'React Application • React Router • UI Components • i18next' },
+                    { id: 'state', x: 600, y: 100, w: 250, h: 150, color: '#764ba2', label: 'State Management', desc: 'Local State • React Hooks • Context API' },
+                    
+                    // Backend Services
+                    { id: 'firebase', x: 200, y: 350, w: 200, h: 120, color: '#ffca28', label: 'Firebase', desc: 'Authentication • Storage • Real-time' },
+                    { id: 'supabase', x: 450, y: 350, w: 200, h: 120, color: '#3ecf8e', label: 'Supabase', desc: 'Database • Realtime • Storage' },
+                    { id: 'stripe', x: 700, y: 350, w: 200, h: 120, color: '#635bff', label: 'Stripe', desc: 'Payment Processing • Subscriptions' },
+                    
+                    // External Services
+                    { id: 'maps', x: 200, y: 550, w: 180, h: 100, color: '#4285f4', label: 'GIS/Maps APIs', desc: 'Google Maps • OpenStreetMap • GIS' },
+                    { id: 'payment', x: 450, y: 550, w: 180, h: 100, color: '#00d4aa', label: 'Payment Gateways', desc: 'VNPay • MoMo • Banking' },
+                    { id: 'notification', x: 700, y: 550, w: 180, h: 100, color: '#ff6b6b', label: 'Push Notifications', desc: 'Firebase Cloud Messaging • Web Push' },
+                    
+                    // Data Layer
+                    { id: 'database', x: 950, y: 350, w: 200, h: 120, color: '#10b981', label: 'Database', desc: 'PostgreSQL • Real-time • Queries' },
+                    { id: 'storage', x: 950, y: 550, w: 200, h: 100, color: '#f59e0b', label: 'File Storage', desc: 'Images • Documents • Media' },
+                    
+                    // Security & Auth
+                    { id: 'auth', x: 1200, y: 200, w: 200, h: 120, color: '#ef4444', label: 'Authentication', desc: 'JWT • OAuth • Session Management' },
+                    { id: 'security', x: 1200, y: 400, w: 200, h: 120, color: '#8b5cf6', label: 'Security', desc: 'Encryption • HTTPS • CORS • Validation' },
+                ],
+                connections: [
+                    { from: 'frontend', to: 'state' },
+                    { from: 'frontend', to: 'firebase' },
+                    { from: 'frontend', to: 'supabase' },
+                    { from: 'frontend', to: 'stripe' },
+                    { from: 'frontend', to: 'auth' },
+                    { from: 'firebase', to: 'maps' },
+                    { from: 'firebase', to: 'notification' },
+                    { from: 'supabase', to: 'database' },
+                    { from: 'supabase', to: 'storage' },
+                    { from: 'stripe', to: 'payment' },
+                    { from: 'auth', to: 'security' },
+                ]
+            }
+        };
+
+        function drawNode(node) {
+            const x = node.x * scale + offsetX;
+            const y = node.y * scale + offsetY;
+            const w = node.w * scale;
+            const h = node.h * scale;
+
+            // Check if node is hovered
+            const isHovered = hoveredNode === node.id;
+            
+            // Draw shadow
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            ctx.shadowBlur = isHovered ? 15 : 8;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 4;
+
+            // Draw rounded rectangle
+            ctx.fillStyle = node.color;
+            ctx.strokeStyle = isHovered ? '#ffffff' : node.color;
+            ctx.lineWidth = isHovered ? 3 : 2;
+            
+            roundRect(ctx, x, y, w, h, 12);
+            ctx.fill();
+            ctx.stroke();
+
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+
+            // Draw label
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${Math.max(12, 14 * scale)}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Split label into lines if needed
+            const words = node.label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            
+            words.forEach(word => {
+                const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > w - 20 && currentLine) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            });
+            if (currentLine) lines.push(currentLine);
+            
+            const lineHeight = 18 * scale;
+            const startY = y + h / 2 - (lines.length - 1) * lineHeight / 2;
+            
+            lines.forEach((line, i) => {
+                ctx.fillText(line, x + w / 2, startY + i * lineHeight);
+            });
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function drawConnection(conn) {
+            const fromNode = systemData[currentView].nodes.find(n => n.id === conn.from);
+            const toNode = systemData[currentView].nodes.find(n => n.id === conn.to);
+            
+            if (!fromNode || !toNode) return;
+
+            const fromX = fromNode.x * scale + offsetX + fromNode.w * scale / 2;
+            const fromY = fromNode.y * scale + offsetY + fromNode.h * scale / 2;
+            const toX = toNode.x * scale + offsetX + toNode.w * scale / 2;
+            const toY = toNode.y * scale + offsetY + toNode.h * scale / 2;
+
+            ctx.strokeStyle = 'rgba(107, 114, 128, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+            
+            ctx.setLineDash([]);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const data = systemData[currentView];
+            if (!data) return;
+
+            // Draw connections first (behind nodes)
+            data.connections.forEach(conn => drawConnection(conn));
+
+            // Draw nodes
+            data.nodes.forEach(node => drawNode(node));
+
+            // Draw title
+            ctx.fillStyle = '#1f2937';
+            ctx.font = 'bold 24px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(getViewTitle(), canvas.width / 2, 40);
+        }
+
+        function getViewTitle() {
+            const titles = {
+                overview: 'Tổng quan Hệ thống VITA COOP',
+                portals: 'Các Portal & Người dùng',
+                workflows: 'Workflows & Quy trình',
+                architecture: 'Kiến trúc Hệ thống'
+            };
+            return titles[currentView] || 'VITA COOP System';
+        }
+
+        function showView(view, buttonElement) {
+            currentView = view;
+            
+            // Update button states
+            document.querySelectorAll('.btn[data-view]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+            
+            // Reset view
+            scale = 1;
+            offsetX = 0;
+            offsetY = 0;
+            
+            // Resize canvas for new view
+            resizeCanvas();
+        }
+
+        function resetZoom() {
+            scale = 1;
+            offsetX = 0;
+            offsetY = 0;
+            draw();
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            
+            // Check for node click
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - offsetX) / scale;
+            const mouseY = (e.clientY - rect.top - offsetY) / scale;
+            
+            const data = systemData[currentView];
+            if (data) {
+                const clickedNode = data.nodes.find(node => {
+                    return mouseX >= node.x && mouseX <= node.x + node.w &&
+                           mouseY >= node.y && mouseY <= node.y + node.h;
+                });
+                
+                if (clickedNode) {
+                    showInfoPanel(clickedNode);
+                }
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - offsetX) / scale;
+            const mouseY = (e.clientY - rect.top - offsetY) / scale;
+            
+            // Check hover
+            const data = systemData[currentView];
+            if (data) {
+                const hovered = data.nodes.find(node => {
+                    return mouseX >= node.x && mouseX <= node.x + node.w &&
+                           mouseY >= node.y && mouseY <= node.y + node.h;
+                });
+                
+                if (hovered) {
+                    hoveredNode = hovered.id;
+                    canvas.style.cursor = 'pointer';
+                } else {
+                    hoveredNode = null;
+                    canvas.style.cursor = isDragging ? 'grabbing' : 'move';
+                }
+            }
+            
+            if (isDragging) {
+                const deltaX = e.clientX - lastMouseX;
+                const deltaY = e.clientY - lastMouseY;
+                offsetX += deltaX;
+                offsetY += deltaY;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                draw();
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            hoveredNode = null;
+            draw();
+        });
+
+        // Zoom with mouse wheel
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.max(0.5, Math.min(2, scale * zoomFactor));
+            
+            offsetX = mouseX - (mouseX - offsetX) * (newScale / scale);
+            offsetY = mouseY - (mouseY - offsetY) * (newScale / scale);
+            scale = newScale;
+            
+            draw();
+        });
+
+        function showInfoPanel(node) {
+            document.getElementById('infoTitle').textContent = node.label;
+            document.getElementById('infoDescription').textContent = node.desc;
+            infoPanel.classList.add('show');
+        }
+
+        function closeInfoPanel() {
+            infoPanel.classList.remove('show');
+        }
+
+        // Initialize
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        draw();
+    </script>
+</body>
+</html>

@@ -1,0 +1,581 @@
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+export default function HomePage() {
+  const navigate = useNavigate();
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  // Xử lý ẩn/hiện header khi scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Nếu scroll xuống và đã scroll hơn 100px thì ẩn header
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsHeaderVisible(false);
+      } 
+      // Nếu scroll lên thì hiện header
+      else if (currentScrollY < lastScrollY) {
+        setIsHeaderVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
+
+  const portals = [
+    // NHÓM 1: XÃ VIÊN NỘI BỘ (Internal Members)
+    {
+      id: 'producer',
+      title: 'NÔNG DÂN & CỘNG SỰ',
+      subtitle: 'Producer Members',
+      description: 'Nhật ký canh tác điện tử • Báo cáo sâu bệnh • Quy trình kỹ thuật & Vật tư',
+      icon: 'ri-seedling-line',
+      color: 'from-green-600 to-emerald-700',
+      path: '/login?role=farmer',
+      buttonText: 'Truy cập Nông trại số'
+    },
+    {
+      id: 'resource',
+      title: 'CHỦ RỪNG & CHỦ ĐẤT',
+      subtitle: 'Resource Members',
+      description: 'Quản lý tài sản đất rừng • Giám sát hộ nhận khoán • Ví Carbon & Dịch vụ môi trường',
+      icon: 'ri-landscape-line',
+      color: 'from-amber-700 to-orange-800',
+      path: '/login?role=farmer&redirect=forestry',
+      buttonText: 'Truy cập Quản trị Tài sản'
+    },
+    {
+      id: 'investor',
+      title: 'NHÀ ĐẦU TƯ & GÓP VỐN',
+      subtitle: 'Investor Members',
+      description: 'Theo dõi danh mục đầu tư • Báo cáo tài chính HTX • Nhận cổ tức & Lợi nhuận',
+      icon: 'ri-hand-coin-line',
+      color: 'from-yellow-600 to-amber-700',
+      path: '/login?role=farmer&redirect=investor',
+      buttonText: 'Truy cập Danh mục Đầu tư'
+    },
+    {
+      id: 'consumer',
+      title: 'XÃ VIÊN MUA SẮM',
+      subtitle: 'Consumer Members',
+      description: 'Siêu thị giá xã viên • Gói định kỳ giảm 15% • Mua chung giá sốc • Đơn hàng & Theo dõi',
+      icon: 'ri-shopping-cart-line',
+      color: 'from-blue-500 to-cyan-600',
+      path: '/login?role=farmer&redirect=consumer',
+      buttonText: 'Truy cập Siêu thị'
+    },
+    
+    // NHÓM 2: QUẢN TRỊ (Management)
+    {
+      id: 'cooperative',
+      title: 'HỢP TÁC XÃ',
+      subtitle: 'Cooperatives',
+      description: 'Quản lý danh sách xã viên • Phân bổ chỉ tiêu sản xuất • Quản lý kho vận & Sơ chế đầu nguồn',
+      icon: 'ri-team-line',
+      color: 'from-blue-600 to-cyan-700',
+      path: '/login?role=cooperative',
+      buttonText: 'Truy cập Hub Quản lý'
+    },
+    
+    // NHÓM 3: ĐỐI TÁC BÊN NGOÀI (External Partners)
+    {
+      id: 'research',
+      title: 'TRUNG TÂM GEN & KHOA HỌC',
+      subtitle: 'R&D Center',
+      description: 'Cấp mã định danh nguồn giống • Cập nhật quy trình canh tác (SOP) • Theo dõi dữ liệu thực nghiệm sinh trưởng',
+      icon: 'ri-flask-line',
+      color: 'from-purple-600 to-indigo-700',
+      path: '/login?role=research',
+      buttonText: 'Truy cập Lab Khoa học'
+    },
+    {
+      id: 'expert-hub',
+      title: 'VITA EXPERT HUB',
+      subtitle: 'Expert Workspace',
+      description: 'Cổng làm việc chuyên gia • Tư vấn kỹ thuật từ xa • Kê đơn số • Bán quy trình SOP',
+      icon: 'ri-user-star-line',
+      color: 'from-pink-600 to-rose-700',
+      path: '/expert-portal/login',
+      buttonText: 'Truy cập Expert Hub'
+    },
+    {
+      id: 'gov-portal',
+      title: 'VITA GOV PORTAL',
+      subtitle: 'Xã Nông Thôn Mới Số',
+      description: 'Cổng quản trị số chính quyền Xã • Giám sát kinh tế-xã hội • Quản lý quy hoạch đất đai • Tiêu chí Nông thôn mới',
+      icon: 'ri-government-line',
+      color: 'from-blue-600 to-indigo-700',
+      path: '/gov-portal/login',
+      buttonText: 'Truy cập GOV Portal'
+    },
+    {
+      id: 'creator-hub',
+      title: 'VITA CREATOR HUB',
+      subtitle: 'Content & Marketing',
+      description: 'Cổng KOL/KOC • Kho tài nguyên số • Chiến dịch Marketing • Affiliate & Livestream • Booking vườn',
+      icon: 'ri-video-add-line',
+      color: 'from-purple-600 to-pink-700',
+      path: '/creator-hub/login',
+      buttonText: 'Truy cập Creator Hub'
+    },
+    
+    // NHÓM 4: GREENLIGHT & ĐẦU TƯ VÀO CÔNG TY (GreenLight & Corporate Investment)
+    {
+      id: 'greenlight',
+      title: 'GREENLIGHT & HỆ THỐNG',
+      subtitle: 'System Admin',
+      description: 'Dashboard tổng quan hệ sinh thái • Giám sát tuân thủ & Cảnh báo rủi ro • Báo cáo tài chính & ROI',
+      icon: 'ri-line-chart-line',
+      color: 'from-orange-600 to-amber-700',
+      path: '/login?role=admin',
+      buttonText: 'Truy cập Trung tâm Điều hành'
+    },
+    {
+      id: 'investor-portal',
+      title: 'CỔNG QUAN HỆ NHÀ ĐẦU TƯ',
+      subtitle: 'Investor Relations Portal',
+      description: 'Virtual Data Room • Valuation Simulator • Lộ trình IPO • Cap Table • Báo cáo IR',
+      icon: 'ri-shield-star-line',
+      color: 'from-emerald-600 to-teal-700',
+      path: '/investor-portal/login',
+      buttonText: 'Truy cập Investor Portal',
+      badge: 'Private'
+    },
+    
+    // NHÓM 5: ĐẦU RA HỆ SINH THÁI (Output & Ecosystem)
+    {
+      id: 'enterprise',
+      title: 'ĐỐI TÁC THU MUA (B2B)',
+      subtitle: 'Business Partners',
+      description: 'Đặt hàng bao tiêu (Booking) • Truy xuất nguồn gốc (Traceability) • Theo dõi đơn hàng & Thanh toán',
+      icon: 'ri-building-line',
+      color: 'from-indigo-700 to-blue-800',
+      path: '/login?role=enterprise',
+      buttonText: 'Truy cập Cổng Thu mua'
+    },
+    {
+      id: 'esg-portal',
+      title: 'CỔNG ĐẦU TƯ ESG',
+      subtitle: 'Impact Investment Hub',
+      description: 'Dự án trồng rừng • Tín chỉ Carbon • Giám sát thời gian thực • Báo cáo bền vững',
+      icon: 'ri-leaf-line',
+      color: 'from-green-600 to-emerald-700',
+      path: '/esg-portal/login',
+      buttonText: 'Truy cập ESG Portal'
+    },
+    {
+      id: 'timber-trading',
+      title: 'CỔNG GIAO DỊCH GỖ',
+      subtitle: 'Timber Trading Hub',
+      description: 'Đặt hàng rừng trồng • Chứng chỉ FSC/PEFC • Tính toán hiệu suất • Kế hoạch khai thác',
+      icon: 'ri-tree-line',
+      color: 'from-amber-600 to-orange-700',
+      path: '/timber-trading/login',
+      buttonText: 'Truy cập Timber Hub'
+    },
+    {
+      id: 'physician',
+      title: 'THẦY THUỐC & BỆNH VIỆN',
+      subtitle: 'Medical Experts',
+      description: 'Tra cứu hồ sơ dược liệu • Gửi phản hồi lâm sàng (Clinical Feedback) • Đặt hàng thuốc mẫu',
+      icon: 'ri-stethoscope-line',
+      color: 'from-teal-600 to-cyan-700',
+      path: '/login?role=physician',
+      buttonText: 'Truy cập Cổng Kiểm định'
+    },
+    
+    // NHÓM 6: MARKETPLACE & HUB (Marketplace & Hub)
+    {
+      id: 'seed-marketplace',
+      title: 'SÀN THƯƠNG MẠI GIỐNG',
+      subtitle: 'Seed Marketplace',
+      description: 'Mua bán giống cây trồng • Truy xuất nguồn gốc giống • Hợp đồng 3 bên • Bảo hành chất lượng',
+      icon: 'ri-seedling-line',
+      color: 'from-green-500 to-emerald-600',
+      path: '/login?role=research',
+      buttonText: 'Truy cập Sàn Giống'
+    },
+    {
+      id: 'gene-nursery-hub',
+      title: 'TRUNG TÂM GEN & VƯỜN ƯƠM',
+      subtitle: 'Gene & Nursery Hub',
+      description: 'Quản lý mã gen giống • Vườn ươm số • Theo dõi chất lượng giống • Phân phối giống chuẩn',
+      icon: 'ri-plant-line',
+      color: 'from-purple-500 to-pink-600',
+      path: '/login?role=research',
+      buttonText: 'Truy cập Gene Hub'
+    },
+    {
+      id: 'member-hub',
+      title: 'TRUNG TÂM XÃ VIÊN',
+      subtitle: 'Member Hub',
+      description: 'Kết nối xã viên HTX • Thông tin hoạt động • Đăng ký tham gia • Quản lý thành viên',
+      icon: 'ri-home-4-line',
+      color: 'from-blue-500 to-cyan-600',
+      path: '/login?role=farmer',
+      buttonText: 'Truy cập Trung tâm Xã viên'
+    },
+    {
+      id: 'coop-marketplace',
+      title: 'SÀN KẾT NỐI HTX',
+      subtitle: 'Cooperative Marketplace',
+      description: 'Kết nối các HTX • Tìm kiếm đối tác • Chia sẻ nguồn lực • Hợp tác sản xuất',
+      icon: 'ri-store-3-line',
+      color: 'from-emerald-500 to-teal-600',
+      path: '/login?role=cooperative',
+      buttonText: 'Truy cập Sàn HTX'
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Header - Tối ưu Mobile với hiệu ứng ẩn/hiện */}
+      <div 
+        className={`bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 shadow-sm transition-transform duration-300 ${
+          isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          {/* Top Bar - Logo & Back Button */}
+          <div className="flex items-center justify-between mb-4">
+            {/* Back Button */}
+            <button 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors active:scale-95"
+            >
+              <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                <i className="ri-arrow-left-line text-lg"></i>
+              </div>
+              <span className="text-sm font-medium hidden sm:inline">Về trang chủ</span>
+            </button>
+
+            {/* Login & Register Buttons */}
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => navigate('/onboarding-gateway')}
+                className="flex items-center gap-2 px-4 py-2 bg-white text-emerald-600 rounded-full text-sm font-medium hover:bg-emerald-50 transition-all active:scale-95 shadow-sm border border-emerald-600"
+              >
+                <i className="ri-user-add-line text-base"></i>
+                <span className="hidden sm:inline">Đăng ký</span>
+              </button>
+              <button 
+                onClick={() => navigate('/login')}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-medium hover:bg-emerald-700 transition-all active:scale-95 shadow-sm"
+              >
+                <i className="ri-login-circle-line text-base"></i>
+                <span>Đăng nhập</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Title Section */}
+          <div className="text-center space-y-2">
+            {/* Logo/Brand */}
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-md">
+                <i className="ri-leaf-line text-white text-lg"></i>
+              </div>
+              <h1 className="text-lg font-bold text-gray-900 tracking-tight">
+                VITA PLATFORM
+              </h1>
+            </div>
+
+            {/* Main Title */}
+            <h2 className="text-base font-semibold text-gray-900 leading-tight">
+              Hệ Sinh Thái Rừng Dược Sinh Quốc Gia
+            </h2>
+
+            {/* Description */}
+            <p className="text-xs text-gray-600 leading-relaxed max-w-md mx-auto">
+              Nền tảng kết nối chuỗi giá trị Dược liệu theo tiêu chuẩn VITA.
+            </p>
+
+            {/* Instruction */}
+            <p className="text-xs text-emerald-700 font-medium pt-2">
+              Vui lòng chọn vai trò của bạn để truy cập hệ thống
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Spacer để tránh content bị che bởi fixed header */}
+      <div className="h-[180px]"></div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
+        {/* Section Labels */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-1 h-6 bg-gradient-to-b from-green-600 to-emerald-700 rounded-full"></div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Xã viên Hợp tác xã</h2>
+            <span className="text-xs sm:text-sm text-gray-500">(Góp sức • Góp đất • Góp vốn)</span>
+          </div>
+        </div>
+
+        {/* Portal Cards - Grid with sections */}
+        <div className="space-y-8 sm:space-y-12">
+          {/* Nhóm 1: Xã viên - 4 thẻ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            {portals.slice(0, 4).map((portal) => (
+              <div
+                key={portal.id}
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+              >
+                {/* Gradient Background on Hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                
+                {/* Content */}
+                <div className="relative p-5 sm:p-6 lg:p-8">
+                  {/* Icon */}
+                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
+                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+
+                  {/* Button */}
+                  <button
+                    onClick={() => navigate(portal.path)}
+                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                  >
+                    <span>{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                  </button>
+                </div>
+
+                {/* Border Glow Effect */}
+                <div className={`absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-transparent group-hover:bg-gradient-to-br group-hover:${portal.color} group-hover:opacity-20 transition-all duration-300 pointer-events-none`}></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Divider + Label Nhóm 2 */}
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-6 bg-gradient-to-b from-blue-600 to-cyan-700 rounded-full"></div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Quản trị Hợp tác xã</h2>
+          </div>
+
+          {/* Nhóm 2: Quản trị - 1 thẻ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            {portals.slice(4, 5).map((portal) => (
+              <div
+                key={portal.id}
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                
+                <div className="relative p-5 sm:p-6 lg:p-8">
+                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                  </div>
+
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
+                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+
+                  <button
+                    onClick={() => navigate(portal.path)}
+                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                  >
+                    <span>{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                  </button>
+                </div>
+
+                <div className={`absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-transparent group-hover:bg-gradient-to-br group-hover:${portal.color} group-hover:opacity-20 transition-all duration-300 pointer-events-none`}></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Divider + Label Nhóm 3 */}
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-6 bg-gradient-to-b from-purple-600 to-indigo-700 rounded-full"></div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Đối tác Hệ sinh thái</h2>
+            <span className="text-xs sm:text-sm text-gray-500">(Khoa học • Chuyên gia • Chính quyền • Marketing)</span>
+          </div>
+
+          {/* Nhóm 3: Đối tác - 5 thẻ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
+            {portals.slice(5, 10).map((portal) => (
+              <div
+                key={portal.id}
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                
+                <div className="relative p-5 sm:p-6 lg:p-8">
+                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                  </div>
+
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
+                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+
+                  <button
+                    onClick={() => navigate(portal.path)}
+                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                  >
+                    <span>{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                  </button>
+                </div>
+
+                <div className={`absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-transparent group-hover:bg-gradient-to-br group-hover:${portal.color} group-hover:opacity-20 transition-all duration-300 pointer-events-none`}></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Divider + Label Nhóm 4 - GreenLight & Đầu tư vào Công ty */}
+          <div className="flex items-center gap-2 mt-8 sm:mt-12">
+            <div className="w-1 h-6 bg-gradient-to-b from-orange-600 to-amber-700 rounded-full"></div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">GreenLight & Đầu tư vào Công ty</h2>
+            <span className="text-xs sm:text-sm text-gray-500">(System Admin • Investor Relations)</span>
+          </div>
+
+          {/* Nhóm 4: GreenLight & Đầu tư - 2 thẻ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+            {portals.slice(9, 11).map((portal) => (
+              <div
+                key={portal.id}
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                
+                <div className="relative p-5 sm:p-6 lg:p-8">
+                  {/* Badge for Private Portal */}
+                  {portal.badge && (
+                    <div className="absolute top-4 right-4 px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">
+                      <i className="ri-lock-line mr-1"></i>
+                      {portal.badge}
+                    </div>
+                  )}
+
+                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                  </div>
+
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
+                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+
+                  <button
+                    onClick={() => navigate(portal.path)}
+                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                  >
+                    <span>{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                  </button>
+                </div>
+
+                <div className={`absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-transparent group-hover:bg-gradient-to-br group-hover:${portal.color} group-hover:opacity-20 transition-all duration-300 pointer-events-none`}></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Divider + Label Nhóm 5 - Đầu Ra Hệ Sinh thái */}
+          <div className="flex items-center gap-2 mt-8 sm:mt-12">
+            <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-blue-700 rounded-full"></div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Đầu Ra Hệ Sinh thái</h2>
+            <span className="text-xs sm:text-sm text-gray-500">(B2B Thu mua • Đầu tư ESG • Giao dịch Gỗ • Y tế)</span>
+          </div>
+
+          {/* Nhóm 5: Đầu Ra Hệ Sinh thái - 4 thẻ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            {portals.slice(11, 15).map((portal) => (
+              <div
+                key={portal.id}
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                
+                <div className="relative p-5 sm:p-6 lg:p-8">
+                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                  </div>
+
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
+                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+
+                  <button
+                    onClick={() => navigate(portal.path)}
+                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                  >
+                    <span>{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                  </button>
+                </div>
+
+                <div className={`absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-transparent group-hover:bg-gradient-to-br group-hover:${portal.color} group-hover:opacity-20 transition-all duration-300 pointer-events-none`}></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Info Section - VITA Values */}
+        <div className="mt-12 sm:mt-16 lg:mt-20 max-w-6xl mx-auto">
+          <div className="bg-gradient-to-br from-gray-50 to-emerald-50 rounded-xl sm:rounded-2xl shadow-md p-6 sm:p-8 lg:p-10 border border-gray-200">
+            <h3 className="text-center text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 lg:mb-10">Giá trị cốt lõi VITA</h3>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 text-center">
+              <div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+                  <i className="ri-leaf-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                </div>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Vitality</h4>
+                <p className="text-xs sm:text-sm text-gray-600">Dược tính tự nhiên</p>
+              </div>
+              <div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+                  <i className="ri-lightbulb-flash-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                </div>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Innovation</h4>
+                <p className="text-xs sm:text-sm text-gray-600">Công nghệ tiên phong</p>
+              </div>
+              <div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+                  <i className="ri-shield-check-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                </div>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Trust</h4>
+                <p className="text-xs sm:text-sm text-gray-600">Minh bạch tuyệt đối</p>
+              </div>
+              <div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+                  <i className="ri-checkbox-circle-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                </div>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Accountability</h4>
+                <p className="text-xs sm:text-sm text-gray-600">Trách nhiệm rõ ràng</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-gray-200 mt-12 sm:mt-16 lg:mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <p className="text-center text-xs sm:text-sm text-gray-500">
+            © 2024 VITA PLATFORM. Phát triển bởi GreenLight Ventures
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

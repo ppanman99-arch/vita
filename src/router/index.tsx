@@ -1,0 +1,44 @@
+import { useNavigate, type NavigateFunction } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
+import { useEffect } from "react";
+import routes from "./config";
+
+let navigateResolver: (navigate: ReturnType<typeof useNavigate>) => void;
+
+declare global {
+  interface Window {
+    REACT_APP_NAVIGATE: ReturnType<typeof useNavigate>;
+  }
+}
+
+export const navigatePromise = new Promise<NavigateFunction>((resolve) => {
+  navigateResolver = resolve;
+});
+
+export function AppRoutes() {
+  const element = useRoutes(routes);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    try {
+      window.REACT_APP_NAVIGATE = navigate;
+      if (navigateResolver) {
+        navigateResolver(window.REACT_APP_NAVIGATE);
+      }
+    } catch (error) {
+      console.error('Error setting up navigation:', error);
+    }
+  }, [navigate]);
+  
+  // useRoutes always returns an element or null, but with our routes config
+  // it should always find a match (at least the catch-all NotFoundPage)
+  return element || (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-600 text-lg">Đang tải...</p>
+      </div>
+    </div>
+  );
+}
+
