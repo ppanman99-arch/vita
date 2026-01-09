@@ -4,6 +4,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SupabaseProvider } from "./lib/supabaseContext";
+import { Analytics } from "@vercel/analytics/react";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           </BrowserRouter>
         </I18nextProvider>
       </SupabaseProvider>
+      <Analytics />
     </ErrorBoundary>
   );
 }
