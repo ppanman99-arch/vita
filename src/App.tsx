@@ -4,6 +4,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SupabaseProvider } from "./lib/supabaseContext";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <I18nextProvider i18n={i18n}>
           <BrowserRouter basename={__BASE_PATH__}>
             <AppRoutes />
+            <SpeedInsights />
           </BrowserRouter>
         </I18nextProvider>
       </SupabaseProvider>
