@@ -27,9 +27,11 @@ const FarmerWalletPage = lazy(() => import("../pages/farmer-wallet/page"));
 const FarmerServicePage = lazy(() => import("../pages/farmer-service/page"));
 const FarmerAlertsPage = lazy(() => import("../pages/farmer-alerts/page"));
 const FarmerFarmPage = lazy(() => import("../pages/farmer-farm/page"));
-const FarmerCommunityPage = lazy(() => import("../pages/farmer-community/page"));
+const FarmerFarmCommunityPage = lazy(() => import("../pages/farmer-farm-community/page"));
+const FarmerServiceCommunityPage = lazy(() => import("../pages/farmer-service-community/page"));
 const FarmerScanPage = lazy(() => import("../pages/farmer-scan/page"));
 const FarmerForestryPage = lazy(() => import("../pages/farmer-forestry/page"));
+const FarmerSkillBankPage = lazy(() => import("../pages/farmer-skill-bank/page"));
 
 // VITA ADMIN - Dashboard cho HTX & GreenLight
 const AdminDashboardPage = lazy(() => import("../pages/admin-dashboard/page"));
@@ -69,9 +71,13 @@ const EnterpriseProcurementPage = lazy(() => import("../pages/enterprise-procure
 const EnterpriseMatchingPage = lazy(() => import("../pages/enterprise-matching/page"));
 const EnterprisePotentialMapPage = lazy(() => import("../pages/enterprise-potential-map/page"));
 const EnterpriseNegotiationPage = lazy(() => import("../pages/enterprise-negotiation/page"));
+const FactoryPortalPage = lazy(() => import("../pages/factory-portal/page"));
 
 // VITA PHYSICIAN - Cổng Kiểm Định & Lâm Sàng
 const PhysicianPortalPage = lazy(() => import("../pages/physician-portal/page"));
+
+// VITA HOSPITAL PORTAL - Cổng Bệnh viện & Khoa YHCT
+const HospitalPortalPage = lazy(() => import("../pages/hospital-portal/page"));
 
 // VITA EXPERT PORTAL - Cổng làm việc cho Chuyên gia
 const ExpertPortalPage = lazy(() => import("../pages/expert-portal/page"));
@@ -104,6 +110,9 @@ const GovPortalPage = lazy(() => import("../pages/gov-portal/page"));
 const GovLoginPage = lazy(() => import("../pages/gov-portal/login/page"));
 const GovRegisterPage = lazy(() => import("../pages/gov-portal/register/page"));
 const GovOnboardingPage = lazy(() => import("../pages/gov-onboarding/page"));
+
+// VITA ONBOARDING FLOW - Luồng Chào đón & Định hướng
+const OnboardingPage = lazy(() => import("../pages/onboarding/page"));
 
 // VITA WORKFLOWS - PHẦN 1: KHỞI TẠO & SỐ HÓA
 const OnboardingGatewayPage = lazy(() => import("../pages/onboarding-gateway/page"));
@@ -162,6 +171,8 @@ const LoadingFallback = () => (
 );
 
 const CoopMarketplace = lazy(() => import("../pages/coop-marketplace/page"));
+const CoopWorkerPortal = lazy(() => import("../pages/coop-worker-portal/page"));
+const CoopWorkerRegister = lazy(() => import("../pages/coop-worker-portal/register/page"));
 const CoopDetail = lazy(() => import("../pages/coop-detail/page"));
 
 const routes: RouteObject[] = [
@@ -350,6 +361,16 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <GovOnboardingPage />
+      </Suspense>
+    ),
+  },
+  
+  // VITA ONBOARDING FLOW - Luồng Chào đón & Định hướng
+  {
+    path: "/onboarding",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <OnboardingPage />
       </Suspense>
     ),
   },
@@ -663,7 +684,15 @@ const routes: RouteObject[] = [
     path: "/farmer/community",
     element: (
       <Suspense fallback={<LoadingFallback />}>
-        <FarmerCommunityPage />
+        <FarmerFarmCommunityPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/farmer/service-community",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <FarmerServiceCommunityPage />
       </Suspense>
     ),
   },
@@ -680,6 +709,14 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <FarmerForestryPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/farmer/skill-bank",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <FarmerSkillBankPage />
       </Suspense>
     ),
   },
@@ -955,6 +992,14 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
+  {
+    path: '/factory-portal',
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <FactoryPortalPage />
+      </Suspense>
+    ),
+  },
   
   // VITA PHYSICIAN Routes
   {
@@ -970,6 +1015,24 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <PhysicianPortalPage />
+      </Suspense>
+    ),
+  },
+  
+  // VITA HOSPITAL PORTAL Routes
+  {
+    path: "/hospital-portal",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <HospitalPortalPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/hospital",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <HospitalPortalPage />
       </Suspense>
     ),
   },
@@ -1024,6 +1087,30 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <CoopMarketplace />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/coop-worker-portal",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <CoopWorkerPortal />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/coop-worker-portal/register",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <CoopWorkerRegister />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/coop-worker-portal/dashboard",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <FarmerDashboardPage />
       </Suspense>
     ),
   },

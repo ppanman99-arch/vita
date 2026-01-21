@@ -6,6 +6,8 @@ import BackButton from '../../components/shared/BackButton';
 export default function FarmerDashboardPage() {
   const navigate = useNavigate();
   const [currentTime] = useState(new Date());
+  const [activeTab, setActiveTab] = useState<'overview' | 'tasks' | 'worklog' | 'salary' | 'profile'>('overview');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Tasks from Subscription Engine (từ hệ thống đặt hàng định kỳ)
   const subscriptionHarvestTasks = [
@@ -89,14 +91,77 @@ export default function FarmerDashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={() => navigate('/farmer/service')}
-              className="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-all"
-            >
-              <i className="ri-service-line mr-2"></i>
-              Dịch vụ
-            </button>
             <RoleSwitcher />
+            {/* Menu Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+              >
+                <i className="ri-menu-line"></i>
+                <span className="hidden sm:inline">Menu</span>
+              </button>
+              
+              {isMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setIsMenuOpen(false)}
+                  ></div>
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
+                    <div className="py-2">
+                      {[
+                        { id: 'overview', label: 'Tổng quan', icon: 'ri-dashboard-line' },
+                        { id: 'tasks', label: 'Công việc', icon: 'ri-task-line' },
+                        { id: 'worklog', label: 'Nhật ký', icon: 'ri-file-list-3-line' },
+                        { id: 'salary', label: 'Lương thưởng', icon: 'ri-money-dollar-circle-line' },
+                        { id: 'profile', label: 'Hồ sơ', icon: 'ri-user-line' },
+                      ].map(tab => (
+                        <button
+                          key={tab.id}
+                          onClick={() => {
+                            setActiveTab(tab.id as any);
+                            setIsMenuOpen(false);
+                          }}
+                          className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-colors ${
+                            activeTab === tab.id
+                              ? 'bg-green-50 text-green-600 font-semibold'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          <i className={tab.icon}></i>
+                          <span>{tab.label}</span>
+                          {activeTab === tab.id && (
+                            <i className="ri-check-line ml-auto text-green-600"></i>
+                          )}
+                        </button>
+                      ))}
+                      <div className="border-t border-gray-200 my-1"></div>
+                      <button
+                        onClick={() => {
+                          navigate('/farmer/service');
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <i className="ri-service-line"></i>
+                        <span>Dịch vụ</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/home');
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <i className="ri-logout-box-line"></i>
+                        <span>Đăng xuất</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -149,6 +214,9 @@ export default function FarmerDashboardPage() {
 
       {/* Main Content */}
       <div className="px-6 -mt-6">
+        {/* Tab: Overview */}
+        {activeTab === 'overview' && (
+          <>
         {/* Quick Actions */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-900 mb-5">Thao tác nhanh</h2>
@@ -221,6 +289,36 @@ export default function FarmerDashboardPage() {
           </div>
         </div>
 
+        {/* Task Center - Trung tâm Nhiệm vụ */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-xl p-6 mb-6 border-2 border-blue-200">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                <i className="ri-task-line text-white text-2xl"></i>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Trung tâm Nhiệm vụ</h2>
+                <p className="text-sm text-gray-600">Lệnh sản xuất từ HTX - Tuân thủ quy trình VITA Lâm sinh</p>
+              </div>
+            </div>
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+              <i className="ri-file-list-3-line mr-2"></i>
+              Xem quy trình
+            </button>
+          </div>
+          
+          <div className="bg-white rounded-xl p-4 mb-4 border border-blue-200">
+            <div className="flex items-start gap-3">
+              <i className="ri-information-line text-blue-600 text-xl flex-shrink-0 mt-0.5"></i>
+              <div className="text-sm text-gray-700">
+                <strong>Lệnh sản xuất chuẩn hóa:</strong> Thay vì làm việc theo kinh nghiệm cảm tính, 
+                bạn làm việc theo "Lệnh sản xuất" được chuẩn hóa từ HTX, đảm bảo tuân thủ quy trình VITA Lâm sinh. 
+                Mỗi nhiệm vụ đều có hướng dẫn chi tiết và tiêu chuẩn chất lượng rõ ràng.
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Subscription Harvest Tasks - Nhiệm vụ Thu hoạch từ Gói định kỳ */}
         {subscriptionHarvestTasks.length > 0 && (
           <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl shadow-xl p-6 mb-6 border-2 border-indigo-200">
@@ -230,7 +328,7 @@ export default function FarmerDashboardPage() {
                   <i className="ri-repeat-line text-white text-xl"></i>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Nhiệm vụ Thu hoạch</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">Lệnh sản xuất: Thu hoạch</h2>
                   <p className="text-sm text-gray-600">Từ Gói định kỳ - Tuần này</p>
                 </div>
               </div>
@@ -274,14 +372,40 @@ export default function FarmerDashboardPage() {
                           <span>Giao đến: {task.deliveryTo}</span>
                         </div>
                       </div>
-                      <div className="bg-indigo-50 rounded-lg p-2 text-xs text-indigo-700">
+                      <div className="bg-indigo-50 rounded-lg p-2 text-xs text-indigo-700 mb-2">
                         <i className="ri-information-line mr-1"></i>
                         {task.note}
                       </div>
+                      {/* Quy trình VITA Lâm sinh */}
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <i className="ri-file-list-3-line text-green-600"></i>
+                          <span className="text-xs font-semibold text-green-700">Quy trình VITA Lâm sinh:</span>
+                        </div>
+                        <ul className="space-y-1 text-xs text-gray-700">
+                          <li className="flex items-start gap-2">
+                            <i className="ri-checkbox-circle-line text-green-600 mt-0.5 flex-shrink-0"></i>
+                            <span>Thu hoạch đúng độ chín (kiểm tra màu sắc, độ cứng)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <i className="ri-checkbox-circle-line text-green-600 mt-0.5 flex-shrink-0"></i>
+                            <span>Chụp ảnh xác thực tại hiện trường (GPS + timestamp)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <i className="ri-checkbox-circle-line text-green-600 mt-0.5 flex-shrink-0"></i>
+                            <span>Bảo quản trong thùng chuyên dụng, giao đến kho HTX trong 2 giờ</span>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                    <button className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition-all flex-shrink-0 cursor-pointer">
-                      <i className="ri-check-line text-2xl"></i>
-                    </button>
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                      <button className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition-all cursor-pointer">
+                        <i className="ri-check-line text-2xl"></i>
+                      </button>
+                      <button className="w-12 h-12 bg-white border-2 border-indigo-300 text-indigo-600 rounded-xl flex items-center justify-center hover:bg-indigo-50 transition-all cursor-pointer" title="Xem chi tiết quy trình">
+                        <i className="ri-file-list-3-line text-xl"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -298,7 +422,7 @@ export default function FarmerDashboardPage() {
                   <i className="ri-calendar-todo-line text-white text-xl"></i>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Nhiệm vụ Xuống giống</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">Lệnh sản xuất: Xuống giống</h2>
                   <p className="text-sm text-gray-600">Quy hoạch dài hạn - Đáp ứng đơn hàng tương lai</p>
                 </div>
               </div>
@@ -338,14 +462,40 @@ export default function FarmerDashboardPage() {
                           <span>Hạn hoàn thành: <strong>{task.deadline}</strong></span>
                         </div>
                       </div>
-                      <div className="bg-amber-50 rounded-lg p-2 text-xs text-amber-700">
+                      <div className="bg-amber-50 rounded-lg p-2 text-xs text-amber-700 mb-2">
                         <i className="ri-lightbulb-line mr-1"></i>
                         {task.reason}
                       </div>
+                      {/* Quy trình VITA Lâm sinh */}
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <i className="ri-file-list-3-line text-green-600"></i>
+                          <span className="text-xs font-semibold text-green-700">Quy trình VITA Lâm sinh:</span>
+                        </div>
+                        <ul className="space-y-1 text-xs text-gray-700">
+                          <li className="flex items-start gap-2">
+                            <i className="ri-checkbox-circle-line text-green-600 mt-0.5 flex-shrink-0"></i>
+                            <span>Chuẩn bị đất: Làm sạch cỏ, đào hố theo kích thước chuẩn (40x40x40cm)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <i className="ri-checkbox-circle-line text-green-600 mt-0.5 flex-shrink-0"></i>
+                            <span>Bón lót phân hữu cơ (5kg/hố) trước khi trồng 7 ngày</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <i className="ri-checkbox-circle-line text-green-600 mt-0.5 flex-shrink-0"></i>
+                            <span>Khoảng cách trồng: 1.5m x 1.5m, chụp ảnh GPS xác thực</span>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                    <button className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition-all flex-shrink-0 cursor-pointer">
-                      <i className="ri-check-line text-2xl"></i>
-                    </button>
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                      <button className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition-all cursor-pointer">
+                        <i className="ri-check-line text-2xl"></i>
+                      </button>
+                      <button className="w-12 h-12 bg-white border-2 border-amber-300 text-amber-600 rounded-xl flex items-center justify-center hover:bg-amber-50 transition-all cursor-pointer" title="Xem chi tiết quy trình">
+                        <i className="ri-file-list-3-line text-xl"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -809,6 +959,230 @@ export default function FarmerDashboardPage() {
             </div>
           </div>
         </div>
+          </>
+        )}
+
+        {/* Tab: Tasks */}
+        {activeTab === 'tasks' && (
+          <div className="space-y-4">
+            {/* Convert existing tasks to CoopWorker format */}
+            {[
+              ...subscriptionHarvestTasks.map(t => ({
+                id: t.id,
+                title: t.task,
+                description: `${t.quantity} ${t.unit} tại ${t.location}`,
+                status: t.status === 'pending' ? 'pending' : 'in-progress',
+                dueDate: t.date,
+                priority: 'high',
+                progress: t.status === 'pending' ? 0 : 60
+              })),
+              ...subscriptionPlantingTasks.map(t => ({
+                id: t.id,
+                title: t.task,
+                description: `${t.area} ${t.unit} tại ${t.location}`,
+                status: t.status === 'pending' ? 'pending' : 'in-progress',
+                dueDate: t.deadline,
+                priority: t.priority || 'medium',
+                progress: 0
+              })),
+              ...regularTasks.map(t => ({
+                id: t.id,
+                title: t.task,
+                description: `Công việc định kỳ - ${t.time}`,
+                status: t.status === 'pending' ? 'pending' : 'in-progress',
+                dueDate: currentTime.toLocaleDateString('vi-VN'),
+                priority: 'medium',
+                progress: 0
+              }))
+            ].map(task => (
+              <div key={task.id} className="bg-white rounded-xl shadow-md p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h4 className="text-lg font-bold text-gray-900 mb-2">{task.title}</h4>
+                    <p className="text-sm text-gray-600 mb-3">{task.description}</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                      <span><i className="ri-calendar-line mr-1"></i>Hạn: {task.dueDate}</span>
+                      <span className={task.priority === 'high' ? 'text-red-600' : task.priority === 'medium' ? 'text-yellow-600' : 'text-green-600'}>
+                        <i className="ri-flag-line mr-1"></i>
+                        {task.priority === 'high' ? 'Ưu tiên cao' : task.priority === 'medium' ? 'Ưu tiên trung bình' : 'Ưu tiên thấp'}
+                      </span>
+                    </div>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    task.status === 'completed' ? 'bg-green-100 text-green-700' : 
+                    task.status === 'in-progress' ? 'bg-blue-100 text-blue-700' : 
+                    'bg-yellow-100 text-yellow-700'
+                  }`}>
+                    {task.status === 'completed' ? 'Hoàn thành' : task.status === 'in-progress' ? 'Đang làm' : 'Chờ'}
+                  </span>
+                </div>
+                {task.progress > 0 && task.progress < 100 && (
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+                      <span>Tiến độ</span>
+                      <span>{task.progress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-green-600 h-2 rounded-full transition-all"
+                        style={{ width: `${task.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+                {task.status !== 'completed' && (
+                  <button className="mt-4 w-full py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm">
+                    {task.status === 'in-progress' ? 'Tiếp tục' : 'Bắt đầu'}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Tab: Worklog */}
+        {activeTab === 'worklog' && (
+          <div className="space-y-4">
+            {[
+              {
+                id: 1,
+                date: currentTime.toLocaleDateString('vi-VN'),
+                tasks: subscriptionHarvestTasks.map(t => t.task),
+                hours: 8,
+                status: 'completed'
+              },
+              {
+                id: 2,
+                date: new Date(currentTime.getTime() - 86400000).toLocaleDateString('vi-VN'),
+                tasks: regularTasks.map(t => t.task),
+                hours: 7.5,
+                status: 'completed'
+              }
+            ].map(log => (
+              <div key={log.id} className="bg-white rounded-xl shadow-md p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-lg font-bold text-gray-900">{log.date}</h4>
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                    Hoàn thành
+                  </span>
+                </div>
+                <div className="space-y-2 mb-3">
+                  {log.tasks.map((taskName, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                      <i className="ri-checkbox-circle-fill text-green-500"></i>
+                      {taskName}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <i className="ri-time-line"></i>
+                  <span>Tổng thời gian: {log.hours} giờ</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Tab: Salary */}
+        {activeTab === 'salary' && (
+          <div className="space-y-6">
+            {/* Current Month */}
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
+              <p className="text-sm text-white/80 mb-2">Lương tháng này</p>
+              <p className="text-3xl font-bold mb-2">8.5 triệu VNĐ</p>
+              <p className="text-xs text-white/80">Dự kiến cuối tháng: 9.0 triệu</p>
+            </div>
+
+            {/* Salary Details */}
+            <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Chi tiết Lương</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm text-gray-700">Lương cơ bản</span>
+                  <span className="font-semibold text-gray-900">6.0 triệu</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm text-gray-700">Thưởng năng suất</span>
+                  <span className="font-semibold text-emerald-600">2.5 triệu</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border-2 border-green-200">
+                  <span className="text-sm font-semibold text-green-700">Tổng</span>
+                  <span className="text-lg font-bold text-green-600">8.5 triệu</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Last Month */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Tháng trước</h3>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-700">Tổng lương tháng 12/2024</span>
+                <span className="text-xl font-bold text-gray-900">7.8 triệu VNĐ</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Profile */}
+        {activeTab === 'profile' && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Thông tin Cá nhân</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Họ và tên
+                  </label>
+                  <input
+                    type="text"
+                    value="Anh Minh"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-700"
+                    readOnly
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="email@example.com"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Số điện thoại
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="0901234567"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Địa chỉ
+                  </label>
+                  <textarea
+                    placeholder="Xã, Huyện, Tỉnh"
+                    rows={2}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button
+                className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+              >
+                <i className="ri-save-line mr-2"></i>
+                Lưu thay đổi
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom Navigation */}

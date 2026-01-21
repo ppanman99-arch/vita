@@ -312,12 +312,69 @@ export default function LandDigitizationPage() {
                 </div>
               </div>
               
-              {/* Placeholder cho bản đồ */}
-              <div className="w-full h-64 bg-gray-100 rounded-lg mb-6 flex items-center justify-center border-2 border-dashed border-gray-300">
-                <div className="text-center">
-                  <i className="ri-map-pin-line text-4xl text-gray-400 mb-2"></i>
-                  <p className="text-gray-500">Bản đồ vẽ polygon sẽ được tích hợp ở đây</p>
-                  <p className="text-sm text-gray-400 mt-2">(Google Maps / Mapbox với drawing tools)</p>
+              {/* Bản đồ số cá nhân */}
+              <div className="w-full h-96 bg-gray-100 rounded-lg mb-6 relative overflow-hidden border-2 border-blue-300">
+                {/* Simulated Map with Satellite View */}
+                <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-green-100 to-emerald-200">
+                  {/* Simulated terrain */}
+                  <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-green-400 rounded-full opacity-30"></div>
+                  <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-emerald-400 rounded-full opacity-30"></div>
+                  <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-green-300 rounded-full opacity-20"></div>
+                  
+                  {/* Polygon boundary */}
+                  <svg className="absolute inset-0 w-full h-full">
+                    <polygon
+                      points="100,150 200,100 300,120 350,200 300,280 200,300 100,250 50,200"
+                      fill="rgba(59, 130, 246, 0.2)"
+                      stroke="rgb(59, 130, 246)"
+                      strokeWidth="3"
+                      strokeDasharray="5,5"
+                    />
+                    <circle cx="200" cy="200" r="8" fill="rgb(59, 130, 246)" />
+                    <text x="210" y="205" fill="rgb(59, 130, 246)" fontSize="12" fontWeight="bold">
+                      Vị trí GPS
+                    </text>
+                  </svg>
+                  
+                  {/* Map controls */}
+                  <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-2">
+                    <button className="w-8 h-8 bg-white hover:bg-gray-100 rounded flex items-center justify-center cursor-pointer">
+                      <i className="ri-add-line text-gray-600"></i>
+                    </button>
+                    <button className="w-8 h-8 bg-white hover:bg-gray-100 rounded flex items-center justify-center cursor-pointer">
+                      <i className="ri-subtract-line text-gray-600"></i>
+                    </button>
+                    <button className="w-8 h-8 bg-white hover:bg-gray-100 rounded flex items-center justify-center cursor-pointer">
+                      <i className="ri-map-pin-line text-gray-600"></i>
+                    </button>
+                  </div>
+                  
+                  {/* Map type selector */}
+                  <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-1 flex gap-1">
+                    <button className="px-3 py-1 bg-blue-600 text-white rounded text-xs font-medium cursor-pointer">
+                      Vệ tinh
+                    </button>
+                    <button className="px-3 py-1 bg-white text-gray-600 rounded text-xs font-medium hover:bg-gray-100 cursor-pointer">
+                      Bản đồ
+                    </button>
+                  </div>
+                  
+                  {/* Info overlay */}
+                  <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                    <div className="text-xs text-gray-600 mb-1">Diện tích ước tính</div>
+                    <div className="text-lg font-bold text-gray-900">12.5 ha</div>
+                    <div className="text-xs text-gray-500 mt-1">Ranh giới đã vẽ</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <i className="ri-information-line text-blue-600 text-xl flex-shrink-0 mt-0.5"></i>
+                  <div className="text-sm text-blue-800">
+                    <strong>Hướng dẫn:</strong> Sử dụng công cụ vẽ trên bản đồ để đánh dấu ranh giới lô đất của bạn. 
+                    Bản đồ vệ tinh giúp bạn xác định chính xác vị trí và diện tích.
+                  </div>
                 </div>
               </div>
             </div>
@@ -414,6 +471,101 @@ export default function LandDigitizationPage() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="Ví dụ: 30-50cm"
                 />
+              </div>
+
+              {/* Hồ sơ Thổ nhưỡng */}
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-200 mb-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <i className="ri-file-text-line text-amber-600"></i>
+                  Hồ sơ Thổ nhưỡng
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white rounded-lg p-3">
+                    <div className="text-xs text-gray-600 mb-1">Độ cao</div>
+                    <div className="text-lg font-bold text-gray-900">{landData.elevation || '---'} m</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3">
+                    <div className="text-xs text-gray-600 mb-1">Độ dốc</div>
+                    <div className="text-lg font-bold text-gray-900">{landData.slope || '---'}°</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3">
+                    <div className="text-xs text-gray-600 mb-1">Hàm lượng mùn</div>
+                    <div className="text-lg font-bold text-gray-900">{landData.soilOrganic || '---'}%</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3">
+                    <div className="text-xs text-gray-600 mb-1">Nguồn nước</div>
+                    <div className="text-lg font-bold text-gray-900">
+                      {landData.waterSource === 'spring' ? 'Suối tự nhiên' :
+                       landData.waterSource === 'well' ? 'Giếng khoan' :
+                       landData.waterSource === 'stream' ? 'Sông suối' :
+                       landData.waterSource === 'rain' ? 'Nước mưa' : '---'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hiện trạng tài sản trên đất */}
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200 mb-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <i className="ri-plant-line text-green-600"></i>
+                  Hiện trạng tài sản trên đất
+                </h3>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <i className="ri-tree-line text-green-600 text-xl"></i>
+                        <span className="font-semibold text-gray-900">Cây gỗ lớn</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-gray-900">
+                          {landData.treeDiameter ? `${landData.treeDiameter} cm` : 'Chưa đo'}
+                        </div>
+                        <div className="text-xs text-gray-600">Đường kính trung bình</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <i className="ri-leaf-line text-emerald-600 text-xl"></i>
+                        <span className="font-semibold text-gray-900">Tỷ lệ che phủ rừng</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-gray-900">
+                          {landData.forestStatus === 'dense' ? '85-100%' :
+                           landData.forestStatus === 'moderate' ? '50-85%' :
+                           landData.forestStatus === 'sparse' ? '25-50%' :
+                           landData.forestStatus === 'degraded' ? '<25%' : 'Chưa đánh giá'}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          {landData.forestStatus === 'dense' ? 'Rừng rậm' :
+                           landData.forestStatus === 'moderate' ? 'Rừng trung bình' :
+                           landData.forestStatus === 'sparse' ? 'Rừng thưa' :
+                           landData.forestStatus === 'degraded' ? 'Rừng nghèo' : '---'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <i className="ri-plant-line text-teal-600 text-xl"></i>
+                        <span className="font-semibold text-gray-900">Cây dược liệu đang canh tác</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-gray-900">0 ha</div>
+                        <div className="text-xs text-gray-600">Chưa trồng</div>
+                      </div>
+                    </div>
+                    <div className="mt-2 text-xs text-teal-700 bg-teal-50 rounded p-2">
+                      <i className="ri-information-line mr-1"></i>
+                      Dữ liệu này là cơ sở để tính toán Tín chỉ Carbon sau này
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div>

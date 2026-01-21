@@ -4,6 +4,7 @@ import RoleSwitcher from '../../components/feature/RoleSwitcher';
 import BackButton from '../../components/shared/BackButton';
 
 type TabType = 'shifts' | 'tasks' | 'wallet';
+type WalletSubTabType = 'overview' | 'multi-wallet';
 
 interface Shift {
   id: string;
@@ -33,6 +34,16 @@ export default function FarmerServicePage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('shifts');
   const [currentMode, setCurrentMode] = useState<'farm' | 'service'>('service');
+  const [showQRCode, setShowQRCode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [walletSubTab, setWalletSubTab] = useState<WalletSubTabType>('overview');
+  
+  // QR Code for Rating & Tipping
+  const memberQRCode = {
+    memberId: 'MEM-2024-001',
+    memberName: 'Nguyễn Văn Minh',
+    qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://vita.coop/rate/MEM-2024-001',
+  };
 
   // Mock data
   const shifts: Shift[] = [
@@ -114,6 +125,54 @@ export default function FarmerServicePage() {
       { date: '24/11', amount: 50000, service: 'Dẫn tour', customer: 'Anh Minh' },
       { date: '23/11', amount: 30000, service: 'Dọn phòng', customer: 'Chị Lan' },
     ],
+    vitaScore: 92, // VITA Score for service workers
+  };
+
+  // Đa ngăn Ví thu nhập (cho dịch vụ)
+  const walletCompartments = {
+    service: {
+      balance: 3500000,
+      label: 'Ví Dịch vụ',
+      icon: 'ri-service-line',
+      color: 'from-orange-500 to-amber-600',
+      description: 'Lương làm theo giờ và tiền Tip',
+      recentTransactions: [
+        { date: '24/11/2024', description: 'Lương ca trực + Tip', amount: 500000 },
+        { date: '23/11/2024', description: 'Tip từ khách tour', amount: 30000 },
+        { date: '22/11/2024', description: 'Lương ca dọn phòng', amount: 400000 },
+      ],
+    },
+    production: {
+      balance: 22500000,
+      label: 'Ví Sản xuất',
+      icon: 'ri-plant-line',
+      color: 'from-green-500 to-emerald-600',
+      description: 'Tiền từ bán nông sản, dược liệu',
+      recentTransactions: [
+        { date: '15/01/2024', description: 'Thanh toán Cà Gai Leo', amount: 8750000 },
+        { date: '10/01/2024', description: 'Thanh toán Hoàng Tinh', amount: 5200000 },
+      ],
+    },
+    savings: {
+      balance: 19250000,
+      label: 'Ví Tích lũy/Hưu trí',
+      icon: 'ri-bank-line',
+      color: 'from-blue-500 to-indigo-600',
+      description: 'Từ bán Tín chỉ Carbon và cổ tức dài hạn',
+      recentTransactions: [
+        { date: '15/01/2024', description: 'Bán Tín chỉ Carbon', amount: 3750000 },
+        { date: '28/12/2023', description: 'Cổ tức quý 4/2023', amount: 12500000 },
+      ],
+      locked: true,
+    },
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+    }).format(amount);
   };
 
   const toggleChecklistItem = (taskId: string, itemId: string) => {
@@ -133,15 +192,86 @@ export default function FarmerServicePage() {
               <p className="text-orange-100 text-xs sm:text-sm md:text-base truncate">Xin chào, Anh Minh</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate('/farmer')}
-              className="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-all"
-            >
-              <i className="ri-plant-line mr-2"></i>
-              Nông trại
-            </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
             <RoleSwitcher />
+            {/* Menu Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+              >
+                <i className="ri-menu-line"></i>
+                <span className="hidden sm:inline">Menu</span>
+              </button>
+              
+              {isMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setIsMenuOpen(false)}
+                  ></div>
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
+                    <div className="py-2">
+                      {[
+                        { id: 'shifts', label: 'Lịch Ca Trực', icon: 'ri-calendar-todo-line' },
+                        { id: 'tasks', label: 'Nhiệm vụ', icon: 'ri-task-line' },
+                        { id: 'wallet', label: 'Ví Dịch vụ', icon: 'ri-wallet-3-line' },
+                      ].map(tab => (
+                        <button
+                          key={tab.id}
+                          onClick={() => {
+                            setActiveTab(tab.id as TabType);
+                            setIsMenuOpen(false);
+                          }}
+                          className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-colors ${
+                            activeTab === tab.id
+                              ? 'bg-orange-50 text-orange-600 font-semibold'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          <i className={tab.icon}></i>
+                          <span>{tab.label}</span>
+                          {activeTab === tab.id && (
+                            <i className="ri-check-line ml-auto text-orange-600"></i>
+                          )}
+                        </button>
+                      ))}
+                      <div className="border-t border-gray-200 my-1"></div>
+                      <button
+                        onClick={() => {
+                          navigate('/farmer/service-community');
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <i className="ri-group-line"></i>
+                        <span>Cộng đồng Dịch vụ</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/farmer');
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <i className="ri-plant-line"></i>
+                        <span>Nông trại</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/home');
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <i className="ri-logout-box-line"></i>
+                        <span>Đăng xuất</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -187,17 +317,6 @@ export default function FarmerServicePage() {
           >
             <i className="ri-task-line mr-1"></i>
             Nhiệm vụ
-          </button>
-          <button
-            onClick={() => setActiveTab('wallet')}
-            className={`flex-1 py-3 rounded-xl font-semibold text-sm transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'wallet'
-                ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-md'
-                : 'text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            <i className="ri-wallet-3-line mr-1"></i>
-            Ví Dịch vụ
           </button>
         </div>
       </div>
@@ -340,8 +459,90 @@ export default function FarmerServicePage() {
         {/* Wallet Tab */}
         {activeTab === 'wallet' && (
           <div className="space-y-4">
-            <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl shadow-xl p-6 text-white">
-              <h2 className="text-xl font-bold mb-4">Ví Dịch vụ</h2>
+            {/* VITA Score Card */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">Điểm tín nhiệm VITA</h3>
+                  <p className="text-sm text-gray-600">Dựa trên tuân thủ quy trình</p>
+                </div>
+                <div className="relative w-20 h-20">
+                  <svg className="w-20 h-20 transform -rotate-90">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="32"
+                      stroke="#E5E7EB"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="32"
+                      stroke="#F97316"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 32}`}
+                      strokeDashoffset={`${2 * Math.PI * 32 * (1 - serviceWallet.vitaScore / 100)}`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-gray-900">{serviceWallet.vitaScore}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 text-center">
+                <div className="p-2 bg-green-50 rounded-lg">
+                  <i className="ri-seedling-line text-xl text-green-600 mb-1"></i>
+                  <div className="text-xs text-gray-600">Vitality</div>
+                </div>
+                <div className="p-2 bg-blue-50 rounded-lg">
+                  <i className="ri-shield-check-line text-xl text-blue-600 mb-1"></i>
+                  <div className="text-xs text-gray-600">Integrity</div>
+                </div>
+                <div className="p-2 bg-purple-50 rounded-lg">
+                  <i className="ri-hand-heart-line text-xl text-purple-600 mb-1"></i>
+                  <div className="text-xs text-gray-600">Trust</div>
+                </div>
+                <div className="p-2 bg-orange-50 rounded-lg">
+                  <i className="ri-file-list-3-line text-xl text-orange-600 mb-1"></i>
+                  <div className="text-xs text-gray-600">Account</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Wallet Sub Tabs */}
+            <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+              <button
+                onClick={() => setWalletSubTab('overview')}
+                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all cursor-pointer whitespace-nowrap min-w-fit ${
+                  walletSubTab === 'overview'
+                    ? 'bg-white text-orange-600 shadow-lg'
+                    : 'bg-white/50 text-gray-600 hover:bg-white'
+                }`}
+              >
+                Tổng quan
+              </button>
+              <button
+                onClick={() => setWalletSubTab('multi-wallet')}
+                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all cursor-pointer whitespace-nowrap min-w-fit ${
+                  walletSubTab === 'multi-wallet'
+                    ? 'bg-white text-orange-600 shadow-lg'
+                    : 'bg-white/50 text-gray-600 hover:bg-white'
+                }`}
+              >
+                Đa ngăn Ví
+              </button>
+            </div>
+
+            {/* Overview Content */}
+            {walletSubTab === 'overview' && (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl shadow-xl p-6 text-white">
+                  <h2 className="text-xl font-bold mb-4">Ví Dịch vụ</h2>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span>Lương theo giờ</span>
@@ -366,6 +567,43 @@ export default function FarmerServicePage() {
               </div>
             </div>
 
+            {/* QR Code for Rating & Tipping */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">Mã QR của bạn</h3>
+                  <p className="text-sm text-gray-600">Khách quét để chấm điểm và gửi tip</p>
+                </div>
+                <button
+                  onClick={() => setShowQRCode(!showQRCode)}
+                  className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors cursor-pointer"
+                >
+                  {showQRCode ? 'Ẩn QR' : 'Xem QR'}
+                </button>
+              </div>
+              
+              {showQRCode && (
+                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl p-6 border-2 border-yellow-200">
+                  <div className="text-center mb-4">
+                    <div className="w-48 h-48 bg-white rounded-xl p-4 mx-auto mb-3 shadow-lg">
+                      <img
+                        src={memberQRCode.qrCodeUrl}
+                        alt="QR Code"
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div className="font-bold text-gray-900 mb-1">{memberQRCode.memberName}</div>
+                    <div className="text-xs text-gray-600">ID: {memberQRCode.memberId}</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 text-xs text-gray-700">
+                    <i className="ri-information-line mr-1 text-blue-600"></i>
+                    <strong>Hướng dẫn:</strong> Khách hàng quét mã QR này để đánh giá dịch vụ và gửi tiền tip. 
+                    Tiền tip và điểm đánh giá sẽ được cập nhật tức thời lên ứng dụng của bạn.
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <h3 className="font-bold text-gray-900 mb-4">Tip gần đây</h3>
               <div className="space-y-3">
@@ -380,8 +618,102 @@ export default function FarmerServicePage() {
                 ))}
               </div>
             </div>
+              </div>
+            )}
+
+            {/* Multi-Wallet Content */}
+            {walletSubTab === 'multi-wallet' && (
+              <div className="space-y-4">
+                {Object.entries(walletCompartments).map(([key, wallet]) => (
+                  <div key={key} className={`bg-gradient-to-br ${wallet.color} rounded-2xl shadow-lg p-6 text-white`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <i className={`${wallet.icon} text-2xl`}></i>
+                          <h3 className="text-xl font-bold">{wallet.label}</h3>
+                          {wallet.locked && (
+                            <span className="px-2 py-1 bg-white/20 rounded text-xs">
+                              <i className="ri-lock-line mr-1"></i>
+                              Khóa
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm opacity-90 mb-3">{wallet.description}</p>
+                        <div className="text-3xl font-bold mb-4">{formatCurrency(wallet.balance)}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                      <div className="text-xs opacity-90 mb-2">Giao dịch gần đây</div>
+                      <div className="space-y-2">
+                        {wallet.recentTransactions.map((tx, idx) => (
+                          <div key={idx} className="flex items-center justify-between text-sm">
+                            <div>
+                              <div className="font-medium">{tx.description}</div>
+                              <div className="text-xs opacity-75">{tx.date}</div>
+                            </div>
+                            <div className="font-bold">+{formatCurrency(tx.amount)}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {!wallet.locked && (
+                      <button className="w-full mt-4 py-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors cursor-pointer">
+                        <i className="ri-bank-card-line mr-2"></i>
+                        Rút tiền
+                      </button>
+                    )}
+                    {wallet.locked && (
+                      <div className="mt-4 p-3 bg-white/10 rounded-lg text-xs">
+                        <i className="ri-information-line mr-1"></i>
+                        Ví này được khóa để dành cho tương lai. Bạn có thể rút theo kỳ hạn đã đặt.
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
+        <div className="flex items-center justify-around max-w-md mx-auto">
+          <button 
+            onClick={() => {
+              setActiveTab('shifts');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
+              activeTab === 'shifts' 
+                ? 'text-orange-600' 
+                : 'text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            <i className="ri-home-5-line text-2xl"></i>
+            <span className="text-xs font-medium">Trang chủ</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('wallet')}
+            className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
+              activeTab === 'wallet' 
+                ? 'text-orange-600' 
+                : 'text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            <i className="ri-wallet-3-line text-2xl"></i>
+            <span className="text-xs font-medium">Ví Dịch vụ</span>
+          </button>
+          <button 
+            onClick={() => navigate('/farmer/service-community')}
+            className="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 cursor-pointer"
+          >
+            <i className="ri-group-line text-2xl"></i>
+            <span className="text-xs font-medium">Cộng đồng</span>
+          </button>
+        </div>
       </div>
     </div>
   );

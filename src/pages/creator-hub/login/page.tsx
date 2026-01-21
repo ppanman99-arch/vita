@@ -24,14 +24,10 @@ export default function CreatorLoginPage() {
 
     // Demo: Simple authentication check
     if (email && password === '1') {
-      // Check if creator is verified
-      const isVerified = sessionStorage.getItem('creator_verified') === 'true';
-      const pendingVerification = sessionStorage.getItem('creator_pending_verification') === 'true';
-      
-      if (pendingVerification && !isVerified) {
-        setError('Tài khoản của bạn đang chờ phê duyệt. Vui lòng kiểm tra email để theo dõi tiến trình.');
-        return;
-      }
+      // Skip approval/pending verification - allow immediate access
+      // Auto-verify on login
+      sessionStorage.setItem('creator_verified', 'true');
+      sessionStorage.removeItem('creator_pending_verification');
 
       // Save session
       sessionStorage.setItem('creator_authenticated', 'true');

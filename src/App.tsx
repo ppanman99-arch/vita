@@ -7,6 +7,10 @@ import { SupabaseProvider } from "./lib/supabaseContext";
 
 
 function App() {
+  // #region agent log
+  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.tsx:10',message:'App component rendering',data:{basePath:__BASE_PATH__},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+  // #endregion
+  
   return (
     <ErrorBoundary>
       <SupabaseProvider>

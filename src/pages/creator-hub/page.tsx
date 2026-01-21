@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CreatorTopBar from './components/CreatorTopBar';
+import PortalSwitcher from '../../components/shared/PortalSwitcher';
 
-type TabType = 'campaigns' | 'assets' | 'affiliate' | 'farm-tours' | 'earnings' | 'co-create' | 'esg-profile' | 'production-finance' | 'profile';
+type TabType = 'campaigns' | 'assets' | 'affiliate' | 'farm-tours' | 'earnings' | 'co-create' | 'esg-profile' | 'production-finance' | 'profile' | 'live-support' | 'academy';
 
 interface Campaign {
   id: string;
@@ -53,6 +53,33 @@ export default function CreatorHubPage() {
   const [creatorName, setCreatorName] = useState('');
   const [stageName, setStageName] = useState('');
   const [isVerified, setIsVerified] = useState(false);
+  const [showMainMenu, setShowMainMenu] = useState(false);
+  
+  // Profile form state
+  const [profileData, setProfileData] = useState({
+    fullName: '',
+    stageName: '',
+    email: '',
+    phone: '',
+    bio: '',
+    platforms: {
+      tiktok: '',
+      facebook: '',
+      instagram: '',
+      youtube: '',
+      zalo: '',
+    },
+    followerCount: '',
+    avgViews: '',
+    contentCategories: [] as string[],
+    sampleContentLinks: [] as string[],
+    // Verification fields
+    idNumber: '',
+    idPhoto: null as File | null,
+    profilePhoto: null as File | null,
+    agreeToTerms: false,
+    agreeToContentGuidelines: false,
+  });
 
   useEffect(() => {
     const isAuthenticated = sessionStorage.getItem('creator_authenticated');
@@ -67,6 +94,62 @@ export default function CreatorHubPage() {
     if (name) setCreatorName(name);
     setStageName(email.split('@')[0] || 'Creator');
     setIsVerified(sessionStorage.getItem('creator_verified') === 'true');
+    
+    // Load profile data from localStorage
+    const savedProfile = localStorage.getItem('creator_profile_data');
+    if (savedProfile) {
+      const parsed = JSON.parse(savedProfile);
+      setProfileData({
+        fullName: parsed.fullName || '',
+        stageName: parsed.stageName || name || '',
+        email: parsed.email || email || '',
+        phone: parsed.phone || '',
+        bio: parsed.bio || '',
+        platforms: parsed.platforms || {
+          tiktok: '',
+          facebook: '',
+          instagram: '',
+          youtube: '',
+          zalo: '',
+        },
+        followerCount: parsed.followerCount || '',
+        avgViews: parsed.avgViews || '',
+        contentCategories: parsed.contentCategories || [],
+        sampleContentLinks: parsed.sampleContentLinks || [],
+        idNumber: parsed.idNumber || '',
+        idPhoto: parsed.idPhoto || null,
+        profilePhoto: parsed.profilePhoto || null,
+        agreeToTerms: parsed.agreeToTerms || false,
+        agreeToContentGuidelines: parsed.agreeToContentGuidelines || false,
+      });
+      if (parsed.stageName) setStageName(parsed.stageName);
+      if (parsed.fullName) setCreatorName(parsed.fullName);
+    } else {
+      // Initialize with sessionStorage data
+      setProfileData({
+        fullName: name || '',
+        stageName: email.split('@')[0] || 'Creator',
+        email: email || '',
+        phone: '',
+        bio: '',
+        platforms: {
+          tiktok: '',
+          facebook: '',
+          instagram: '',
+          youtube: '',
+          zalo: '',
+        },
+        followerCount: '',
+        avgViews: '',
+        contentCategories: [],
+        sampleContentLinks: [],
+        idNumber: '',
+        idPhoto: null,
+        profilePhoto: null,
+        agreeToTerms: false,
+        agreeToContentGuidelines: false,
+      });
+    }
   }, [navigate]);
 
   // Mock Data
@@ -179,116 +262,178 @@ export default function CreatorHubPage() {
   const totalEarnings = 15000000; // VNĐ
   const pendingEarnings = 5000000;
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('creator_authenticated');
+    sessionStorage.removeItem('creator_email');
+    sessionStorage.removeItem('creator_name');
+    sessionStorage.removeItem('creator_stage_name');
+    sessionStorage.removeItem('creator_verified');
+    navigate('/creator-hub/login');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50">
-      <CreatorTopBar creatorName={creatorName} stageName={stageName} isVerified={isVerified} />
+      {/* Merged Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex items-center justify-between sm:hidden">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i className="ri-video-add-line text-xl"></i>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-base font-bold truncate flex items-center gap-1.5">
+                  <span className="truncate">CREATOR HUB</span>
+                  {isVerified && (
+                    <span className="px-1.5 py-0.5 bg-green-500 text-white text-[10px] rounded-full flex items-center flex-shrink-0">
+                      <i className="ri-check-line text-xs"></i>
+                    </span>
+                  )}
+                </h1>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <PortalSwitcher />
+              <button
+                onClick={() => setShowMainMenu(!showMainMenu)}
+                className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all"
+              >
+                <i className={`ri-${showMainMenu ? 'close-line' : 'menu-line'} text-xl`}></i>
+              </button>
+            </div>
+          </div>
 
-      {/* Tab Navigation */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center gap-3 lg:gap-4 flex-1 min-w-0">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i className="ri-video-add-line text-2xl"></i>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg lg:text-xl font-bold flex items-center gap-2">
+                  <span className="truncate">VITA CREATOR HUB</span>
+                  {isVerified && (
+                    <span className="px-2 py-0.5 bg-green-500 text-white text-xs rounded-full flex items-center gap-1 flex-shrink-0">
+                      <i className="ri-check-line"></i>
+                      Verified
+                    </span>
+                  )}
+                </h1>
+                <p className="text-xs lg:text-sm text-white/80 hidden md:block">Cổng Đối tác Sáng tạo Nội dung</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 lg:gap-4">
+              <div className="hidden lg:block">
+                <PortalSwitcher />
+              </div>
+              <div className="text-right hidden md:block">
+                <p className="text-sm font-medium truncate max-w-[150px]">{stageName || creatorName}</p>
+                <p className="text-xs text-white/80">Creator</p>
+              </div>
+              
+              {/* Main Menu Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowMainMenu(!showMainMenu)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm flex items-center gap-2 ${
+                    showMainMenu
+                      ? 'bg-white/30 text-white shadow-md'
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  <i className="ri-menu-line"></i>
+                  <span className="hidden sm:inline">Menu</span>
+                  <i className={`ri-arrow-down-s-line transition-transform ${showMainMenu ? 'rotate-180' : ''}`}></i>
+                </button>
+
+              {showMainMenu && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setShowMainMenu(false)}
+                  ></div>
+                  <div className="absolute right-0 top-full mt-2 w-80 max-h-[calc(100vh-200px)] overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+                    <div className="p-4 border-b border-gray-100 sticky top-0 bg-white">
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Danh mục chức năng</p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                          <i className="ri-video-add-line text-white text-lg"></i>
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">VITA CREATOR HUB</p>
+                          <p className="text-xs text-gray-600">Sáng tạo Nội dung</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-2">
+                      {/* Quick Access - Current Tab */}
+                      <div className="px-4 py-2 bg-purple-50 border-l-4 border-purple-500 mb-2">
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Đang xem</p>
+                        <div className="flex items-center gap-2 text-sm font-medium text-purple-700">
+                          <i className="ri-eye-line"></i>
+                          <span>{activeTab === 'campaigns' ? 'Chiến dịch' : activeTab === 'assets' ? 'Kho Tài nguyên' : activeTab === 'affiliate' ? 'Affiliate' : activeTab === 'farm-tours' ? 'Đặt lịch Vườn' : activeTab === 'earnings' ? 'Thu nhập' : activeTab === 'co-create' ? 'Xây dựng Thương hiệu' : activeTab === 'esg-profile' ? 'Hồ sơ ESG' : activeTab === 'production-finance' ? 'Tín dụng SX' : activeTab === 'live-support' ? 'SOS Chuyên gia' : activeTab === 'academy' ? 'Creator Academy' : 'Hồ sơ'}</span>
+                        </div>
+                      </div>
+
+                      {/* All Tabs */}
+                      <div className="px-4 py-2">
+                        {[
+                          { id: 'campaigns', label: 'Chiến dịch', icon: 'ri-briefcase-line' },
+                          { id: 'assets', label: 'Kho Tài nguyên', icon: 'ri-image-line' },
+                          { id: 'affiliate', label: 'Affiliate', icon: 'ri-links-line' },
+                          { id: 'farm-tours', label: 'Đặt lịch Vườn', icon: 'ri-map-pin-line' },
+                          { id: 'earnings', label: 'Thu nhập', icon: 'ri-money-dollar-circle-line' },
+                          { id: 'co-create', label: 'Xây dựng Thương hiệu', icon: 'ri-lightbulb-flash-line', badge: 'Mới', badgeColor: 'bg-orange-500' },
+                          { id: 'esg-profile', label: 'Hồ sơ ESG', icon: 'ri-leaf-line', badge: 'Mới', badgeColor: 'bg-green-500' },
+                          { id: 'production-finance', label: 'Tín dụng SX', icon: 'ri-bank-line', badge: 'Mới', badgeColor: 'bg-blue-500' },
+                          { id: 'live-support', label: 'SOS Chuyên gia', icon: 'ri-customer-service-line', badge: 'Mới', badgeColor: 'bg-red-500' },
+                          { id: 'academy', label: 'Creator Academy', icon: 'ri-graduation-cap-line', badge: 'Mới', badgeColor: 'bg-blue-500' },
+                          { id: 'profile', label: 'Hồ sơ', icon: 'ri-user-line' },
+                        ].map((tab) => (
             <button
-              onClick={() => setActiveTab('campaigns')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'campaigns'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-briefcase-line mr-2"></i>
-              Chiến dịch
+                            key={tab.id}
+                            onClick={() => {
+                              setActiveTab(tab.id as TabType);
+                              setShowMainMenu(false);
+                            }}
+                            className={`w-full px-3 py-2 rounded-lg font-medium transition-all text-left text-sm flex items-center gap-2 mb-1 ${
+                              activeTab === tab.id
+                                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            <i className={tab.icon}></i>
+                            <span className="flex-1">{tab.label}</span>
+                            {tab.badge && (
+                              <span className={`px-1.5 py-0.5 ${tab.badgeColor} text-white text-[10px] rounded-full`}>
+                                {tab.badge}
+                              </span>
+                            )}
             </button>
-            <button
-              onClick={() => setActiveTab('assets')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'assets'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-image-line mr-2"></i>
-              Kho Tài nguyên
-            </button>
-            <button
-              onClick={() => setActiveTab('affiliate')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'affiliate'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-links-line mr-2"></i>
-              Affiliate
-            </button>
-            <button
-              onClick={() => setActiveTab('farm-tours')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'farm-tours'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-map-pin-line mr-2"></i>
-              Đặt lịch Vườn
-            </button>
-            <button
-              onClick={() => setActiveTab('earnings')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'earnings'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-money-dollar-circle-line mr-2"></i>
-              Thu nhập
-            </button>
-            <button
-              onClick={() => setActiveTab('co-create')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'co-create'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-lightbulb-flash-line mr-2"></i>
-              Xây dựng Thương hiệu
-              <span className="ml-2 px-2 py-0.5 bg-orange-500 text-white text-[10px] rounded-full">Mới</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('esg-profile')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'esg-profile'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-leaf-line mr-2"></i>
-              Hồ sơ ESG
-              <span className="ml-2 px-2 py-0.5 bg-green-500 text-white text-[10px] rounded-full">Mới</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('production-finance')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'production-finance'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-bank-line mr-2"></i>
-              Tín dụng SX
-              <span className="ml-2 px-2 py-0.5 bg-blue-500 text-white text-[10px] rounded-full">Mới</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('profile')}
-              className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'profile'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-user-line mr-2"></i>
-              Hồ sơ
-            </button>
+                        ))}
+                      </div>
+                      
+                      {/* Logout Button */}
+                      <div className="px-4 py-2 border-t border-gray-100 mt-2">
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            setShowMainMenu(false);
+                          }}
+                          className="w-full px-3 py-2 rounded-lg font-medium transition-all text-left text-sm flex items-center gap-2 text-red-600 hover:bg-red-50"
+                        >
+                          <i className="ri-logout-box-line"></i>
+                          <span>Đăng xuất</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            </div>
           </div>
         </div>
       </div>
@@ -386,51 +531,163 @@ export default function CreatorHubPage() {
         {activeTab === 'assets' && (
           <div className="space-y-6">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Kho Tài nguyên Số</h2>
-              <p className="text-gray-600 mt-1">Truy cập Camera, Timelapse, Nhật ký và Chứng thư số từ HTX</p>
+              <h2 className="text-2xl font-bold text-gray-900">Kho Tài nguyên Số & Dữ liệu Thực</h2>
+              <p className="text-gray-600 mt-1">Trạm tiếp nhiên liệu - Bằng chứng xác thực để xây dựng niềm tin</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {assets.map((asset) => (
-                <div key={asset.id} className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-                  <div className="h-48 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
-                    {asset.type === 'camera' && <i className="ri-camera-line text-6xl text-purple-600"></i>}
-                    {asset.type === 'timelapse' && <i className="ri-time-line text-6xl text-purple-600"></i>}
-                    {asset.type === 'diary' && <i className="ri-file-text-line text-6xl text-purple-600"></i>}
-                    {asset.type === 'certificate' && <i className="ri-certificate-line text-6xl text-purple-600"></i>}
+            {/* Live Cam & Satellite */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-eye-line text-purple-600"></i>
+                "Mắt Thần" - Live Cam & Satellite (View-only)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="border-2 border-purple-200 rounded-xl p-4 bg-purple-50">
+                  <div className="flex items-center gap-2 mb-3">
+                    <i className="ri-camera-line text-2xl text-purple-600"></i>
+                    <div>
+                      <div className="font-bold text-gray-900">Camera HTX Tu Mơ Rông</div>
+                      <div className="text-sm text-gray-600">Vườn Sâm - Kon Tum</div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-gray-900 mb-2">{asset.name}</h3>
-                    <div className="space-y-1 mb-4">
-                      <p className="text-sm text-gray-600">
-                        <i className="ri-building-line mr-2"></i>
-                        {asset.source}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <i className="ri-map-pin-line mr-2"></i>
-                        {asset.location}
-                      </p>
                     </div>
-                    <button className={`w-full px-4 py-2 rounded-lg font-medium transition-all ${
-                      asset.accessible
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700'
-                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    }`}>
-                      {asset.accessible ? (
-                        <>
+                  <div className="bg-white rounded-lg p-3 mb-3">
+                    <div className="aspect-video bg-gray-200 rounded flex items-center justify-center">
+                      <i className="ri-play-circle-line text-4xl text-gray-400"></i>
+                    </div>
+                  </div>
+                  <button className="w-full bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
+                    <i className="ri-eye-line mr-2"></i>
+                    Xem trực tiếp
+                  </button>
+                </div>
+                <div className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50">
+                  <div className="flex items-center gap-2 mb-3">
+                    <i className="ri-satellite-line text-2xl text-blue-600"></i>
+                    <div>
+                      <div className="font-bold text-gray-900">Dữ liệu Vệ tinh</div>
+                      <div className="text-sm text-gray-600">Theo dõi vùng trồng</div>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 mb-3">
+                    <div className="aspect-video bg-gray-200 rounded flex items-center justify-center">
+                      <i className="ri-map-2-line text-4xl text-gray-400"></i>
+                    </div>
+                  </div>
+                  <button className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
                           <i className="ri-download-line mr-2"></i>
-                          Truy cập
-                        </>
-                      ) : (
-                        <>
-                          <i className="ri-lock-line mr-2"></i>
-                          Cần phê duyệt
-                        </>
-                      )}
+                    Tải bản đồ
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Time-lapse Videos */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-time-line text-pink-600"></i>
+                Time-lapse - Quá trình sinh trưởng thực tế
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { name: 'Sâm lớn lên trong 1 năm (30 giây)', source: 'HTX Tu Mơ Rông', duration: '30s' },
+                  { name: 'Thu hoạch Cà Gai Leo (15 giây)', source: 'HTX Lạng Sơn', duration: '15s' },
+                ].map((video, idx) => (
+                  <div key={idx} className="border-2 border-pink-200 rounded-xl p-4 bg-pink-50">
+                    <div className="font-bold text-gray-900 mb-1">{video.name}</div>
+                    <div className="text-sm text-gray-600 mb-3">{video.source} • {video.duration}</div>
+                    <button className="w-full bg-pink-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-pink-700 transition-colors cursor-pointer">
+                      <i className="ri-download-line mr-2"></i>
+                      Tải về
                     </button>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Proof of Quality */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-verified-badge-line text-green-600"></i>
+                Thư viện Bằng chứng (Proof of Quality)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { name: 'Chứng chỉ Organic', type: 'certificate', verified: true },
+                  { name: 'Chứng chỉ GACP', type: 'certificate', verified: true },
+                  { name: 'Phiếu kiểm nghiệm COA', type: 'coa', verified: true },
+                ].map((item, idx) => (
+                  <div key={idx} className="border-2 border-green-200 rounded-xl p-4 bg-green-50">
+                    <div className="flex items-center gap-2 mb-2">
+                      <i className="ri-file-paper-line text-2xl text-green-600"></i>
+                      <div className="flex-1">
+                        <div className="font-bold text-gray-900 text-sm">{item.name}</div>
+                        {item.verified && (
+                          <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+                            <i className="ri-checkbox-circle-fill"></i>
+                            <span>Đã xác thực bởi R&D</span>
+                          </div>
+                      )}
+                      </div>
+                    </div>
+                    <button className="w-full bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
+                      <i className="ri-download-line mr-2"></i>
+                      Tải Scan chất lượng cao
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Data Widgets */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-bar-chart-box-line text-blue-600"></i>
+                Widget Dữ liệu (Live Data Widgets) - Nhúng vào Livestream
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { label: 'Độ ẩm đất hiện tại', value: '75%', source: 'HTX Tu Mơ Rông' },
+                  { label: 'Hàm lượng Saponin trung bình', value: '12%', source: 'Kiểm định bởi Viện Dược Liệu' },
+                ].map((widget, idx) => (
+                  <div key={idx} className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50">
+                    <div className="text-sm text-gray-600 mb-1">{widget.label}</div>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">{widget.value}</div>
+                    <div className="text-xs text-gray-500 mb-3">{widget.source}</div>
+                    <button className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                      <i className="ri-code-s-slash-line mr-2"></i>
+                      Lấy mã nhúng
+                    </button>
                 </div>
               ))}
+              </div>
+            </div>
+
+            {/* Content Verification */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-verified-badge-fill text-purple-600"></i>
+                Xác thực Nội dung (Content Verification)
+              </h3>
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border-2 border-purple-200">
+                <p className="text-sm text-gray-700 mb-4">Gửi kịch bản hoặc video nháp lên hệ thống. Đội ngũ R&D hoặc Thầy thuốc sẽ duyệt và đóng dấu "Thông tin chuẩn khoa học".</p>
+                <div className="space-y-3">
+                  <button className="w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors cursor-pointer">
+                    <i className="ri-upload-cloud-line mr-2"></i>
+                    Gửi kịch bản để duyệt
+                  </button>
+                  <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-medium hover:bg-pink-700 transition-colors cursor-pointer">
+                    <i className="ri-video-upload-line mr-2"></i>
+                    Gửi video nháp để duyệt
+                  </button>
+                </div>
+                <div className="mt-4 p-3 bg-white rounded-lg">
+                  <div className="flex items-center gap-2 text-sm text-green-600 mb-2">
+                    <i className="ri-checkbox-circle-fill"></i>
+                    <span className="font-semibold">Video đã được xác thực: "Sâm Ngọc Linh hỗ trợ tăng sức đề kháng"</span>
+                  </div>
+                  <div className="text-xs text-gray-600">Đã duyệt bởi: PGS. TS. Nguyễn Văn Khoa • Ngày: 15/11/2024</div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -510,6 +767,46 @@ export default function CreatorHubPage() {
               ))}
             </div>
 
+            {/* Smart Affiliate */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Tiếp thị Liên kết Thông minh (Smart Affiliate)</h3>
+              <div className="space-y-4">
+                <div className="border-2 border-purple-200 rounded-xl p-4 bg-purple-50">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-bold text-gray-900">Link định danh đa tầng</div>
+                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Hoạt động</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-3">Theo dõi đơn hàng và hoa hồng tự động qua nhiều kênh</p>
+                  <div className="bg-white rounded-lg p-3 mb-3">
+                    <div className="text-xs text-gray-600 mb-1">Link của bạn</div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value="https://vita.vn/ref/creator123"
+                        readOnly
+                        className="flex-1 bg-transparent text-sm text-gray-600 outline-none"
+                      />
+                      <button className="px-3 py-1 bg-purple-100 text-purple-700 rounded text-sm hover:bg-purple-200 transition-colors">
+                        <i className="ri-file-copy-line mr-1"></i>
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="border-2 border-orange-200 rounded-xl p-4 bg-orange-50">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-bold text-gray-900">Flash Voucher</div>
+                    <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">FOMO</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-3">Xin hệ thống tung mã giảm giá độc quyền theo thời gian thực để chốt đơn</p>
+                  <button className="w-full bg-orange-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors cursor-pointer">
+                    <i className="ri-flashlight-line mr-2"></i>
+                    Tạo Flash Voucher ngay
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* Livestream Tool */}
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl shadow-lg p-6 text-white">
               <h3 className="text-xl font-bold mb-4">Công cụ Livestream</h3>
@@ -520,6 +817,86 @@ export default function CreatorHubPage() {
                 <i className="ri-live-line mr-2"></i>
                 Bắt đầu Livestream
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Live Support - SOS Chuyên gia Tab */}
+        {activeTab === 'live-support' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Hỗ trợ Bán hàng Thời gian Thực</h2>
+              <p className="text-gray-600 mt-1">SOS Chuyên gia - Trả lời câu hỏi khó trong Livestream</p>
+            </div>
+
+            {/* SOS Expert On-call */}
+            <div className="bg-gradient-to-r from-red-500 to-pink-600 rounded-xl shadow-lg p-6 text-white mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <i className="ri-customer-service-2-line text-4xl"></i>
+                <div>
+                  <h3 className="text-2xl font-bold">SOS Chuyên gia (Expert On-call)</h3>
+                  <p className="text-white/90">Kết nối ngay với AI Chatbot hoặc Thầy thuốc trực tuyến</p>
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-4">
+                <p className="text-sm mb-3">Trong phiên Livestream, nếu gặp câu hỏi khó, gõ câu hỏi vào App. Hệ thống kết nối ngay lập tức để đưa ra câu trả lời chính xác trong vài giây.</p>
+                <div className="bg-white rounded-lg p-4 text-gray-900">
+                  <div className="text-sm font-semibold mb-2">Ví dụ câu hỏi:</div>
+                  <div className="text-sm space-y-1">
+                    <div>• "Người bị tiểu đường tuýp 2 có dùng được không?"</div>
+                    <div>• "Sản phẩm này có tương tác với thuốc huyết áp không?"</div>
+                    <div>• "Hàm lượng hoạt chất là bao nhiêu?"</div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button className="flex-1 bg-white text-red-600 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all cursor-pointer">
+                  <i className="ri-robot-line mr-2"></i>
+                  Hỏi AI Chatbot
+                </button>
+                <button className="flex-1 bg-white/20 text-white py-3 rounded-lg font-semibold hover:bg-white/30 transition-all cursor-pointer">
+                  <i className="ri-user-star-line mr-2"></i>
+                  Kết nối Thầy thuốc
+                </button>
+              </div>
+            </div>
+
+            {/* Recent Questions */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Câu hỏi gần đây</h3>
+              <div className="space-y-3">
+                {[
+                  {
+                    question: 'Người bị tiểu đường tuýp 2 có dùng được Sâm Ngọc Linh không?',
+                    answer: 'Theo bác sĩ chuyên khoa của VITA vừa xác nhận, sản phẩm này dùng được cho người tiểu đường tuýp 2, nhưng nên tham khảo ý kiến bác sĩ điều trị trước khi sử dụng.',
+                    source: 'AI Chatbot (R&D)',
+                    time: '2 phút trước'
+                  },
+                  {
+                    question: 'Hàm lượng Saponin trong sản phẩm này là bao nhiêu?',
+                    answer: 'Hàm lượng Saponin trung bình: 12% (Kiểm định bởi Viện Dược Liệu). Phiếu kiểm nghiệm COA đã được xác thực.',
+                    source: 'AI Chatbot (R&D)',
+                    time: '15 phút trước'
+                  },
+                ].map((item, idx) => (
+                  <div key={idx} className="border-2 border-gray-200 rounded-xl p-4">
+                    <div className="flex items-start gap-3 mb-2">
+                      <i className="ri-question-line text-blue-600 text-xl"></i>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900 mb-1">{item.question}</div>
+                        <div className="text-sm text-gray-600 mb-2">{item.time}</div>
+                      </div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3 border-l-4 border-green-500">
+                      <div className="flex items-center gap-2 mb-1">
+                        <i className="ri-checkbox-circle-fill text-green-600"></i>
+                        <span className="text-xs font-semibold text-green-700">{item.source}</span>
+                      </div>
+                      <p className="text-sm text-gray-800">{item.answer}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -670,8 +1047,134 @@ export default function CreatorHubPage() {
         {activeTab === 'co-create' && (
           <div className="space-y-6">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">VITA CO-CREATE & INCUBATOR</h2>
-              <p className="text-gray-600 mt-1">Xây dựng Thương hiệu Riêng - Từ ý tưởng đến sản phẩm</p>
+              <h2 className="text-2xl font-bold text-gray-900">VITA CO-CREATE & OEM</h2>
+              <p className="text-gray-600 mt-1">Đặt hàng OEM & Đồng sáng tạo - Công xưởng ảo cho Creator</p>
+            </div>
+
+            {/* White Label Supermarket - Luồng 1 */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-store-3-line text-blue-600"></i>
+                Luồng 1: Siêu thị Nhãn trắng (White Label Supermarket)
+                <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Dành cho người mới</span>
+              </h3>
+              <p className="text-gray-600 mb-4">Sản phẩm có sẵn từ các Nhà máy, chỉ cần upload Logo và Tên thương hiệu</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {[
+                  { name: 'Trà túi lọc Giảo cổ lam', factory: 'VinaPharma', moq: 100, price: '8.000 VNĐ/gói', delivery: '5-7 ngày' },
+                  { name: 'Cao sâm', factory: 'Nam Dược', moq: 200, price: '250.000 VNĐ/chai', delivery: '5-7 ngày' },
+                ].map((product, idx) => (
+                  <div key={idx} className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50">
+                    <div className="font-bold text-gray-900 mb-2">{product.name}</div>
+                    <div className="text-sm text-gray-600 space-y-1 mb-3">
+                      <div>Nhà máy: {product.factory}</div>
+                      <div>MOQ: {product.moq} sản phẩm</div>
+                      <div>Giá: {product.price}</div>
+                      <div>Giao hàng: {product.delivery}</div>
+                    </div>
+                    <button className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                      <i className="ri-upload-cloud-line mr-2"></i>
+                      Upload Logo & Đặt hàng
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-purple-50 rounded-lg p-4 border-2 border-purple-200">
+                <div className="text-sm font-semibold text-gray-900 mb-2">Bản xem trước 3D (Mockup)</div>
+                <p className="text-sm text-gray-600">Hệ thống hiển thị bản xem trước trên bao bì ngay lập tức sau khi upload Logo</p>
+              </div>
+            </div>
+
+            {/* Custom R&D - Luồng 2 */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-flask-line text-purple-600"></i>
+                Luồng 2: Thiết kế Độc bản (Custom R&D)
+                <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">Dành cho KOL lớn</span>
+              </h3>
+              
+              {/* AI Formulator */}
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border-2 border-purple-200 mb-4">
+                <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <i className="ri-robot-line text-purple-600"></i>
+                  AI Formulator (Trợ lý Công thức)
+                </h4>
+                <p className="text-sm text-gray-700 mb-4">Chọn các thành phần mong muốn. AI sẽ cảnh báo tương tác thuốc và gợi ý tỷ lệ vàng.</p>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="bg-white rounded-lg p-3">
+                    <div className="text-xs text-gray-600 mb-1">Thành phần 1</div>
+                    <select className="w-full text-sm border border-gray-300 rounded px-2 py-1">
+                      <option>Chọn...</option>
+                      <option>Sâm Ngọc Linh</option>
+                      <option>Ba Kích</option>
+                      <option>Tam Thất</option>
+                    </select>
+                  </div>
+                  <div className="bg-white rounded-lg p-3">
+                    <div className="text-xs text-gray-600 mb-1">Thành phần 2</div>
+                    <select className="w-full text-sm border border-gray-300 rounded px-2 py-1">
+                      <option>Chọn...</option>
+                      <option>Collagen</option>
+                      <option>Mật ong</option>
+                      <option>Tinh dầu Quế</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="bg-yellow-50 rounded-lg p-3 border border-yellow-200 mb-3">
+                  <div className="flex items-center gap-2 text-sm text-yellow-800">
+                    <i className="ri-alert-line"></i>
+                    <span>AI cảnh báo: Sâm + Collagen không có tương tác. Tỷ lệ đề xuất: 70% Sâm + 30% Collagen</span>
+                  </div>
+                </div>
+                <button className="w-full bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
+                  <i className="ri-magic-line mr-2"></i>
+                  Tạo công thức với AI
+                </button>
+              </div>
+
+              {/* Matching Chuyên gia */}
+              <div className="bg-white rounded-xl p-5 border-2 border-gray-200">
+                <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <i className="ri-user-star-line text-indigo-600"></i>
+                  Matching Chuyên gia
+                </h4>
+                <p className="text-sm text-gray-700 mb-4">Hệ thống kết nối Creator với Thầy thuốc hoặc Chuyên gia R&D để hoàn thiện công thức độc quyền và xin cấp phép mới.</p>
+                <button className="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors cursor-pointer">
+                  <i className="ri-search-line mr-2"></i>
+                  Tìm chuyên gia phù hợp
+                </button>
+              </div>
+            </div>
+
+            {/* Creator Finance */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-bank-line text-green-600"></i>
+                Tài chính Sản xuất (Creator Finance)
+              </h3>
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-200">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="text-sm text-gray-600 mb-1">Hạn mức tín dụng</div>
+                    <div className="text-2xl font-bold text-green-600">1 tỷ VNĐ</div>
+                    <div className="text-xs text-gray-500 mt-1">Dựa trên GMV và điểm uy tín</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="text-sm text-gray-600 mb-1">Đã sử dụng</div>
+                    <div className="text-2xl font-bold text-blue-600">500 triệu VNĐ</div>
+                    <div className="text-xs text-gray-500 mt-1">50% hạn mức</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="text-sm text-gray-600 mb-1">Còn lại</div>
+                    <div className="text-2xl font-bold text-purple-600">500 triệu VNĐ</div>
+                    <div className="text-xs text-gray-500 mt-1">Có thể vay thêm</div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-900 mb-2">Mô hình "Bán trước - Trả sau"</div>
+                  <p className="text-sm text-gray-700">Creator có thể dùng hạn mức này để thanh toán tiền cọc sản xuất mà không cần vốn tự có. Doanh thu bán hàng sẽ được trừ dần vào khoản nợ.</p>
+                </div>
+              </div>
             </div>
 
             {/* Mix & Match Product Builder */}
@@ -878,6 +1381,90 @@ export default function CreatorHubPage() {
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Hồ sơ ESG Cá nhân</h2>
               <p className="text-gray-600 mt-1">Bảng thành tích Tác động Xã hội - Công khai</p>
+            </div>
+
+            {/* Impact Scorecard */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-bar-chart-box-line text-emerald-600"></i>
+                Bảng Thành tích Tác động (Impact Scorecard)
+              </h3>
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-5 border-2 border-emerald-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <i className="ri-community-line text-3xl text-emerald-600"></i>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-900 mb-1">Tháng này bạn đã giúp tiêu thụ 2 tấn dược liệu</div>
+                      <div className="text-sm text-emerald-700">→ Tạo thu nhập cho 15 hộ dân tộc Xơ Đăng</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <i className="ri-tree-line text-3xl text-green-600"></i>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-900 mb-1">Nguồn hàng bạn chọn giúp bảo vệ 5ha rừng đầu nguồn</div>
+                      <div className="text-sm text-green-700">→ Tại Kon Tum</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-5 border-2 border-blue-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <i className="ri-recycle-line text-3xl text-blue-600"></i>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-900 mb-1">Bạn đã cắt giảm 500kg rác thải nhựa</div>
+                      <div className="text-sm text-blue-700">→ Nhờ chọn bao bì giấy Kraft</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Digital Badges */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-award-line text-purple-600"></i>
+                Huy hiệu & Chứng nhận (Digital Badges)
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Treo các huy hiệu này trên Bio mạng xã hội (TikTok/Facebook) để tăng uy tín</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[
+                  { name: 'Đại sứ Rừng Xanh', icon: 'ri-tree-line', color: 'from-green-500 to-emerald-600', earned: true },
+                  { name: 'Người Bảo trợ Sinh kế', icon: 'ri-community-line', color: 'from-blue-500 to-cyan-600', earned: true },
+                  { name: 'Champion ESG', icon: 'ri-leaf-line', color: 'from-emerald-500 to-teal-600', earned: true },
+                  { name: 'Creator Xanh', icon: 'ri-recycle-line', color: 'from-teal-500 to-cyan-600', earned: false },
+                ].map((badge, idx) => (
+                  <div key={idx} className={`border-2 rounded-xl p-4 ${
+                    badge.earned ? 'border-purple-300 bg-gradient-to-br ' + badge.color + ' text-white' : 'border-gray-200 bg-gray-50'
+                  }`}>
+                    <div className="flex flex-col items-center text-center">
+                      <i className={`${badge.icon} text-4xl mb-2 ${badge.earned ? 'text-white' : 'text-gray-400'}`}></i>
+                      <div className={`font-bold text-sm ${badge.earned ? 'text-white' : 'text-gray-600'}`}>{badge.name}</div>
+                      {badge.earned ? (
+                        <button className="mt-3 px-3 py-1 bg-white/20 text-white rounded-lg text-xs font-medium hover:bg-white/30 transition-colors cursor-pointer">
+                          <i className="ri-download-line mr-1"></i>
+                          Tải về
+                        </button>
+                      ) : (
+                        <div className="mt-3 text-xs text-gray-500">Chưa đạt</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ESG Report */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-file-paper-line text-indigo-600"></i>
+                Báo cáo ESG Cá nhân
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Xuất báo cáo định kỳ (PDF đẹp mắt) để gửi cho các Nhãn hàng Quốc tế khi muốn nhận hợp đồng đại diện</p>
+              <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors cursor-pointer">
+                <i className="ri-file-download-line mr-2"></i>
+                Tải báo cáo ESG (PDF)
+              </button>
             </div>
 
             {/* ESG Scorecard */}
@@ -1191,6 +1778,130 @@ export default function CreatorHubPage() {
           </div>
         )}
 
+        {/* Creator Academy Tab */}
+        {activeTab === 'academy' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Creator Academy</h2>
+              <p className="text-gray-600 mt-1">Cộng đồng & Đào tạo - Học cách bán hàng chuyên nghiệp</p>
+            </div>
+
+            {/* Courses */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-graduation-cap-line text-purple-600"></i>
+                Khóa học Thực chiến
+              </h3>
+              <div className="space-y-4">
+                {[
+                  {
+                    title: 'Kỹ năng Livestream tại vườn (Farm Livestreaming)',
+                    instructor: 'Chuyên gia Marketing',
+                    duration: '2 giờ',
+                    students: 245,
+                    rating: 4.8
+                  },
+                  {
+                    title: 'Kiến thức Dược liệu 101',
+                    instructor: 'Bác sĩ từ Portal Thầy thuốc',
+                    duration: '3 giờ',
+                    students: 189,
+                    rating: 4.9
+                  },
+                  {
+                    title: 'Cách đọc và giải thích phiếu kiểm nghiệm COA cho khách hàng',
+                    instructor: 'Chuyên gia R&D',
+                    duration: '1.5 giờ',
+                    students: 312,
+                    rating: 4.7
+                  },
+                ].map((course, idx) => (
+                  <div key={idx} className="border-2 border-gray-200 rounded-xl p-5 hover:border-purple-400 transition-all">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-900 mb-2">{course.title}</h4>
+                        <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                          <span><i className="ri-user-line mr-1"></i>{course.instructor}</span>
+                          <span><i className="ri-time-line mr-1"></i>{course.duration}</span>
+                          <span><i className="ri-group-line mr-1"></i>{course.students} học viên</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <i key={i} className={`ri-star-fill ${i < Math.floor(course.rating) ? 'text-yellow-500' : 'text-gray-300'}`}></i>
+                            ))}
+                          </div>
+                          <span className="text-sm font-medium text-gray-700">{course.rating}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button className="w-full bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
+                      <i className="ri-play-line mr-2"></i>
+                      Bắt đầu học
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Co-founder Matching */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-team-line text-blue-600"></i>
+                Sàn Kết nối Đồng sáng lập (Co-founder Matching)
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Diễn đàn để các Creator tìm kiếm mảnh ghép còn thiếu</p>
+              <div className="space-y-4">
+                {[
+                  {
+                    title: 'Tìm Dược sĩ giỏi chuyên môn',
+                    creator: 'Creator giỏi Marketing',
+                    description: 'Cần một Dược sĩ giỏi chuyên môn để cùng ra mắt một thương hiệu thực phẩm chức năng chung',
+                    type: 'seeking',
+                    responses: 5
+                  },
+                  {
+                    title: 'Tìm Creator Marketing cho thương hiệu dược liệu',
+                    creator: 'Dược sĩ có công thức độc quyền',
+                    description: 'Đã có công thức và giấy phép, cần Creator Marketing để quảng bá sản phẩm',
+                    type: 'offering',
+                    responses: 12
+                  },
+                ].map((post, idx) => (
+                  <div key={idx} className="border-2 border-blue-200 rounded-xl p-5 bg-blue-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            post.type === 'seeking' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
+                          }`}>
+                            {post.type === 'seeking' ? 'Đang tìm' : 'Đang cung cấp'}
+                          </span>
+                        </div>
+                        <h4 className="font-bold text-gray-900 mb-1">{post.title}</h4>
+                        <p className="text-sm text-gray-600 mb-2">Từ: {post.creator}</p>
+                        <p className="text-sm text-gray-700 mb-3">{post.description}</p>
+                        <div className="text-xs text-gray-500">
+                          <i className="ri-message-3-line mr-1"></i>
+                          {post.responses} phản hồi
+                        </div>
+                      </div>
+                    </div>
+                    <button className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                      <i className="ri-chat-3-line mr-2"></i>
+                      Xem chi tiết & Liên hệ
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button className="w-full mt-4 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors cursor-pointer">
+                <i className="ri-add-line mr-2"></i>
+                Đăng tin tìm đồng sáng lập
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="space-y-6">
@@ -1199,38 +1910,364 @@ export default function CreatorHubPage() {
               <p className="text-gray-600 mt-1">Quản lý thông tin và tài khoản của bạn</p>
             </div>
 
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              // Save to localStorage
+              localStorage.setItem('creator_profile_data', JSON.stringify(profileData));
+              // Update sessionStorage
+              if (profileData.fullName) {
+                sessionStorage.setItem('creator_name', profileData.fullName);
+                setCreatorName(profileData.fullName);
+              }
+              if (profileData.stageName) {
+                setStageName(profileData.stageName);
+              }
+              alert('Đã lưu thông tin hồ sơ thành công!');
+            }}>
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tên hiển thị</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Họ và tên <span className="text-red-500">*</span>
+                    </label>
                   <input
                     type="text"
-                    defaultValue={stageName || creatorName}
+                      name="fullName"
+                      value={profileData.fullName}
+                      onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
+                      required
+                      placeholder="Nguyễn Văn A"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tên hiển thị/Nghệ danh <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="stageName"
+                      value={profileData.stageName}
+                      onChange={(e) => setProfileData({ ...profileData, stageName: e.target.value })}
+                      required
+                      placeholder="Dr. Healthy"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
                   <input
                     type="email"
-                    defaultValue={sessionStorage.getItem('creator_email') || ''}
+                      name="email"
+                      value={profileData.email}
+                      onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                      required
+                      placeholder="example@email.com"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Số điện thoại <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={profileData.phone}
+                      onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                      required
+                      placeholder="0901234567"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Giới thiệu bản thân (Bio)
+                    </label>
                   <textarea
+                      name="bio"
+                      value={profileData.bio}
+                      onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
                     rows={4}
-                    placeholder="Giới thiệu về bản thân và phong cách nội dung..."
+                      placeholder="Mô tả ngắn gọn về bạn, chuyên môn, và phong cách nội dung..."
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   ></textarea>
                 </div>
-                <button className="md:col-span-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg">
+              </div>
+            </div>
+
+            {/* Social Media & Content Section */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-share-line text-purple-600"></i>
+                Social Media & Nội dung
+              </h3>
+
+              {/* Social Media Platforms */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Tài khoản Social Media
+                </label>
+                <div className="space-y-3">
+                  {[
+                    { key: 'tiktok', label: 'TikTok', icon: 'ri-tiktok-line' },
+                    { key: 'facebook', label: 'Facebook', icon: 'ri-facebook-line' },
+                    { key: 'instagram', label: 'Instagram', icon: 'ri-instagram-line' },
+                    { key: 'youtube', label: 'YouTube', icon: 'ri-youtube-line' },
+                    { key: 'zalo', label: 'Zalo', icon: 'ri-messenger-line' },
+                  ].map((platform) => (
+                    <div key={platform.key} className="flex items-center gap-3">
+                      <i className={`${platform.icon} text-xl text-gray-600 w-6`}></i>
+                      <input
+                        type="text"
+                        value={profileData.platforms[platform.key as keyof typeof profileData.platforms]}
+                        onChange={(e) => setProfileData({
+                          ...profileData,
+                          platforms: { ...profileData.platforms, [platform.key]: e.target.value }
+                        })}
+                        placeholder={`@${platform.label.toLowerCase()}`}
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Follower Count & Avg Views */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tổng số Followers (ước tính)
+                  </label>
+                  <input
+                    type="text"
+                    name="followerCount"
+                    value={profileData.followerCount}
+                    onChange={(e) => setProfileData({ ...profileData, followerCount: e.target.value })}
+                    placeholder="Ví dụ: 100K, 500K"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Lượt xem trung bình/Video
+                  </label>
+                  <input
+                    type="text"
+                    name="avgViews"
+                    value={profileData.avgViews}
+                    onChange={(e) => setProfileData({ ...profileData, avgViews: e.target.value })}
+                    placeholder="Ví dụ: 10K, 50K"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              {/* Content Categories */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Chủ đề nội dung bạn thường làm
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {[
+                    'Dược liệu & Sức khỏe',
+                    'Nông nghiệp bền vững',
+                    'Sống xanh & ESG',
+                    'Review sản phẩm',
+                    'Vlog trải nghiệm',
+                    'Giáo dục & Kiến thức',
+                    'Kinh doanh & Đầu tư',
+                  ].map((category) => (
+                    <label
+                      key={category}
+                      className={`cursor-pointer border-2 rounded-lg p-3 text-sm transition-all ${
+                        profileData.contentCategories.includes(category)
+                          ? 'border-purple-600 bg-purple-50 text-purple-700'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={profileData.contentCategories.includes(category)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setProfileData({
+                              ...profileData,
+                              contentCategories: [...profileData.contentCategories, category]
+                            });
+                          } else {
+                            setProfileData({
+                              ...profileData,
+                              contentCategories: profileData.contentCategories.filter(c => c !== category)
+                            });
+                          }
+                        }}
+                        className="hidden"
+                      />
+                      {category}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sample Content Links */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Link bài viết/Video mẫu (tối đa 5)
+                </label>
+                <div className="space-y-2 mb-2">
+                  {profileData.sampleContentLinks.map((link, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                      <span className="flex-1 text-sm text-gray-600 truncate">{link}</span>
+                      <button
+                        type="button"
+                        onClick={() => setProfileData({
+                          ...profileData,
+                          sampleContentLinks: profileData.sampleContentLinks.filter((_, i) => i !== index)
+                        })}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <i className="ri-close-line"></i>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                {profileData.sampleContentLinks.length < 5 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const link = prompt('Nhập link bài viết/video mẫu:');
+                      if (link) {
+                        setProfileData({
+                          ...profileData,
+                          sampleContentLinks: [...profileData.sampleContentLinks, link]
+                        });
+                      }
+                    }}
+                    className="px-4 py-2 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-purple-500 hover:text-purple-600 transition-all text-sm"
+                  >
+                    <i className="ri-add-line mr-2"></i>
+                    Thêm link mẫu
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Verification & Terms Section */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mt-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-shield-check-line text-purple-600"></i>
+                Xác minh & Điều khoản
+              </h3>
+
+              {/* ID Number */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Số CMND/CCCD
+                </label>
+                <input
+                  type="text"
+                  name="idNumber"
+                  value={profileData.idNumber}
+                  onChange={(e) => setProfileData({ ...profileData, idNumber: e.target.value })}
+                  placeholder="Ví dụ: 001234567890"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* File Uploads */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ảnh CMND/CCCD (nếu có)
+                  </label>
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setProfileData({ ...profileData, idPhoto: e.target.files[0] });
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                  {profileData.idPhoto && (
+                    <p className="text-sm text-green-600 mt-2">
+                      <i className="ri-check-line mr-1"></i>
+                      Đã tải: {profileData.idPhoto.name}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ảnh đại diện
+                  </label>
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setProfileData({ ...profileData, profilePhoto: e.target.files[0] });
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                  {profileData.profilePhoto && (
+                    <p className="text-sm text-green-600 mt-2">
+                      <i className="ri-check-line mr-1"></i>
+                      Đã tải: {profileData.profilePhoto.name}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Terms & Guidelines */}
+              <div className="space-y-3 mb-6">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={profileData.agreeToTerms}
+                    onChange={(e) => setProfileData({ ...profileData, agreeToTerms: e.target.checked })}
+                    className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 mt-0.5"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Tôi đồng ý với <a href="#" className="text-purple-600 hover:underline">Điều khoản sử dụng</a> và <a href="#" className="text-purple-600 hover:underline">Chính sách bảo mật</a> của VITA Creator Hub
+                  </span>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={profileData.agreeToContentGuidelines}
+                    onChange={(e) => setProfileData({ ...profileData, agreeToContentGuidelines: e.target.checked })}
+                    className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 mt-0.5"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Tôi cam kết tuân thủ <a href="#" className="text-purple-600 hover:underline">Quy định nội dung</a> và chỉ sử dụng dữ liệu đã được VITA cấp phép
+                  </span>
+                </label>
+              </div>
+
+              {/* Verification Info */}
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <p className="text-sm text-purple-800">
+                  <i className="ri-information-line mr-2"></i>
+                  Hồ sơ của bạn sẽ được Ban Quản lý VITA Creator Hub xem xét sau khi bạn hoàn tất thông tin. Sau khi được phê duyệt, bạn sẽ có quyền truy cập vào các công cụ sáng tạo nội dung và tham gia các chiến dịch.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button 
+                type="submit"
+                className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg"
+              >
                   <i className="ri-save-line mr-2"></i>
                   Lưu thay đổi
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         )}
       </div>

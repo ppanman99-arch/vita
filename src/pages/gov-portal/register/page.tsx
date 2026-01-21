@@ -111,9 +111,10 @@ export default function GovRegisterPage() {
       return;
     }
 
-    // Save registration data
+    // Save registration data - Auto-verify immediately (skip approval)
     sessionStorage.setItem('gov_registered_email', formData.email);
-    sessionStorage.setItem('gov_pending_verification', 'true');
+    sessionStorage.setItem('gov_verified', 'true');
+    sessionStorage.removeItem('gov_pending_verification');
     
     navigate('/gov-portal/login?registered=true');
   };

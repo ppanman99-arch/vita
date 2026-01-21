@@ -24,14 +24,10 @@ export default function ExpertLoginPage() {
 
     // Demo: Simple authentication check
     if (email && password === '1') {
-      // Check if expert is verified
-      const isVerified = sessionStorage.getItem('expert_verified') === 'true';
-      const pendingVerification = sessionStorage.getItem('expert_pending_verification') === 'true';
-      
-      if (pendingVerification && !isVerified) {
-        setError('Tài khoản của bạn đang chờ thẩm định. Vui lòng kiểm tra email để theo dõi tiến trình.');
-        return;
-      }
+      // Skip approval/pending verification - allow immediate access
+      // Auto-verify on login
+      sessionStorage.setItem('expert_verified', 'true');
+      sessionStorage.removeItem('expert_pending_verification');
 
       // Save session
       sessionStorage.setItem('expert_authenticated', 'true');

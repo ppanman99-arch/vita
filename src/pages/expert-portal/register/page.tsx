@@ -185,9 +185,10 @@ export default function ExpertRegisterPage() {
       return;
     }
 
-    // Save registration data (in real app, send to API)
+    // Save registration data - Auto-verify immediately (skip approval)
     sessionStorage.setItem('expert_registered_email', formData.email);
-    sessionStorage.setItem('expert_pending_verification', 'true');
+    sessionStorage.setItem('expert_verified', 'true');
+    sessionStorage.removeItem('expert_pending_verification');
     
     // Navigate to success page or login
     navigate('/expert-portal/login?registered=true');

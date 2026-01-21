@@ -5,10 +5,57 @@ import PortalSwitcher from '../../components/shared/PortalSwitcher';
 
 export default function PhysicianPortalPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'database' | 'subscription' | 'premium' | 'wiki' | 'rare-herb' | 'feedback' | 'order' | 'hospital' | 'community'>('overview');
+  const [activeTab, setActiveTab] = useState<'profile' | 'overview' | 'database' | 'subscription' | 'premium' | 'wiki' | 'rare-herb' | 'feedback' | 'order' | 'community' | 'formula-builder' | 'ingredient-sourcing' | 'verification' | 'lab-production' | 'commercial-link' | 'tele-clinic' | 'legacy-training'>('overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const [showMainMenu, setShowMainMenu] = useState(false);
+
+  // Profile form state
+  const [profileData, setProfileData] = useState(() => {
+    const saved = localStorage.getItem('vita_physician_registration_data');
+    return saved ? JSON.parse(saved) : {
+      userType: 'physician',
+      organizationName: '',
+      specialty: '',
+      representative: '',
+      position: '',
+      phone: '',
+      email: '',
+    };
+  });
+
+  const specialtyOptions = [
+    'Cơ xương khớp',
+    'Tiêu hóa',
+    'Thần kinh',
+    'Tim mạch',
+    'Hô hấp',
+    'Da liễu',
+    'Nội tiết',
+    'Khác'
+  ];
+
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setProfileData({
+      ...profileData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleProfilePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    setProfileData({
+      ...profileData,
+      phone: value
+    });
+  };
+
+  const handleProfileSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('vita_physician_registration_data', JSON.stringify(profileData));
+    alert('Thông tin đã được cập nhật!');
+  };
 
   const roles = [
     { id: 'admin', name: 'HTX - Quản trị', icon: 'ri-dashboard-line', path: '/admin' },
@@ -301,134 +348,294 @@ export default function PhysicianPortalPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center">
-              <i className="ri-stethoscope-line text-2xl text-white"></i>
+          {/* Menu Bar */}
+          <div className="flex items-center justify-between gap-4 pb-3">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i className="ri-stethoscope-line text-xl sm:text-2xl text-white"></i>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">Cổng Chuyên gia Y học & Dược liệu</h1>
+                <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">VITA Healer Portal - Từ Y lý đến Sản phẩm</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Cổng Kiểm Định & Lâm Sàng</h1>
-              <p className="text-sm text-gray-600">Thư viện Dược liệu số & Phản hồi Y khoa</p>
-            </div>
-          </div>
 
-          {/* Tab Navigation */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'overview'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-dashboard-line mr-1"></i>
-              Tổng quan
-            </button>
-            <button
-              onClick={() => setActiveTab('database')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'database'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-book-line mr-1"></i>
-              Tra cứu Dược liệu
-            </button>
-            <button
-              onClick={() => setActiveTab('subscription')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'subscription'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-calendar-check-line mr-1"></i>
-              Tủ Thuốc Định Kỳ
-            </button>
-            <button
-              onClick={() => setActiveTab('premium')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'premium'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-star-line mr-1"></i>
-              Lô Tuyển Chọn
-            </button>
-            <button
-              onClick={() => setActiveTab('wiki')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'wiki'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-edit-box-line mr-1"></i>
-              VITA Wiki
-            </button>
-            <button
-              onClick={() => setActiveTab('rare-herb')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'rare-herb'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-plant-line mr-1"></i>
-              Cây Thuốc Lạ
-            </button>
-            <button
-              onClick={() => setActiveTab('feedback')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'feedback'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-feedback-line mr-1"></i>
-              Phản hồi Lâm sàng
-            </button>
-            <button
-              onClick={() => setActiveTab('order')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'order'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-shopping-bag-line mr-1"></i>
-              Đặt mẫu
-            </button>
-            <button
-              onClick={() => setActiveTab('hospital')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'hospital'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-hospital-line mr-1"></i>
-              Bệnh viện
-            </button>
-            <button
-              onClick={() => setActiveTab('community')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm ${
-                activeTab === 'community'
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <i className="ri-team-line mr-1"></i>
-              Cộng đồng
-            </button>
+            {/* Main Menu Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowMainMenu(!showMainMenu)}
+                className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm flex items-center gap-2 ${
+                  showMainMenu
+                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <i className="ri-menu-line"></i>
+                <span className="hidden sm:inline">Menu</span>
+                <i className={`ri-arrow-down-s-line transition-transform ${showMainMenu ? 'rotate-180' : ''}`}></i>
+              </button>
+
+              {showMainMenu && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setShowMainMenu(false)}
+                  ></div>
+                  <div className="absolute right-0 top-full mt-2 w-80 max-h-[calc(100vh-200px)] overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+                    <div className="p-4 border-b border-gray-100 sticky top-0 bg-white">
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Danh mục chức năng</p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                          <i className="ri-stethoscope-line text-white text-lg"></i>
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">Cổng Chuyên gia</p>
+                          <p className="text-xs text-gray-600">Y học & Dược liệu</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-2">
+                      {/* Quick Access - Current Tab */}
+                      <div className="px-4 py-2 bg-teal-50 border-l-4 border-teal-500 mb-2">
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Đang xem</p>
+                        <div className="flex items-center gap-2 text-sm font-medium text-teal-700">
+                          <i className="ri-eye-line"></i>
+                          <span>{activeTab === 'profile' ? 'Hồ sơ' : activeTab === 'overview' ? 'Tổng quan' : activeTab === 'database' ? 'Tra cứu Dược liệu' : activeTab === 'subscription' ? 'Tủ Thuốc Định Kỳ' : activeTab === 'premium' ? 'Lô Tuyển Chọn' : activeTab === 'wiki' ? 'VITA Wiki' : activeTab === 'rare-herb' ? 'Cây Thuốc Lạ' : activeTab === 'feedback' ? 'Phản hồi Lâm sàng' : activeTab === 'order' ? 'Đặt mẫu' : activeTab === 'community' ? 'Cộng đồng' : activeTab === 'formula-builder' ? 'Công thức & Bài thuốc' : activeTab === 'ingredient-sourcing' ? 'Nguồn nguyên liệu' : activeTab === 'verification' ? 'Kiểm định R&D' : activeTab === 'lab-production' ? 'Sản xuất Demo' : activeTab === 'commercial-link' ? 'Kết nối Creator' : activeTab === 'tele-clinic' ? 'Phòng khám Từ xa' : 'Đào tạo & Di sản'}</span>
+                        </div>
+                      </div>
+
+                      {/* Navigation Tabs */}
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Thông tin & Tra cứu</p>
+                        {[
+                          { id: 'profile', label: 'Hồ sơ', icon: 'ri-user-settings-line' },
+                          { id: 'overview', label: 'Tổng quan', icon: 'ri-dashboard-line' },
+                          { id: 'database', label: 'Tra cứu Dược liệu', icon: 'ri-book-line' },
+                          { id: 'subscription', label: 'Tủ Thuốc Định Kỳ', icon: 'ri-calendar-check-line' },
+                          { id: 'premium', label: 'Lô Tuyển Chọn', icon: 'ri-star-line' },
+                          { id: 'wiki', label: 'VITA Wiki', icon: 'ri-edit-box-line' },
+                          { id: 'rare-herb', label: 'Cây Thuốc Lạ', icon: 'ri-plant-line' },
+                          { id: 'feedback', label: 'Phản hồi Lâm sàng', icon: 'ri-feedback-line' },
+                          { id: 'order', label: 'Đặt mẫu', icon: 'ri-shopping-bag-line' },
+                          { id: 'community', label: 'Cộng đồng', icon: 'ri-team-line' },
+                        ].map((tab) => (
+                          <button
+                            key={tab.id}
+                            onClick={() => {
+                              setActiveTab(tab.id as any);
+                              setShowMainMenu(false);
+                            }}
+                            className={`w-full px-3 py-2 rounded-lg font-medium transition-all text-left text-sm flex items-center gap-2 mb-1 ${
+                              activeTab === tab.id
+                                ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white'
+                                : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            <i className={tab.icon}></i>
+                            {tab.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Module Tabs */}
+                      <div className="px-4 py-2">
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Công cụ & Dịch vụ</p>
+                        {[
+                          { id: 'formula-builder', label: 'Công thức & Bài thuốc', icon: 'ri-flask-line' },
+                          { id: 'ingredient-sourcing', label: 'Nguồn nguyên liệu', icon: 'ri-map-pin-line' },
+                          { id: 'verification', label: 'Kiểm định R&D', icon: 'ri-shield-check-line' },
+                          { id: 'lab-production', label: 'Sản xuất Demo', icon: 'ri-settings-3-line' },
+                          { id: 'commercial-link', label: 'Kết nối Creator', icon: 'ri-handshake-line' },
+                          { id: 'tele-clinic', label: 'Phòng khám Từ xa', icon: 'ri-video-chat-line' },
+                          { id: 'legacy-training', label: 'Đào tạo & Di sản', icon: 'ri-book-open-line' },
+                        ].map((tab) => (
+                          <button
+                            key={tab.id}
+                            onClick={() => {
+                              setActiveTab(tab.id as any);
+                              setShowMainMenu(false);
+                            }}
+                            className={`w-full px-3 py-2 rounded-lg font-medium transition-all text-left text-sm flex items-center gap-2 mb-1 ${
+                              activeTab === tab.id
+                                ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white'
+                                : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            <i className={tab.icon}></i>
+                            {tab.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        {/* Tab: Profile */}
+        {activeTab === 'profile' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+              <div className="mb-6">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Thông tin chuyên môn</h3>
+                <p className="text-gray-600">Cập nhật thông tin về cơ sở hành nghề của bạn</p>
+              </div>
+
+              <form onSubmit={handleProfileSubmit} className="space-y-6">
+                <div className="bg-emerald-50 rounded-xl p-6">
+                  <div className="mb-4">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
+                      Bạn là: *
+                    </label>
+                    <div className="space-y-3">
+                      <label className="flex items-start gap-3 p-4 border-2 border-teal-300 rounded-xl cursor-pointer bg-teal-50">
+                        <input
+                          type="radio"
+                          name="userType"
+                          value="physician"
+                          checked={true}
+                          readOnly
+                          className="w-5 h-5 text-teal-600 mt-0.5"
+                        />
+                        <div>
+                          <p className="font-semibold text-gray-900">Bác sĩ / Lương y (Phòng khám tư nhân)</p>
+                          <p className="text-sm text-gray-600">Hành nghề độc lập hoặc phòng khám tư</p>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-emerald-50 rounded-xl p-6">
+                  <div className="mb-4">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
+                      Tên Phòng khám / Cơ sở hành nghề *
+                    </label>
+                    <input
+                      type="text"
+                      name="organizationName"
+                      required
+                      value={profileData.organizationName}
+                      onChange={handleProfileChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base"
+                      placeholder="VD: Phòng khám Y học Cổ truyền Hòa Bình"
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
+                      Chuyên khoa sâu *
+                    </label>
+                    <select
+                      name="specialty"
+                      required
+                      value={profileData.specialty}
+                      onChange={handleProfileChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base"
+                    >
+                      <option value="">Chọn chuyên khoa</option>
+                      {specialtyOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
+                        Người liên hệ *
+                      </label>
+                      <input
+                        type="text"
+                        name="representative"
+                        required
+                        value={profileData.representative}
+                        onChange={handleProfileChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base"
+                        placeholder="VD: BS. Nguyễn Văn A"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
+                        Chức vụ *
+                      </label>
+                      <input
+                        type="text"
+                        name="position"
+                        required
+                        value={profileData.position}
+                        onChange={handleProfileChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base"
+                        placeholder="VD: Giám đốc / Trưởng khoa"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 mt-6">
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 px-6 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all"
+                  >
+                    Lưu thông tin chuyên môn
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Thông tin liên hệ */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+              <div className="mb-6">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Thông tin liên hệ</h3>
+                <p className="text-gray-600">Cập nhật thông tin liên hệ của bạn</p>
+              </div>
+
+              <form onSubmit={handleProfileSubmit} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Số điện thoại *</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      value={profileData.phone}
+                      onChange={handleProfilePhoneChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base"
+                      placeholder="VD: 0912345678"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Email *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={profileData.email}
+                      onChange={handleProfileChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base"
+                      placeholder="VD: email@clinic.vn"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-4 mt-6">
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 px-6 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all"
+                  >
+                    Lưu thông tin liên hệ
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
         {/* Tab: Overview */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
@@ -2452,281 +2659,6 @@ export default function PhysicianPortalPage() {
           </div>
         )}
 
-        {/* Tab: Bệnh viện - Hospital Management */}
-        {activeTab === 'hospital' && (
-          <div className="space-y-6">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl shadow-lg p-6 border-2 border-blue-200">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                  <i className="ri-hospital-line text-3xl text-white"></i>
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">Quản lý Hợp tác Bệnh viện</h2>
-                  <p className="text-gray-700">Kết nối với bệnh viện, quản lý hợp tác, và theo dõi các dự án nghiên cứu lâm sàng</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white/70 rounded-lg p-3">
-                  <div className="text-xs text-gray-600 mb-1">Bệnh viện đối tác</div>
-                  <div className="text-2xl font-bold text-gray-900">12</div>
-                </div>
-                <div className="bg-white/70 rounded-lg p-3">
-                  <div className="text-xs text-gray-600 mb-1">Dự án nghiên cứu</div>
-                  <div className="text-2xl font-bold text-emerald-600">8</div>
-                </div>
-                <div className="bg-white/70 rounded-lg p-3">
-                  <div className="text-xs text-gray-600 mb-1">Bệnh nhân tham gia</div>
-                  <div className="text-2xl font-bold text-blue-600">1,247</div>
-                </div>
-                <div className="bg-white/70 rounded-lg p-3">
-                  <div className="text-xs text-gray-600 mb-1">Xuất bản nghiên cứu</div>
-                  <div className="text-2xl font-bold text-purple-600">5</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Partner Hospitals */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <i className="ri-hospital-line text-blue-600"></i>
-                  Bệnh viện Đối tác
-                </h3>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
-                  <i className="ri-add-line mr-1"></i>
-                  Thêm đối tác
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  { id: 1, name: 'BV Y học Cổ truyền Trung ương', location: 'Hà Nội', level: 'Tuyến Trung ương', projects: 3, patients: 456, status: 'Đang hợp tác', type: 'Đông Y' },
-                  { id: 2, name: 'BV Chợ Rẫy', location: 'TP.HCM', level: 'Tuyến Trung ương', projects: 2, patients: 312, status: 'Đang hợp tác', type: 'Tây Y kết hợp' },
-                  { id: 3, name: 'BV Đa khoa Yên Bái', location: 'Yên Bái', level: 'Tuyến Tỉnh', projects: 1, patients: 189, status: 'Đang hợp tác', type: 'Đông Y' },
-                  { id: 4, name: 'BV Y học Cổ truyền Bình Dương', location: 'Bình Dương', level: 'Tuyến Tỉnh', projects: 2, patients: 234, status: 'Đàm phán', type: 'Đông Y' },
-                  { id: 5, name: 'BV Đa khoa Kon Tum', location: 'Kon Tum', level: 'Tuyến Tỉnh', projects: 0, patients: 0, status: 'Đề xuất', type: 'Tây Y kết hợp' },
-                  { id: 6, name: 'BV 108 - Quân y', location: 'Hà Nội', level: 'Tuyến Trung ương', projects: 1, patients: 56, status: 'Hợp tác đặc biệt', type: 'Quân y' },
-                ].map((hospital) => (
-                  <div key={hospital.id} className="border-2 border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-lg transition-all">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <h4 className="font-bold text-gray-900 mb-1 text-lg">{hospital.name}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{hospital.location} • {hospital.level}</p>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          hospital.status === 'Đang hợp tác' ? 'bg-green-100 text-green-700' :
-                          hospital.status === 'Đàm phán' ? 'bg-yellow-100 text-yellow-700' :
-                          hospital.status === 'Đề xuất' ? 'bg-blue-100 text-blue-700' :
-                          'bg-purple-100 text-purple-700'
-                        }`}>
-                          {hospital.status}
-                        </span>
-                      </div>
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center">
-                        <i className="ri-hospital-line text-2xl text-blue-600"></i>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      <div className="bg-blue-50 rounded-lg p-3">
-                        <div className="text-xs text-gray-600 mb-1">Dự án</div>
-                        <div className="font-bold text-gray-900 text-lg">{hospital.projects}</div>
-                      </div>
-                      <div className="bg-emerald-50 rounded-lg p-3">
-                        <div className="text-xs text-gray-600 mb-1">Bệnh nhân</div>
-                        <div className="font-bold text-gray-900 text-lg">{hospital.patients}</div>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-2 mb-4">
-                      <div className="text-xs text-gray-600 mb-1">Loại hình</div>
-                      <div className="text-sm font-semibold text-gray-900">{hospital.type}</div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
-                        <i className="ri-eye-line mr-1"></i>
-                        Chi tiết
-                      </button>
-                      <button className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium">
-                        <i className="ri-message-3-line mr-1"></i>
-                        Liên hệ
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Research Projects */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <i className="ri-flask-line text-purple-600"></i>
-                  Dự án Nghiên cứu Lâm sàng
-                </h3>
-                <button className="px-4 py-2 border-2 border-purple-500 text-purple-600 rounded-lg text-sm font-medium hover:bg-purple-50 transition-colors">
-                  <i className="ri-add-line mr-1"></i>
-                  Tạo dự án mới
-                </button>
-              </div>
-              <div className="space-y-4">
-                {[
-                  { id: 1, title: 'Hiệu quả Sâm Ngọc Linh trong điều trị Suy nhược sau COVID-19', hospital: 'BV Y học Cổ truyền Trung ương', phase: 'Phase II', patients: 120, startDate: '01/2024', endDate: '12/2025', status: 'Đang triển khai', progress: 65 },
-                  { id: 2, title: 'Nghiên cứu Đương Quy trong điều trị Thiếu máu ở phụ nữ', hospital: 'BV Chợ Rẫy', phase: 'Phase III', patients: 200, startDate: '06/2023', endDate: '06/2025', status: 'Đang triển khai', progress: 78 },
-                  { id: 3, title: 'Cà Gai Leo trong điều trị Viêm gan B mạn tính', hospital: 'BV Đa khoa Yên Bái', phase: 'Phase I', patients: 50, startDate: '03/2024', endDate: '03/2026', status: 'Đang triển khai', progress: 42 },
-                  { id: 4, title: 'Đánh giá An toàn và Hiệu quả Nghệ Nano trong viêm khớp', hospital: 'BV Y học Cổ truyền Bình Dương', phase: 'Phase II', patients: 150, startDate: '09/2024', endDate: '09/2026', status: 'Kế hoạch', progress: 0 },
-                ].map((project) => (
-                  <div key={project.id} className="border-2 border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-md transition-all">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-bold text-gray-900 text-lg">{project.title}</h4>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            project.status === 'Đang triển khai' ? 'bg-green-100 text-green-700' :
-                            project.status === 'Kế hoạch' ? 'bg-blue-100 text-blue-700' :
-                            'bg-gray-100 text-gray-700'
-                          }`}>
-                            {project.status}
-                          </span>
-                          <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
-                            {project.phase}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">{project.hospital}</p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                          <div>
-                            <span className="text-gray-600">Bệnh nhân:</span>
-                            <span className="ml-2 font-semibold text-gray-900">{project.patients}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">Bắt đầu:</span>
-                            <span className="ml-2 font-semibold text-gray-900">{project.startDate}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">Kết thúc:</span>
-                            <span className="ml-2 font-semibold text-gray-900">{project.endDate}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">Tiến độ:</span>
-                            <span className="ml-2 font-semibold text-emerald-600">{project.progress}%</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {project.progress > 0 && (
-                      <div className="mb-4">
-                        <div className="w-full bg-gray-200 rounded-full h-3">
-                          <div 
-                            className="bg-gradient-to-r from-purple-500 to-indigo-600 h-3 rounded-full transition-all"
-                            style={{ width: `${project.progress}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex gap-2">
-                      <button className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
-                        <i className="ri-file-list-3-line mr-1"></i>
-                        Báo cáo
-                      </button>
-                      <button className="flex-1 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm font-medium">
-                        <i className="ri-eye-line mr-1"></i>
-                        Xem chi tiết
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Clinical Cases */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <i className="ri-file-medical-line text-teal-600"></i>
-                Case Lâm sàng Nổi bật
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { id: 1, patient: 'BN-2024-001', diagnosis: 'Suy nhược sau COVID-19', medicine: 'Sâm Ngọc Linh', hospital: 'BV Y học Cổ truyền Trung ương', outcome: 'Cải thiện tốt', date: '15/01/2025', doctor: 'BS. Nguyễn Văn A' },
-                  { id: 2, patient: 'BN-2024-045', diagnosis: 'Thiếu máu sau sinh', medicine: 'Đương Quy', hospital: 'BV Chợ Rẫy', outcome: 'Hồi phục hoàn toàn', date: '12/01/2025', doctor: 'BS. Trần Thị B' },
-                  { id: 3, patient: 'BN-2024-078', diagnosis: 'Viêm gan B mạn tính', medicine: 'Cà Gai Leo', hospital: 'BV Đa khoa Yên Bái', outcome: 'Chuyển biến tích cực', date: '10/01/2025', doctor: 'BS. Lê Văn C' },
-                  { id: 4, patient: 'BN-2024-112', diagnosis: 'Viêm khớp dạng thấp', medicine: 'Nghệ Nano', hospital: 'BV Y học Cổ truyền Bình Dương', outcome: 'Giảm đau đáng kể', date: '08/01/2025', doctor: 'BS. Phạm Thị D' },
-                ].map((caseItem) => (
-                  <div key={caseItem.id} className="border-2 border-gray-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-md transition-all">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-bold text-gray-900">{caseItem.patient}</h4>
-                          <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
-                            {caseItem.outcome}
-                          </span>
-                        </div>
-                        <p className="text-sm font-semibold text-gray-800 mb-1">{caseItem.diagnosis}</p>
-                        <p className="text-sm text-gray-600 mb-2">Dùng: <span className="font-semibold">{caseItem.medicine}</span></p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs mb-3">
-                      <div>
-                        <span className="text-gray-600">Bệnh viện:</span>
-                        <p className="font-semibold text-gray-900">{caseItem.hospital}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Bác sĩ:</span>
-                        <p className="font-semibold text-gray-900">{caseItem.doctor}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>{caseItem.date}</span>
-                      <button className="text-teal-600 hover:text-teal-700 font-medium">
-                        Xem chi tiết →
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Publications */}
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl shadow-lg p-6 border-2 border-indigo-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <i className="ri-file-paper-2-line text-indigo-600"></i>
-                Công trình Nghiên cứu đã Xuất bản
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { id: 1, title: 'Efficacy of Vietnamese Ginseng (Panax vietnamensis) in Post-COVID-19 Fatigue Syndrome', journal: 'Journal of Traditional and Complementary Medicine', date: '12/2024', authors: 'Nguyễn V.A., Trần T.B., et al.', impact: 'IF 3.5' },
-                  { id: 2, title: 'Angelica sinensis in Treatment of Iron-Deficiency Anemia: A Randomized Controlled Trial', journal: 'Phytomedicine', date: '10/2024', authors: 'Trần T.B., Nguyễn V.A., et al.', impact: 'IF 5.2' },
-                  { id: 3, title: 'Solanum procumbens Extract for Chronic Hepatitis B: Safety and Efficacy Study', journal: 'World Journal of Hepatology', date: '08/2024', authors: 'Lê V.C., Phạm T.D., et al.', impact: 'IF 4.1' },
-                ].map((pub) => (
-                  <div key={pub.id} className="bg-white rounded-xl p-5 border-2 border-indigo-200 hover:shadow-lg transition-all">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h4 className="font-bold text-gray-900 mb-2 text-lg">{pub.title}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{pub.journal}</p>
-                        <p className="text-sm text-gray-700 mb-2">
-                          <span className="font-semibold">Tác giả:</span> {pub.authors}
-                        </p>
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="text-gray-600">Xuất bản: <span className="font-semibold text-gray-900">{pub.date}</span></span>
-                          <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">
-                            {pub.impact}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
-                        <i className="ri-download-line mr-1"></i>
-                        Tải PDF
-                      </button>
-                      <button className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors text-sm font-medium">
-                        <i className="ri-external-link-line mr-1"></i>
-                        Xem online
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Tab: Community */}
         {activeTab === 'community' && (
           <div className="space-y-6">
@@ -2826,6 +2758,792 @@ export default function PhysicianPortalPage() {
                     Xem ngay
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Formula Builder - Quản lý Công thức & Bài thuốc */}
+        {activeTab === 'formula-builder' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Quản lý Công thức & Bài thuốc</h2>
+              <p className="text-gray-600 mt-1">Digital Apothecary - Phòng Lab ảo số hóa bí kíp gia truyền</p>
+            </div>
+
+            {/* Formula Builder */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-flask-line text-teal-600"></i>
+                Công cụ Lập phương (Formula Builder)
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Thiết kế bài thuốc theo nguyên lý "Quân - Thần - Tá - Sứ"</p>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+                {/* Quân */}
+                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-4 border-2 border-red-200">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <i className="ri-crown-line text-red-600"></i>
+                    Quân (Vị chính)
+                  </h4>
+                  <div className="space-y-2">
+                    <div className="bg-white rounded-lg p-3 border border-red-200">
+                      <div className="font-semibold text-gray-900 text-sm">Sâm Ngọc Linh</div>
+                      <div className="text-xs text-gray-600">6g</div>
+                    </div>
+                  </div>
+                  <button className="w-full mt-3 bg-red-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors cursor-pointer">
+                    <i className="ri-add-line mr-1"></i>
+                    Thêm vị
+                  </button>
+                </div>
+
+                {/* Thần */}
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <i className="ri-star-line text-blue-600"></i>
+                    Thần (Hỗ trợ)
+                  </h4>
+                  <div className="space-y-2">
+                    <div className="bg-white rounded-lg p-3 border border-blue-200">
+                      <div className="font-semibold text-gray-900 text-sm">Đương Quy</div>
+                      <div className="text-xs text-gray-600">9g</div>
+                    </div>
+                  </div>
+                  <button className="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                    <i className="ri-add-line mr-1"></i>
+                    Thêm vị
+                  </button>
+                </div>
+
+                {/* Tá */}
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-200">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <i className="ri-tools-line text-purple-600"></i>
+                    Tá (Phụ trợ)
+                  </h4>
+                  <div className="space-y-2">
+                    <div className="bg-white rounded-lg p-3 border border-purple-200">
+                      <div className="font-semibold text-gray-900 text-sm">Cam Thảo</div>
+                      <div className="text-xs text-gray-600">3g</div>
+                    </div>
+                  </div>
+                  <button className="w-full mt-3 bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
+                    <i className="ri-add-line mr-1"></i>
+                    Thêm vị
+                  </button>
+                </div>
+
+                {/* Sứ */}
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <i className="ri-send-plane-line text-green-600"></i>
+                    Sứ (Dẫn thuốc)
+                  </h4>
+                  <div className="space-y-2">
+                    <div className="bg-white rounded-lg p-3 border border-green-200">
+                      <div className="font-semibold text-gray-900 text-sm">Sinh Khương</div>
+                      <div className="text-xs text-gray-600">3g</div>
+                    </div>
+                  </div>
+                  <button className="w-full mt-3 bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
+                    <i className="ri-add-line mr-1"></i>
+                    Thêm vị
+                  </button>
+                </div>
+              </div>
+
+              {/* Thư viện Nguyên liệu */}
+              <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                <h4 className="font-bold text-gray-900 mb-3">Thư viện Nguyên liệu</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {[
+                    { name: 'Sâm Ngọc Linh', compound: 'Saponin 12%', region: 'Kon Tum', price: '2.5 triệu/kg' },
+                    { name: 'Đương Quy', compound: 'Ligustilide 0.8%', region: 'Lào Cai', price: '800k/kg' },
+                    { name: 'Ba Kích', compound: 'Iridoid 1.2%', region: 'Hà Giang', price: '1.2 triệu/kg' },
+                  ].map((herb, idx) => (
+                    <div key={idx} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-teal-400 cursor-pointer transition-all">
+                      <div className="font-semibold text-gray-900 text-sm mb-1">{herb.name}</div>
+                      <div className="text-xs text-gray-600 space-y-0.5">
+                        <div>Hoạt chất: {herb.compound}</div>
+                        <div>Vùng: {herb.region}</div>
+                        <div className="font-medium text-teal-600">Giá: {herb.price}</div>
+                      </div>
+                      <button className="w-full mt-2 bg-teal-600 text-white py-1 rounded text-xs font-medium hover:bg-teal-700 transition-colors cursor-pointer">
+                        Kéo thả vào công thức
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ghi chú Chế biến (SOP) */}
+              <div className="bg-white rounded-xl p-4 border-2 border-amber-200 mb-4">
+                <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <i className="ri-file-list-3-line text-amber-600"></i>
+                  Ghi chú Chế biến (SOP) - Bí quyết công nghệ
+                </h4>
+                <div className="space-y-3">
+                  <div className="bg-amber-50 rounded-lg p-3">
+                    <div className="font-semibold text-gray-900 text-sm mb-1">Sâm Ngọc Linh</div>
+                    <div className="text-sm text-gray-700">Sao vàng hạ thổ, tẩm rượu 3 lần, cửu chưng cửu sái</div>
+                  </div>
+                  <button className="w-full bg-amber-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors cursor-pointer">
+                    <i className="ri-add-line mr-1"></i>
+                    Thêm ghi chú chế biến
+                  </button>
+                </div>
+              </div>
+
+              {/* IP Vault */}
+              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-5 text-white">
+                <div className="flex items-center gap-3 mb-3">
+                  <i className="ri-lock-line text-3xl"></i>
+                  <div>
+                    <h4 className="font-bold text-lg">Mã hóa & Bảo mật Công thức (IP Vault)</h4>
+                    <p className="text-sm opacity-90">Công thức được mã hóa trên Blockchain</p>
+                  </div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-3">
+                  <div className="text-sm mb-2">Chế độ bảo mật:</div>
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="security" value="blackbox" className="text-indigo-600" />
+                      <span className="text-sm">Hộp đen (Blackbox) - Nhà máy không biết tỷ lệ phối trộn</span>
+                    </label>
+                  </div>
+                </div>
+                <button className="w-full bg-white text-indigo-600 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors cursor-pointer">
+                  <i className="ri-save-line mr-2"></i>
+                  Lưu công thức vào IP Vault
+                </button>
+              </div>
+            </div>
+
+            {/* My Formulas */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Bài thuốc của tôi</h3>
+              <div className="space-y-4">
+                {[
+                  {
+                    name: 'Hồi Xuân Phục Cốt',
+                    status: 'protected',
+                    ingredients: 8,
+                    patients: 45,
+                    effectiveness: '92%'
+                  },
+                ].map((formula, idx) => (
+                  <div key={idx} className="border-2 border-teal-200 rounded-xl p-5 bg-teal-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-bold text-gray-900">{formula.name}</h4>
+                          <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                            <i className="ri-lock-line mr-1"></i>
+                            Đã bảo vệ
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-3 text-sm">
+                          <div>
+                            <div className="text-gray-600">Số vị thuốc</div>
+                            <div className="font-bold text-gray-900">{formula.ingredients} vị</div>
+                          </div>
+                          <div>
+                            <div className="text-gray-600">Bệnh nhân đã dùng</div>
+                            <div className="font-bold text-gray-900">{formula.patients} người</div>
+                          </div>
+                          <div>
+                            <div className="text-gray-600">Hiệu quả</div>
+                            <div className="font-bold text-green-600">{formula.effectiveness}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="flex-1 bg-teal-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors cursor-pointer">
+                        <i className="ri-edit-line mr-1"></i>
+                        Chỉnh sửa
+                      </button>
+                      <button className="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors cursor-pointer">
+                        <i className="ri-eye-line mr-1"></i>
+                        Xem chi tiết
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Ingredient Sourcing - Quản lý Nguồn nguyên liệu */}
+        {activeTab === 'ingredient-sourcing' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Quản lý Nguồn nguyên liệu</h2>
+              <p className="text-gray-600 mt-1">Kiểm soát chất lượng đầu vào "tận gốc"</p>
+            </div>
+
+            {/* Source Map */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-map-2-line text-teal-600"></i>
+                Bản đồ Vùng nguyên liệu (Source Map)
+              </h3>
+              <div className="relative h-96 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl overflow-hidden mb-4">
+                <img
+                  src="https://readdy.ai/api/search-image?query=Vietnam%20medicinal%20plant%20farm%20map%20with%20cooperative%20locations%2C%20agricultural%20regions%20marked%2C%20topographic%20view%2C%20clear%20simple%20background&width=1200&height=400&seq=physician-source-map-001&orientation=landscape"
+                  alt="Source Map"
+                  className="w-full h-full object-cover opacity-80"
+                />
+                <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-3">
+                  <div className="text-xs font-semibold text-gray-700 mb-1">Bộ lọc chuyên sâu</div>
+                  <div className="text-sm text-gray-900">Sâm Ngọc Linh trên 5 năm tuổi</div>
+                  <div className="text-sm text-gray-900">Ba kích tím trồng hướng Đông</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-teal-50 rounded-lg p-3 border border-teal-200">
+                  <div className="text-xs text-gray-600 mb-1">HTX khớp lệnh</div>
+                  <div className="font-bold text-teal-600">5 HTX</div>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                  <div className="text-xs text-gray-600 mb-1">Tổng sản lượng</div>
+                  <div className="font-bold text-blue-600">2.5 tấn</div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                  <div className="text-xs text-gray-600 mb-1">Đã đặt gạch</div>
+                  <div className="font-bold text-green-600">1.2 tấn</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Material Booking */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-bookmark-line text-purple-600"></i>
+                Khóa Nguồn hàng (Material Booking)
+              </h3>
+              <div className="space-y-4">
+                <div className="border-2 border-purple-200 rounded-xl p-5 bg-purple-50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-3 py-1 bg-purple-600 text-white rounded-full text-xs font-bold">BOOK-001</span>
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Đã khóa</span>
+                      </div>
+                      <h4 className="font-bold text-gray-900 text-lg mb-2">Lô Sâm số 5 - HTX Tu Mơ Rông</h4>
+                      <p className="text-sm text-gray-700 mb-3">Dùng riêng cho bài thuốc "Hồi Xuân Phục Cốt" trong năm 2026</p>
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Sản lượng</div>
+                          <div className="font-bold text-purple-600">500 kg</div>
+                        </div>
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Tuổi cây</div>
+                          <div className="font-bold text-purple-600">5-6 năm</div>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-3">
+                        <div className="text-xs text-gray-600 mb-1">Lợi ích</div>
+                        <p className="text-sm text-gray-800">Tránh việc khi thuốc bán chạy thì hết nguyên liệu xịn, phải trộn nguyên liệu rởm.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors cursor-pointer">
+                  <i className="ri-bookmark-line mr-2"></i>
+                  Đặt gạch nguồn hàng mới
+                </button>
+              </div>
+            </div>
+
+            {/* Cultivation Diary Check */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-file-text-line text-green-600"></i>
+                Kiểm tra Nhật ký Canh tác
+              </h3>
+              <div className="space-y-3">
+                <div className="border-2 border-green-200 rounded-xl p-4 bg-green-50">
+                  <div className="font-bold text-gray-900 mb-2">HTX Tu Mơ Rông - Lô Sâm số 5</div>
+                  <div className="text-sm text-gray-700 space-y-1 mb-3">
+                    <div>• Không sử dụng phân bón hóa học</div>
+                    <div>• Chỉ dùng phân hữu cơ từ rừng</div>
+                    <div>• Không phun thuốc trừ sâu</div>
+                    <div>• Đạt chuẩn Organic</div>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-green-700">
+                    <i className="ri-checkbox-circle-fill"></i>
+                    <span className="font-semibold">Đạt tiêu chuẩn "Dược liệu sạch"</span>
+                  </div>
+                </div>
+                <button className="w-full bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
+                  <i className="ri-search-line mr-2"></i>
+                  Xem nhật ký canh tác chi tiết
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Verification Link - Kết nối R&D & Kiểm định */}
+        {activeTab === 'verification' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Kết nối R&D & Kiểm định</h2>
+              <p className="text-gray-600 mt-1">Chuẩn hóa bài thuốc từ "kinh nghiệm dân gian" thành "khoa học chứng thực"</p>
+            </div>
+
+            {/* Express Test */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-flashlight-line text-orange-600"></i>
+                Gửi mẫu Kiểm định Nhanh (Express Test)
+              </h3>
+              <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-5 border-2 border-orange-200 mb-4">
+                <p className="text-sm text-gray-700 mb-4">Bào chế thủ công 1 thang thuốc mẫu → Bấm nút "Gửi kiểm định" → Shipper đến lấy mẫu → Kết quả trả về App</p>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="font-bold text-gray-900 mb-2">Mẫu đang chờ kiểm định</div>
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <div>Bài thuốc: Hồi Xuân Phục Cốt</div>
+                      <div>Gửi: 15/11/2024 • Dự kiến có kết quả: 20/11/2024</div>
+                    </div>
+                  </div>
+                </div>
+                <button className="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors cursor-pointer">
+                  <i className="ri-send-plane-line mr-2"></i>
+                  Gửi mẫu kiểm định mới
+                </button>
+              </div>
+
+              {/* Test Results */}
+              <div className="bg-white rounded-xl p-5 border-2 border-green-200">
+                <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <i className="ri-file-paper-line text-green-600"></i>
+                  Kết quả kiểm định
+                </h4>
+                <div className="space-y-3">
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <div className="font-bold text-gray-900 mb-2">Bài thuốc: Hồi Xuân Phục Cốt</div>
+                    <div className="text-sm text-gray-700 space-y-1 mb-3">
+                      <div>• Thành phần: Đã xác định 8 hoạt chất chính</div>
+                      <div>• Chỉ số an toàn: Đạt chuẩn</div>
+                      <div>• Dược tính: Cao, phù hợp điều trị suy nhược</div>
+                    </div>
+                    <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
+                      <i className="ri-download-line mr-1"></i>
+                      Tải phiếu phân tích
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Data */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-database-2-line text-blue-600"></i>
+                Số hóa Y án & Dữ liệu Lâm sàng
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Ghi nhận kết quả điều trị thực tế trên bệnh nhân (ẩn danh) để làm cơ sở xin cấp phép sản xuất đại trà</p>
+              <div className="space-y-3">
+                {[
+                  {
+                    patientCode: 'BN-2025-***',
+                    formula: 'Hồi Xuân Phục Cốt',
+                    condition: 'Suy nhược cơ thể',
+                    result: 'Khỏi hoàn toàn',
+                    duration: '30 ngày',
+                    date: '15/11/2024'
+                  },
+                ].map((case_, idx) => (
+                  <div key={idx} className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50">
+                    <div className="font-bold text-gray-900 mb-2">{case_.formula}</div>
+                    <div className="text-sm text-gray-700 space-y-1 mb-3">
+                      <div>Bệnh nhân: {case_.patientCode} • {case_.condition}</div>
+                      <div>Kết quả: {case_.result} • Thời gian: {case_.duration}</div>
+                      <div>Ngày ghi nhận: {case_.date}</div>
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                      <i className="ri-file-add-line mr-1"></i>
+                      Thêm Y án
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Lab-scale Production - Sản xuất Demo */}
+        {activeTab === 'lab-production' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Sản xuất Demo & Kết nối Nhà máy</h2>
+              <p className="text-gray-600 mt-1">Đặt hàng lô nhỏ để thăm dò thị trường</p>
+            </div>
+
+            {/* Small Batch Order */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-settings-3-line text-indigo-600"></i>
+                Đặt hàng Lô nhỏ (Small Batch Order)
+              </h3>
+              <div className="space-y-4">
+                <div className="border-2 border-indigo-200 rounded-xl p-5 bg-indigo-50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-3 py-1 bg-indigo-600 text-white rounded-full text-xs font-bold">ORDER-001</span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Đang sản xuất</span>
+                      </div>
+                      <h4 className="font-bold text-gray-900 text-lg mb-2">Bài thuốc: Hồi Xuân Phục Cốt</h4>
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Số lượng</div>
+                          <div className="font-bold text-indigo-600">100 hộp cao</div>
+                        </div>
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Nhà máy</div>
+                          <div className="font-bold text-indigo-600">VinaPharma</div>
+                        </div>
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Dự kiến hoàn thành</div>
+                          <div className="font-bold text-indigo-600">25/11/2024</div>
+                        </div>
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Giá ước tính</div>
+                          <div className="font-bold text-indigo-600">15 triệu VNĐ</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors cursor-pointer">
+                  <i className="ri-add-line mr-2"></i>
+                  Tạo đơn hàng mới
+                </button>
+              </div>
+            </div>
+
+            {/* Convert Dosage Form */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-refresh-line text-purple-600"></i>
+                Chuyển đổi Dạng bào chế
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Chuyển bài thuốc sắc thành dạng Viên nang mềm hoặc Siro cho trẻ em</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { from: 'Sắc uống', to: 'Viên nang mềm', factory: 'VinaPharma', cost: '20.000 VNĐ/viên', minOrder: 500 },
+                  { from: 'Sắc uống', to: 'Siro cho trẻ em', factory: 'Nam Dược', cost: '150.000 VNĐ/chai', minOrder: 200 },
+                ].map((option, idx) => (
+                  <div key={idx} className="border-2 border-purple-200 rounded-xl p-4 bg-purple-50">
+                    <div className="font-bold text-gray-900 mb-2">{option.from} → {option.to}</div>
+                    <div className="text-sm text-gray-700 space-y-1 mb-3">
+                      <div>Nhà máy: {option.factory}</div>
+                      <div>Giá: {option.cost}</div>
+                      <div>MOQ: {option.minOrder} sản phẩm</div>
+                    </div>
+                    <button className="w-full bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
+                      <i className="ri-calculator-line mr-1"></i>
+                      Tính giá trọn gói
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Commercial Link - Kết nối Creator & Thương mại */}
+        {activeTab === 'commercial-link' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Kết nối Creator & Thương mại</h2>
+              <p className="text-gray-600 mt-1">Tìm kiếm "người bán hàng" cho các sản phẩm trí tuệ của bạn</p>
+            </div>
+
+            {/* Co-founder Market */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-handshake-line text-pink-600"></i>
+                Sàn Giao dịch Đồng sáng lập (Co-founder Market)
+              </h3>
+              <div className="space-y-4">
+                <div className="border-2 border-pink-200 rounded-xl p-5 bg-pink-50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-3 py-1 bg-pink-600 text-white rounded-full text-xs font-bold">LISTING-001</span>
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Đã có đối tác</span>
+                      </div>
+                      <h4 className="font-bold text-gray-900 text-lg mb-2">Bài thuốc cai thuốc lá hiệu quả 90%</h4>
+                      <p className="text-sm text-gray-700 mb-3">Đã được R&D kiểm định. Cần tìm KOL đồng hành lan tỏa.</p>
+                      <div className="bg-white rounded-lg p-3 mb-3">
+                        <div className="text-xs text-gray-600 mb-1">Đối tác đã ký hợp đồng</div>
+                        <div className="font-bold text-pink-600">Creator @NguyenMinh</div>
+                        <div className="text-xs text-gray-600 mt-1">Chia sẻ lợi nhuận: 50-50 • Smart Contract đã kích hoạt</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors cursor-pointer">
+                  <i className="ri-add-line mr-2"></i>
+                  Đăng tải bài thuốc mới
+                </button>
+              </div>
+            </div>
+
+            {/* Endorsement Service */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-verified-badge-line text-blue-600"></i>
+                Dịch vụ Bảo chứng Chuyên môn (Endorsement Service)
+              </h3>
+              <div className="space-y-4">
+                <div className="border-2 border-blue-200 rounded-xl p-5 bg-blue-50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h4 className="font-bold text-gray-900 text-lg mb-2">Tham gia Livestream của Creator</h4>
+                      <p className="text-sm text-gray-700 mb-3">Tư vấn sức khỏe hoặc xác thực công dụng sản phẩm trong buổi Livestream</p>
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Yêu cầu gần đây</div>
+                          <div className="font-bold text-blue-600">3 yêu cầu</div>
+                        </div>
+                        <div className="bg-white rounded-lg p-2">
+                          <div className="text-xs text-gray-600">Thu nhập tháng này</div>
+                          <div className="font-bold text-blue-600">5 triệu VNĐ</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="border-2 border-green-200 rounded-xl p-5 bg-green-50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h4 className="font-bold text-gray-900 text-lg mb-2">Huy hiệu "Bác sĩ Khuyên dùng"</h4>
+                      <p className="text-sm text-gray-700 mb-3">Cấp quyền sử dụng hình ảnh/uy tín để Creator in lên bao bì sản phẩm</p>
+                      <div className="bg-white rounded-lg p-3 mb-3">
+                        <div className="text-xs text-gray-600 mb-1">Đang được sử dụng bởi</div>
+                        <div className="font-bold text-green-600">Creator @NguyenMinh - Sản phẩm "KOL Beauty"</div>
+                        <div className="text-xs text-gray-600 mt-1">Thời hạn: 1 năm • Phí bản quyền: 10 triệu VNĐ/năm</div>
+                      </div>
+                    </div>
+                  </div>
+                  <button className="w-full bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
+                    <i className="ri-settings-3-line mr-1"></i>
+                    Quản lý huy hiệu
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Tele-clinic CRM - Phòng khám Từ xa */}
+        {activeTab === 'tele-clinic' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Phòng khám Từ xa & Quản lý Bệnh nhân</h2>
+              <p className="text-gray-600 mt-1">Công cụ quản lý phòng mạch số, chăm sóc bệnh nhân trọn đời</p>
+            </div>
+
+            {/* Prescription & Dropshipping */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-file-prescription-line text-teal-600"></i>
+                Kê đơn & Dropshipping (Không cần kho thuốc)
+              </h3>
+              <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-5 border-2 border-teal-200 mb-4">
+                <p className="text-sm text-gray-700 mb-4">Sau khi khám online (Video Call), thầy thuốc kê đơn trên App. Đơn thuốc được chuyển thẳng đến Kho dược VITA. Hệ thống tự động bốc thuốc, sắc sẵn (nếu cần), đóng gói và ship đến tận giường bệnh nhân.</p>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="font-bold text-gray-900 mb-2">Đơn thuốc #RX-2024-001</div>
+                    <div className="text-sm text-gray-700 space-y-1 mb-3">
+                      <div>Bệnh nhân: BN-2025-*** • Suy nhược cơ thể</div>
+                      <div>Bài thuốc: Hồi Xuân Phục Cốt • 10 thang</div>
+                      <div>Trạng thái: Đang sắc • Dự kiến giao: 20/11/2024</div>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-green-600">
+                      <i className="ri-checkbox-circle-fill"></i>
+                      <span>Đã chuyển đến Kho dược VITA</span>
+                    </div>
+                  </div>
+                </div>
+                <button className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors cursor-pointer">
+                  <i className="ri-file-add-line mr-2"></i>
+                  Kê đơn mới
+                </button>
+              </div>
+            </div>
+
+            {/* Health Tracking Dashboard */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-line-chart-line text-blue-600"></i>
+                Theo dõi Tiến triển (Health Tracking Dashboard)
+              </h3>
+              <div className="space-y-4">
+                {[
+                  {
+                    patientCode: 'BN-2025-001',
+                    name: 'Bệnh nhân ***',
+                    condition: 'Suy nhược cơ thể',
+                    lastUpdate: 'Hôm nay',
+                    metrics: { bloodPressure: '120/80', bloodSugar: '5.5', weight: '+2kg', sleep: 'Cải thiện' }
+                  },
+                ].map((patient, idx) => (
+                  <div key={idx} className="border-2 border-blue-200 rounded-xl p-5 bg-blue-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-900 mb-1">{patient.name}</h4>
+                        <div className="text-sm text-gray-600 mb-3">{patient.condition} • Cập nhật: {patient.lastUpdate}</div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-xs text-gray-600">Huyết áp</div>
+                            <div className="font-bold text-blue-600">{patient.metrics.bloodPressure}</div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-xs text-gray-600">Đường huyết</div>
+                            <div className="font-bold text-blue-600">{patient.metrics.bloodSugar}</div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-xs text-gray-600">Cân nặng</div>
+                            <div className="font-bold text-green-600">{patient.metrics.weight}</div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-xs text-gray-600">Giấc ngủ</div>
+                            <div className="font-bold text-green-600">{patient.metrics.sleep}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                        <i className="ri-message-3-line mr-1"></i>
+                        Nhắn tin nhắc nhở
+                      </button>
+                      <button className="flex-1 bg-teal-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors cursor-pointer">
+                        <i className="ri-edit-line mr-1"></i>
+                        Điều chỉnh liều
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Legacy & Training - Đào tạo & Di sản */}
+        {activeTab === 'legacy-training' && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Đào tạo & Di sản</h2>
+              <p className="text-gray-600 mt-1">Thư viện Y án Số & Tuyển sinh Đệ tử Online</p>
+            </div>
+
+            {/* Digital Case Library */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-book-open-line text-purple-600"></i>
+                Thư viện Y án Số
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Lưu trữ hồ sơ các ca bệnh khó đã chữa khỏi làm tài liệu tham khảo</p>
+              <div className="space-y-4">
+                {[
+                  {
+                    title: 'Ca bệnh: Suy nhược cơ thể nặng sau phẫu thuật',
+                    formula: 'Hồi Xuân Phục Cốt',
+                    result: 'Khỏi hoàn toàn sau 60 ngày',
+                    difficulty: 'Khó',
+                    shared: true,
+                    views: 156
+                  },
+                ].map((case_, idx) => (
+                  <div key={idx} className="border-2 border-purple-200 rounded-xl p-5 bg-purple-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-bold text-gray-900">{case_.title}</h4>
+                          <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">{case_.difficulty}</span>
+                        </div>
+                        <div className="text-sm text-gray-700 space-y-1 mb-3">
+                          <div>Bài thuốc: {case_.formula}</div>
+                          <div>Kết quả: {case_.result}</div>
+                          <div>Lượt xem: {case_.views} • {case_.shared ? 'Đã chia sẻ' : 'Riêng tư'}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="flex-1 bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
+                        <i className="ri-eye-line mr-1"></i>
+                        Xem chi tiết
+                      </button>
+                      <button className="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
+                        <i className="ri-share-line mr-1"></i>
+                        Chia sẻ (có phí)
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Online Apprenticeship */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i className="ri-graduation-cap-line text-indigo-600"></i>
+                Tuyển sinh Đệ tử Online
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">Mở các lớp đào tạo nghề y dược cổ truyền, cấp chứng chỉ hoàn thành khóa học</p>
+              <div className="space-y-4">
+                {[
+                  {
+                    title: 'Khóa học: Bào chế Thuốc Y học Cổ truyền',
+                    duration: '40 giờ',
+                    students: 25,
+                    price: '5 triệu VNĐ',
+                    status: 'Đang tuyển sinh'
+                  },
+                ].map((course, idx) => (
+                  <div key={idx} className="border-2 border-indigo-200 rounded-xl p-5 bg-indigo-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-900 mb-2">{course.title}</h4>
+                        <div className="grid grid-cols-3 gap-3 mb-3">
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-xs text-gray-600">Thời lượng</div>
+                            <div className="font-bold text-indigo-600">{course.duration}</div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-xs text-gray-600">Học viên</div>
+                            <div className="font-bold text-indigo-600">{course.students} người</div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-xs text-gray-600">Học phí</div>
+                            <div className="font-bold text-indigo-600">{course.price}</div>
+                          </div>
+                        </div>
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">{course.status}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors cursor-pointer">
+                        <i className="ri-settings-3-line mr-1"></i>
+                        Quản lý khóa học
+                      </button>
+                      <button className="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
+                        <i className="ri-add-line mr-1"></i>
+                        Tạo khóa học mới
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

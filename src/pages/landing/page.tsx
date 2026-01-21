@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Hero background image - dùng ảnh local từ public/images/
@@ -13,6 +13,14 @@ export default function LandingPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Clear onboarding state when landing on home page - always start fresh
+  useEffect(() => {
+    const STORAGE_KEY = 'vita_onboarding_state';
+    localStorage.removeItem(STORAGE_KEY);
+    // Also clear land digitization data if exists
+    localStorage.removeItem('vita_land_digitization_data');
+  }, []);
 
   const handleCtaClick = () => {
     // Map activeTab index to registration/login routes
@@ -335,7 +343,7 @@ export default function LandingPage() {
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
             VITA PLATFORM<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300">
-              HỆ SINH THÁI KINH TẾ RỪNG DƯỢC SINH QUỐC GIA
+              HỆ SINH THÁI KINH TẾ RỪNG DƯỢC SINH
             </span>
           </h1>
           
@@ -370,25 +378,11 @@ export default function LandingPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button 
-              onClick={() => scrollToSection('ecosystem')}
+              onClick={() => navigate('/onboarding')}
               className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-lg font-semibold rounded-xl hover:shadow-2xl transition-all whitespace-nowrap flex items-center justify-center gap-2"
             >
               <span>Khám phá hệ sinh thái</span>
-              <i className="ri-arrow-down-line group-hover:translate-y-1 transition-transform"></i>
-            </button>
-            <button 
-              onClick={() => navigate('/coop-marketplace')}
-              className="w-full sm:w-auto px-8 py-4 bg-white/10 backdrop-blur-md text-white text-lg font-semibold rounded-xl border-2 border-white/30 hover:bg-white/20 transition-all whitespace-nowrap"
-            >
-              <i className="ri-store-3-line mr-2"></i>
-              Vào Sàn Kết Nối HTX
-            </button>
-            <button 
-              onClick={() => navigate('/creator-hub/register')}
-              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-lg font-semibold rounded-xl hover:shadow-2xl transition-all whitespace-nowrap"
-            >
-              <i className="ri-video-add-line mr-2"></i>
-              Trở thành Creator
+              <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
             </button>
           </div>
 
@@ -568,243 +562,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Ecosystem Section */}
-      <section id="ecosystem" className="py-16 sm:py-24 bg-gradient-to-b from-emerald-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          {/* Gateway CTA Banner - NEW */}
-          <div className="mb-16 relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 shadow-2xl">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
-            
-            <div className="relative px-8 py-12 text-center">
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-medium mb-6">
-                <i className="ri-star-line"></i>
-                <span>Cổng Vào Hệ Sinh Thái VITA</span>
-              </div>
-              
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                Trở Thành Đối Tác / Xã Viên VITA
-              </h2>
-              <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto mb-8">
-                Khám phá các Hợp tác xã đang hoạt động, lựa chọn vai trò phù hợp và tham gia ngay hôm nay.<br />
-                <span className="font-semibold">Minh bạch • Uy tín • Sinh lời bền vững</span>
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button
-                  onClick={() => navigate('/coop-marketplace')}
-                  className="group px-8 py-4 bg-white text-emerald-600 text-lg font-bold rounded-xl hover:shadow-2xl transition-all flex items-center gap-3 whitespace-nowrap"
-                >
-                  <i className="ri-store-3-line text-2xl"></i>
-                  <span>Vào Sàn Kết Nối HTX</span>
-                  <i className="ri-arrow-right-line text-xl group-hover:translate-x-1 transition-transform"></i>
-                </button>
-                
-                <button
-                  onClick={() => scrollToSection('ecosystem')}
-                  className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white text-lg font-semibold rounded-xl border-2 border-white/30 hover:bg-white/20 transition-all whitespace-nowrap"
-                >
-                  Tìm hiểu các vai trò
-                </button>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-6 mt-10 max-w-2xl mx-auto">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-1">6</div>
-                  <div className="text-sm text-white/80">Hợp tác xã</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-1">5,620</div>
-                  <div className="text-sm text-white/80">Xã viên</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-1">16%</div>
-                  <div className="text-sm text-white/80">Lợi tức TB</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Mô Hình Hệ Sinh Thái VITA</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              {tabs.length} vai trò khác nhau cùng hợp tác, tạo nên hệ sinh thái dược liệu bền vững và minh bạch
-            </p>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8">
-            {tabs.map((tab, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveTab(index)}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold transition-all whitespace-nowrap text-sm sm:text-base ${
-                  activeTab === index
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                }`}
-              >
-                <i className={`${tab.icon} mr-2`}></i>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Tab Content */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-              {/* Left: Image */}
-              <div className="relative h-64 sm:h-80 md:h-96 lg:h-auto min-h-[300px] md:min-h-[400px]">
-                <img 
-                  src={ECOSYSTEM_ILLUSTRATION}
-                  alt={tabs[activeTab].title}
-                  className="w-full h-full object-cover object-center md:object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent md:bg-gradient-to-t md:from-black/30 md:to-transparent"></div>
-                {/* Mobile: Overlay text on image */}
-                <div className="absolute bottom-4 left-4 right-4 md:hidden">
-                  <h3 className="text-xl font-bold text-white mb-2 drop-shadow-lg">{tabs[activeTab].title}</h3>
-                </div>
-              </div>
-
-              {/* Right: Content */}
-              <div className="p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col justify-center">
-                {/* Desktop: Title in content area */}
-                <h3 className="hidden md:block text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-4">{tabs[activeTab].title}</h3>
-                <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">{tabs[activeTab].description}</p>
-                
-                <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                  {tabs[activeTab].benefits.map((benefit, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <i className="ri-checkbox-circle-fill text-emerald-600 text-xl sm:text-2xl mt-0.5 flex-shrink-0"></i>
-                      <span className="text-sm sm:text-base text-gray-700 leading-relaxed">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {activeTab === 0 && (
-                  <button 
-                    onClick={() => navigate('/forest-owner-register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Tìm HTX để Góp đất
-                  </button>
-                )}
-                {activeTab === 1 && (
-                  <button 
-                    onClick={() => navigate('/coop-marketplace')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Tìm HTX để Nhận khoán
-                  </button>
-                )}
-                {activeTab === 2 && (
-                  <button 
-                    onClick={() => navigate('/cooperative-register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Đăng ký Hợp tác xã vệ tinh
-                  </button>
-                )}
-                {activeTab === 3 && (
-                  <button 
-                    onClick={() => navigate('/coop-marketplace')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-yellow-500 to-amber-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Tìm dự án để Góp vốn
-                  </button>
-                )}
-                {activeTab === 4 && (
-                  <button 
-                    onClick={() => navigate('/enterprise-register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Đăng ký Thu mua/Bao tiêu
-                  </button>
-                )}
-                {activeTab === 5 && (
-                  <button 
-                    onClick={() => navigate('/research-partner-register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Hợp tác Chuyển giao công nghệ
-                  </button>
-                )}
-                {activeTab === 6 && (
-                  <button 
-                    onClick={() => navigate('/physician-register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-teal-500 to-emerald-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Tham gia Mạng lưới Thầy thuốc
-                  </button>
-                )}
-                {activeTab === 7 && (
-                  <button 
-                    onClick={() => navigate('/investor-portal/register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    <i className="ri-lock-line mr-2"></i>
-                    Đăng ký / Đăng nhập Investor Portal (Private)
-                  </button>
-                )}
-                {activeTab === 8 && (
-                  <button 
-                    onClick={() => navigate('/esg-portal/login')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    <i className="ri-login-box-line mr-2"></i>
-                    Đăng nhập / Đăng ký ESG Portal
-                  </button>
-                )}
-                {activeTab === 9 && (
-                  <button 
-                    onClick={() => navigate('/timber-trading/login')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    <i className="ri-login-box-line mr-2"></i>
-                    Đăng nhập / Đăng ký Timber Hub
-                  </button>
-                )}
-                {activeTab === 10 && (
-                  <button 
-                    onClick={() => navigate('/admin-forest-funding?tab=forestry')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    Truy cập Công cụ Lâm sinh
-                  </button>
-                )}
-                {activeTab === 11 && (
-                  <button 
-                    onClick={() => navigate('/expert-portal/register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-pink-600 to-rose-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    <i className="ri-user-star-line mr-2"></i>
-                    Đăng ký tài khoản Chuyên gia
-                  </button>
-                )}
-                {activeTab === 12 && (
-                  <button 
-                    onClick={() => navigate('/gov-portal/register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    <i className="ri-government-line mr-2"></i>
-                    Đăng ký tài khoản Chính quyền Xã
-                  </button>
-                )}
-                {activeTab === 13 && (
-                  <button 
-                    onClick={() => navigate('/creator-hub/register')}
-                    className="w-full px-6 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-                  >
-                    <i className="ri-video-add-line mr-2"></i>
-                    Đăng ký tài khoản Creator
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Policy Section */}
       <section className="py-16 sm:py-24 bg-white">
@@ -997,49 +754,16 @@ export default function LandingPage() {
       </section>
 
       {/* Platform Section */}
-      <section id="platform" className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-16 sm:py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Hệ Thống Nền Tảng VITA</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-4">
-              Hệ thống nền tảng công nghệ kết nối toàn bộ chuỗi giá trị dược liệu, từ nông trại đến người tiêu dùng, từ đầu tư đến tác động môi trường
-            </p>
-            <p className="text-sm text-gray-500 max-w-2xl mx-auto">
-              Tích hợp các API bên thứ 3 (ezCloud, Haravan, Stringee, FPT.AI, Goship) để tối ưu hóa hiệu quả và giảm chi phí
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Hệ thống nền tảng công nghệ kết nối toàn bộ chuỗi giá trị dược liệu
             </p>
           </div>
-
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* VITA FARMER */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-emerald-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-smartphone-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA FARMER</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Ứng dụng di động cho nông dân: Ghi nhật ký canh tác, quản lý nông trại, theo dõi thu nhập, quét QR sản phẩm
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Dashboard & Thời tiết</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Nhật ký canh tác</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Quản lý nông trại & Ví</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Cộng đồng & Quét QR</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA ADMIN */}
             <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-blue-100">
               <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-4">
                 <i className="ri-dashboard-line text-white text-2xl"></i>
@@ -1457,6 +1181,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Roadmap Section */}
 
       {/* Roadmap Section */}
       <section className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">

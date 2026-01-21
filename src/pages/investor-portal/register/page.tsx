@@ -270,7 +270,7 @@ export default function InvestorRegisterPage() {
                       className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                         formData.investorType === type.value
                           ? 'border-emerald-600 bg-emerald-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
                       <input
@@ -282,7 +282,7 @@ export default function InvestorRegisterPage() {
                         className="w-5 h-5 text-emerald-600"
                       />
                       <i className={`${type.icon} text-2xl ${formData.investorType === type.value ? 'text-emerald-600' : 'text-gray-400'}`}></i>
-                      <span className="font-medium text-sm">{type.label}</span>
+                      <span className={`font-medium text-sm ${formData.investorType === type.value ? 'text-gray-900' : 'text-gray-900'}`}>{type.label}</span>
                     </label>
                   ))}
                 </div>
@@ -336,7 +336,7 @@ export default function InvestorRegisterPage() {
                       className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                         formData.investmentFocus.includes(option.value)
                           ? 'border-emerald-600 bg-emerald-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
                       <input
@@ -348,7 +348,7 @@ export default function InvestorRegisterPage() {
                         className="w-5 h-5 text-emerald-600"
                       />
                       <i className={`${option.icon} text-xl ${formData.investmentFocus.includes(option.value) ? 'text-emerald-600' : 'text-gray-400'}`}></i>
-                      <span className="text-sm">{option.label}</span>
+                      <span className="text-sm text-gray-900">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -384,7 +384,7 @@ export default function InvestorRegisterPage() {
                       className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                         formData.preferredStage.includes(option.value)
                           ? 'border-emerald-600 bg-emerald-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
                       <input
@@ -396,7 +396,7 @@ export default function InvestorRegisterPage() {
                         className="w-5 h-5 text-emerald-600"
                       />
                       <i className={`${option.icon} text-xl ${formData.preferredStage.includes(option.value) ? 'text-emerald-600' : 'text-gray-400'}`}></i>
-                      <span className="text-sm">{option.label}</span>
+                      <span className="text-sm text-gray-900">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -420,7 +420,7 @@ export default function InvestorRegisterPage() {
                       className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                         formData.interestedIn.includes(option.value)
                           ? 'border-emerald-600 bg-emerald-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
                       <input
@@ -432,7 +432,7 @@ export default function InvestorRegisterPage() {
                         className="w-5 h-5 text-emerald-600"
                       />
                       <i className={`${option.icon} text-xl ${formData.interestedIn.includes(option.value) ? 'text-emerald-600' : 'text-gray-400'}`}></i>
-                      <span className="text-sm">{option.label}</span>
+                      <span className="text-sm text-gray-900">{option.label}</span>
                     </label>
                   ))}
                 </div>

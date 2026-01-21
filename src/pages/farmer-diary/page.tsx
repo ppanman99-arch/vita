@@ -10,6 +10,9 @@ export default function FarmerDiaryPage() {
   const [selectedAction, setSelectedAction] = useState<string>('');
   const [photos, setPhotos] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showAIAgronomist, setShowAIAgronomist] = useState(false);
+  const [aiDiagnosis, setAiDiagnosis] = useState<any>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const lots = [
     { id: 'A1', name: 'Lô A1', crop: 'Quế', area: '0.5 ha' },
@@ -111,6 +114,33 @@ export default function FarmerDiaryPage() {
 
   const removePhoto = (index: number) => {
     setPhotos(photos.filter((_, i) => i !== index));
+  };
+
+  // AI Agronomist - Chẩn đoán bệnh cây
+  const handleAIDiagnosis = () => {
+    if (photos.length === 0) {
+      alert('Vui lòng chụp ảnh cây trước khi chẩn đoán');
+      return;
+    }
+    setIsAnalyzing(true);
+    setShowAIAgronomist(true);
+    
+    // Simulate AI analysis
+    setTimeout(() => {
+      const mockDiagnosis = {
+        disease: 'Bệnh vàng lá do thiếu dinh dưỡng',
+        confidence: 85,
+        severity: 'Nhẹ',
+        treatment: [
+          'Bón phân hữu cơ với tỷ lệ N-P-K: 2-1-1',
+          'Tưới nước đều đặn, tránh úng nước',
+          'Theo dõi sau 7 ngày, nếu không cải thiện liên hệ chuyên gia',
+        ],
+        expertAvailable: true,
+      };
+      setAiDiagnosis(mockDiagnosis);
+      setIsAnalyzing(false);
+    }, 3000);
   };
 
   return (
@@ -245,6 +275,17 @@ export default function FarmerDiaryPage() {
             <p className="text-xs text-gray-500 mt-2">
               <i className="ri-information-line"></i> Ảnh có gắn GPS và thời gian thực
             </p>
+            
+            {/* AI Agronomist Button */}
+            {photos.length > 0 && (
+              <button
+                onClick={handleAIDiagnosis}
+                className="w-full mt-3 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all cursor-pointer"
+              >
+                <i className="ri-brain-line mr-2"></i>
+                Bác sĩ Cây trồng AI - Chẩn đoán bệnh
+              </button>
+            )}
           </div>
 
           {/* GPS Check-in */}
@@ -315,6 +356,86 @@ export default function FarmerDiaryPage() {
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Đã lưu nhật ký!</h3>
             <p className="text-gray-600">Công việc đã được ghi nhận và xác thực GPS</p>
+          </div>
+        </div>
+      )}
+
+      {/* AI Agronomist Modal */}
+      {showAIAgronomist && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <i className="ri-brain-line text-purple-600"></i>
+                Bác sĩ Cây trồng AI
+              </h3>
+              <button
+                onClick={() => {
+                  setShowAIAgronomist(false);
+                  setAiDiagnosis(null);
+                }}
+                className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 cursor-pointer"
+              >
+                <i className="ri-close-line text-gray-600"></i>
+              </button>
+            </div>
+
+            {isAnalyzing ? (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                  <i className="ri-brain-line text-purple-600 text-4xl"></i>
+                </div>
+                <h4 className="text-xl font-bold text-gray-900 mb-2">AI đang phân tích...</h4>
+                <p className="text-gray-600">Hệ thống đang xử lý hình ảnh và so sánh với cơ sở dữ liệu bệnh cây</p>
+              </div>
+            ) : aiDiagnosis ? (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-bold text-gray-900">Chẩn đoán</h4>
+                    <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                      Độ tin cậy: {aiDiagnosis.confidence}%
+                    </span>
+                  </div>
+                  <p className="text-lg font-semibold text-gray-900 mb-1">{aiDiagnosis.disease}</p>
+                  <p className="text-sm text-gray-600">Mức độ: <span className="font-semibold">{aiDiagnosis.severity}</span></p>
+                </div>
+
+                <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <i className="ri-medicine-bottle-line text-green-600"></i>
+                    Phác đồ xử lý
+                  </h4>
+                  <ul className="space-y-2">
+                    {aiDiagnosis.treatment.map((step: string, idx: number) => (
+                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
+                        <i className="ri-checkbox-circle-line text-green-600 mt-0.5 flex-shrink-0"></i>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {aiDiagnosis.expertAvailable && (
+                  <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <i className="ri-customer-service-2-line text-blue-600"></i>
+                      <h4 className="font-bold text-gray-900">Cần tư vấn thêm?</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Kết nối với chuyên gia từ VITA Expert Hub để được tư vấn từ xa qua Video Call
+                    </p>
+                    <button
+                      onClick={() => navigate('/expert-portal')}
+                      className="w-full py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
+                    >
+                      <i className="ri-video-chat-line mr-2"></i>
+                      Kết nối với Chuyên gia
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : null}
           </div>
         </div>
       )}
