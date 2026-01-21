@@ -90,6 +90,9 @@ const GreenlightCommandPage = lazy(() => import("../pages/greenlight-command/pag
 // Investor About Page
 const InvestorAboutPage = lazy(() => import("../pages/investor-about/page"));
 
+// Policy Support Page
+const PolicySupportPage = lazy(() => import("../pages/policy-support/page"));
+
 // GREENLIGHT INVESTOR PORTAL - Private Edition
 const InvestorPortalLoginPage = lazy(() => import("../pages/investor-portal/login/page"));
 const InvestorPortalRegisterPage = lazy(() => import("../pages/investor-portal/register/page"));
@@ -249,6 +252,14 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <InvestorAboutPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/policy-support",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <PolicySupportPage />
       </Suspense>
     ),
   },

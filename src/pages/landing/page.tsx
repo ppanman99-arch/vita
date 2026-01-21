@@ -564,191 +564,21 @@ export default function LandingPage() {
 
 
       {/* Policy Section */}
+      {/* Policy Support Section - Link to dedicated page */}
       <section className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Chính Sách Quốc Gia Hỗ Trợ</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
               Hệ sinh thái Rừng Dược Sinh được hỗ trợ bởi các chính sách ưu đãi của Nhà nước
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-6 sm:p-8 rounded-2xl border border-emerald-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Nghị định 91/2021/NĐ-CP</h3>
-                  <p className="text-gray-700 mb-3">Chính sách phát triển lâm nghiệp bền vững</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-emerald-600 mt-0.5"></i>
-                      <span>Hỗ trợ 30-50 triệu/ha cho trồng rừng dược liệu</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-emerald-600 mt-0.5"></i>
-                      <span>Ưu đãi thuế thu nhập doanh nghiệp</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 sm:p-8 rounded-2xl border border-blue-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Nghị định 131/2018/NĐ-CP</h3>
-                  <p className="text-gray-700 mb-3">Chính sách phát triển dược liệu</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-blue-600 mt-0.5"></i>
-                      <span>Hỗ trợ vốn vay ưu đãi 0-3%/năm</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-blue-600 mt-0.5"></i>
-                      <span>Miễn giảm thuế sử dụng đất nông nghiệp</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 sm:p-8 rounded-2xl border border-purple-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Luật Hợp tác xã 2012</h3>
-                  <p className="text-gray-700 mb-3">Khuyến khích phát triển HTX</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-purple-600 mt-0.5"></i>
-                      <span>Miễn thuế thu nhập doanh nghiệp 4 năm đầu</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-purple-600 mt-0.5"></i>
-                      <span>Giảm 50% thuế 5 năm tiếp theo</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 sm:p-8 rounded-2xl border border-amber-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Nghị định 98/2018/NĐ-CP</h3>
-                  <p className="text-gray-700 mb-3">Khuyến khích phát triển HTX</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-amber-600 mt-0.5"></i>
-                      <span>Hỗ trợ đào tạo, tư vấn miễn phí</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-amber-600 mt-0.5"></i>
-                      <span>Hỗ trợ xây dựng thương hiệu, truy xuất nguồn gốc</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 sm:p-8 rounded-2xl border border-green-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Nghị định 52/2018/NĐ-CP</h3>
-                  <p className="text-gray-700 mb-3">Nông nghiệp ứng dụng công nghệ cao</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-green-600 mt-0.5"></i>
-                      <span>Hỗ trợ 50-70% chi phí đầu tư IoT, cảm biến</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-green-600 mt-0.5"></i>
-                      <span>Ưu đãi vay vốn cho chuyển đổi số</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-6 sm:p-8 rounded-2xl border border-pink-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Quyết định 899/QĐ-TTg</h3>
-                  <p className="text-gray-700 mb-3">Tái cơ cấu ngành nông nghiệp</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-pink-600 mt-0.5"></i>
-                      <span>Hỗ trợ liên kết chuỗi giá trị</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-pink-600 mt-0.5"></i>
-                      <span>Ưu tiên vốn cho dự án dược liệu</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-6 sm:p-8 rounded-2xl border border-teal-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Chương trình Nông thôn mới</h3>
-                  <p className="text-gray-700 mb-3">Xây dựng nông thôn mới</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-teal-600 mt-0.5"></i>
-                      <span>Hỗ trợ hạ tầng, đường giao thông</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-teal-600 mt-0.5"></i>
-                      <span>Ưu tiên dự án tạo việc làm tại chỗ</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-yellow-50 to-amber-50 p-6 sm:p-8 rounded-2xl border border-yellow-200">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i className="ri-file-text-line text-white text-xl"></i>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Nghị định 80/2021/NĐ-CP</h3>
-                  <p className="text-gray-700 mb-3">Hỗ trợ doanh nghiệp nhỏ và vừa</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-yellow-600 mt-0.5"></i>
-                      <span>Vay vốn ưu đãi lãi suất thấp</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <i className="ri-arrow-right-s-line text-yellow-600 mt-0.5"></i>
-                      <span>Hỗ trợ đào tạo, chuyển giao công nghệ</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={() => navigate('/policy-support')}
+              className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-lg font-semibold rounded-xl hover:shadow-xl transition-all transform hover:scale-105"
+            >
+              Xem chi tiết các chính sách hỗ trợ
+              <i className="ri-arrow-right-line ml-2"></i>
+            </button>
           </div>
         </div>
       </section>
