@@ -353,27 +353,27 @@ export default function PhysicianPortalPage() {
             <div className="flex items-center gap-3 flex-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center flex-shrink-0">
                 <i className="ri-stethoscope-line text-xl sm:text-2xl text-white"></i>
-              </div>
+            </div>
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">Cổng Chuyên gia Y học & Dược liệu</h1>
                 <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">VITA Healer Portal - Từ Y lý đến Sản phẩm</p>
-              </div>
             </div>
+          </div>
 
             {/* Main Menu Dropdown */}
             <div className="relative">
-              <button
+            <button
                 onClick={() => setShowMainMenu(!showMainMenu)}
                 className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm flex items-center gap-2 ${
                   showMainMenu
-                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
+              }`}
+            >
                 <i className="ri-menu-line"></i>
                 <span className="hidden sm:inline">Menu</span>
                 <i className={`ri-arrow-down-s-line transition-transform ${showMainMenu ? 'rotate-180' : ''}`}></i>
-              </button>
+            </button>
 
               {showMainMenu && (
                 <>
@@ -419,7 +419,7 @@ export default function PhysicianPortalPage() {
                           { id: 'order', label: 'Đặt mẫu', icon: 'ri-shopping-bag-line' },
                           { id: 'community', label: 'Cộng đồng', icon: 'ri-team-line' },
                         ].map((tab) => (
-                          <button
+            <button
                             key={tab.id}
                             onClick={() => {
                               setActiveTab(tab.id as any);
@@ -429,11 +429,11 @@ export default function PhysicianPortalPage() {
                               activeTab === tab.id
                                 ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white'
                                 : 'text-gray-700 hover:bg-gray-100'
-                            }`}
-                          >
+              }`}
+            >
                             <i className={tab.icon}></i>
                             {tab.label}
-                          </button>
+            </button>
                         ))}
                       </div>
 
@@ -449,7 +449,7 @@ export default function PhysicianPortalPage() {
                           { id: 'tele-clinic', label: 'Phòng khám Từ xa', icon: 'ri-video-chat-line' },
                           { id: 'legacy-training', label: 'Đào tạo & Di sản', icon: 'ri-book-open-line' },
                         ].map((tab) => (
-                          <button
+            <button
                             key={tab.id}
                             onClick={() => {
                               setActiveTab(tab.id as any);
@@ -459,11 +459,11 @@ export default function PhysicianPortalPage() {
                               activeTab === tab.id
                                 ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white'
                                 : 'text-gray-700 hover:bg-gray-100'
-                            }`}
-                          >
+              }`}
+            >
                             <i className={tab.icon}></i>
                             {tab.label}
-                          </button>
+            </button>
                         ))}
                       </div>
                     </div>
@@ -578,12 +578,12 @@ export default function PhysicianPortalPage() {
                 </div>
 
                 <div className="flex gap-4 mt-6">
-                  <button
+            <button
                     type="submit"
                     className="flex-1 py-3 px-6 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all"
                   >
                     Lưu thông tin chuyên môn
-                  </button>
+            </button>
                 </div>
               </form>
             </div>
@@ -624,16 +624,16 @@ export default function PhysicianPortalPage() {
                 </div>
 
                 <div className="flex gap-4 mt-6">
-                  <button
+            <button
                     type="submit"
                     className="flex-1 py-3 px-6 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all"
                   >
                     Lưu thông tin liên hệ
-                  </button>
-                </div>
-              </form>
-            </div>
+            </button>
           </div>
+              </form>
+        </div>
+      </div>
         )}
 
         {/* Tab: Overview */}
@@ -2711,8 +2711,8 @@ export default function PhysicianPortalPage() {
                   <div className="flex items-start gap-3">
                     <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center">
                       <i className="ri-video-line text-2xl text-white"></i>
-                    </div>
-                    <div className="flex-1">
+                </div>
+                <div className="flex-1">
                       <h4 className="font-semibold text-gray-800 mb-1">Hội thảo: Ứng dụng Sâm Ngọc Linh trong điều trị suy nhược</h4>
                       <p className="text-xs text-gray-600 mb-2">Diễn giả: PGS.TS Nguyễn Văn A - Trung tâm Gen & Khoa học VITA</p>
                       <div className="flex items-center gap-3 text-xs text-gray-600">
@@ -2724,9 +2724,9 @@ export default function PhysicianPortalPage() {
                           <i className="ri-time-line"></i>
                           90 phút
                         </span>
-                      </div>
-                    </div>
-                  </div>
+                </div>
+              </div>
+                </div>
                   <button className="w-full mt-3 bg-teal-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-600 transition-colors cursor-pointer whitespace-nowrap">
                     <i className="ri-calendar-check-line mr-1"></i>
                     Đăng ký tham gia
@@ -2737,7 +2737,7 @@ export default function PhysicianPortalPage() {
                   <div className="flex items-start gap-3">
                     <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                       <i className="ri-play-circle-line text-2xl text-white"></i>
-                    </div>
+                </div>
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-800 mb-1">Video: Giới thiệu dòng Đương Quy VITA mới</h4>
                       <p className="text-xs text-gray-600 mb-2">Hàm lượng Ligustilide cao gấp 4 lần tiêu chuẩn</p>
@@ -2750,9 +2750,9 @@ export default function PhysicianPortalPage() {
                           <i className="ri-time-line"></i>
                           15 phút
                         </span>
-                      </div>
-                    </div>
-                  </div>
+                </div>
+              </div>
+            </div>
                   <button className="w-full mt-3 bg-blue-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer whitespace-nowrap">
                     <i className="ri-play-line mr-1"></i>
                     Xem ngay
@@ -2776,7 +2776,7 @@ export default function PhysicianPortalPage() {
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <i className="ri-flask-line text-teal-600"></i>
                 Công cụ Lập phương (Formula Builder)
-              </h3>
+                </h3>
               <p className="text-sm text-gray-600 mb-4">Thiết kế bài thuốc theo nguyên lý "Quân - Thần - Tá - Sứ"</p>
               
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
@@ -2793,10 +2793,10 @@ export default function PhysicianPortalPage() {
                     </div>
                   </div>
                   <button className="w-full mt-3 bg-red-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors cursor-pointer">
-                    <i className="ri-add-line mr-1"></i>
+                  <i className="ri-add-line mr-1"></i>
                     Thêm vị
-                  </button>
-                </div>
+                </button>
+              </div>
 
                 {/* Thần */}
                 <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200">
@@ -2808,13 +2808,13 @@ export default function PhysicianPortalPage() {
                     <div className="bg-white rounded-lg p-3 border border-blue-200">
                       <div className="font-semibold text-gray-900 text-sm">Đương Quy</div>
                       <div className="text-xs text-gray-600">9g</div>
-                    </div>
-                  </div>
+                      </div>
+                      </div>
                   <button className="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
                     <i className="ri-add-line mr-1"></i>
                     Thêm vị
                   </button>
-                </div>
+                    </div>
 
                 {/* Tá */}
                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-200">
@@ -2826,13 +2826,13 @@ export default function PhysicianPortalPage() {
                     <div className="bg-white rounded-lg p-3 border border-purple-200">
                       <div className="font-semibold text-gray-900 text-sm">Cam Thảo</div>
                       <div className="text-xs text-gray-600">3g</div>
-                    </div>
-                  </div>
+                      </div>
+                      </div>
                   <button className="w-full mt-3 bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
                     <i className="ri-add-line mr-1"></i>
                     Thêm vị
                   </button>
-                </div>
+                    </div>
 
                 {/* Sứ */}
                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200">
@@ -2849,8 +2849,8 @@ export default function PhysicianPortalPage() {
                   <button className="w-full mt-3 bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
                     <i className="ri-add-line mr-1"></i>
                     Thêm vị
-                  </button>
-                </div>
+                      </button>
+                    </div>
               </div>
 
               {/* Thư viện Nguyên liệu */}
@@ -2872,10 +2872,10 @@ export default function PhysicianPortalPage() {
                       <button className="w-full mt-2 bg-teal-600 text-white py-1 rounded text-xs font-medium hover:bg-teal-700 transition-colors cursor-pointer">
                         Kéo thả vào công thức
                       </button>
-                    </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
+            </div>
 
               {/* Ghi chú Chế biến (SOP) */}
               <div className="bg-white rounded-xl p-4 border-2 border-amber-200 mb-4">
@@ -2889,10 +2889,10 @@ export default function PhysicianPortalPage() {
                     <div className="text-sm text-gray-700">Sao vàng hạ thổ, tẩm rượu 3 lần, cửu chưng cửu sái</div>
                   </div>
                   <button className="w-full bg-amber-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors cursor-pointer">
-                    <i className="ri-add-line mr-1"></i>
+                  <i className="ri-add-line mr-1"></i>
                     Thêm ghi chú chế biến
-                  </button>
-                </div>
+                </button>
+              </div>
               </div>
 
               {/* IP Vault */}
@@ -2956,9 +2956,9 @@ export default function PhysicianPortalPage() {
                             <div className="text-gray-600">Hiệu quả</div>
                             <div className="font-bold text-green-600">{formula.effectiveness}</div>
                           </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
                     <div className="flex gap-2">
                       <button className="flex-1 bg-teal-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors cursor-pointer">
                         <i className="ri-edit-line mr-1"></i>
@@ -3026,23 +3026,23 @@ export default function PhysicianPortalPage() {
               </h3>
               <div className="space-y-4">
                 <div className="border-2 border-purple-200 rounded-xl p-5 bg-purple-50">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
                         <span className="px-3 py-1 bg-purple-600 text-white rounded-full text-xs font-bold">BOOK-001</span>
                         <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Đã khóa</span>
-                      </div>
+                        </div>
                       <h4 className="font-bold text-gray-900 text-lg mb-2">Lô Sâm số 5 - HTX Tu Mơ Rông</h4>
                       <p className="text-sm text-gray-700 mb-3">Dùng riêng cho bài thuốc "Hồi Xuân Phục Cốt" trong năm 2026</p>
                       <div className="grid grid-cols-2 gap-3 mb-3">
                         <div className="bg-white rounded-lg p-2">
                           <div className="text-xs text-gray-600">Sản lượng</div>
                           <div className="font-bold text-purple-600">500 kg</div>
-                        </div>
+                      </div>
                         <div className="bg-white rounded-lg p-2">
                           <div className="text-xs text-gray-600">Tuổi cây</div>
                           <div className="font-bold text-purple-600">5-6 năm</div>
-                        </div>
+                    </div>
                       </div>
                       <div className="bg-white rounded-lg p-3">
                         <div className="text-xs text-gray-600 mb-1">Lợi ích</div>
@@ -3054,8 +3054,8 @@ export default function PhysicianPortalPage() {
                 <button className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors cursor-pointer">
                   <i className="ri-bookmark-line mr-2"></i>
                   Đặt gạch nguồn hàng mới
-                </button>
-              </div>
+                      </button>
+                    </div>
             </div>
 
             {/* Cultivation Diary Check */}
@@ -3193,22 +3193,22 @@ export default function PhysicianPortalPage() {
               </h3>
               <div className="space-y-4">
                 <div className="border-2 border-indigo-200 rounded-xl p-5 bg-indigo-50">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="px-3 py-1 bg-indigo-600 text-white rounded-full text-xs font-bold">ORDER-001</span>
                         <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Đang sản xuất</span>
-                      </div>
+                        </div>
                       <h4 className="font-bold text-gray-900 text-lg mb-2">Bài thuốc: Hồi Xuân Phục Cốt</h4>
                       <div className="grid grid-cols-2 gap-3 mb-3">
                         <div className="bg-white rounded-lg p-2">
                           <div className="text-xs text-gray-600">Số lượng</div>
                           <div className="font-bold text-indigo-600">100 hộp cao</div>
-                        </div>
+                      </div>
                         <div className="bg-white rounded-lg p-2">
                           <div className="text-xs text-gray-600">Nhà máy</div>
                           <div className="font-bold text-indigo-600">VinaPharma</div>
-                        </div>
+                    </div>
                         <div className="bg-white rounded-lg p-2">
                           <div className="text-xs text-gray-600">Dự kiến hoàn thành</div>
                           <div className="font-bold text-indigo-600">25/11/2024</div>
@@ -3224,8 +3224,8 @@ export default function PhysicianPortalPage() {
                 <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors cursor-pointer">
                   <i className="ri-add-line mr-2"></i>
                   Tạo đơn hàng mới
-                </button>
-              </div>
+                      </button>
+                    </div>
             </div>
 
             {/* Convert Dosage Form */}
@@ -3295,7 +3295,7 @@ export default function PhysicianPortalPage() {
                   Đăng tải bài thuốc mới
                 </button>
               </div>
-            </div>
+              </div>
 
             {/* Endorsement Service */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
@@ -3313,7 +3313,7 @@ export default function PhysicianPortalPage() {
                         <div className="bg-white rounded-lg p-2">
                           <div className="text-xs text-gray-600">Yêu cầu gần đây</div>
                           <div className="font-bold text-blue-600">3 yêu cầu</div>
-                        </div>
+                    </div>
                         <div className="bg-white rounded-lg p-2">
                           <div className="text-xs text-gray-600">Thu nhập tháng này</div>
                           <div className="font-bold text-blue-600">5 triệu VNĐ</div>
@@ -3350,7 +3350,7 @@ export default function PhysicianPortalPage() {
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Phòng khám Từ xa & Quản lý Bệnh nhân</h2>
               <p className="text-gray-600 mt-1">Công cụ quản lý phòng mạch số, chăm sóc bệnh nhân trọn đời</p>
-            </div>
+                    </div>
 
             {/* Prescription & Dropshipping */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
@@ -3445,7 +3445,7 @@ export default function PhysicianPortalPage() {
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Đào tạo & Di sản</h2>
               <p className="text-gray-600 mt-1">Thư viện Y án Số & Tuyển sinh Đệ tử Online</p>
-            </div>
+                    </div>
 
             {/* Digital Case Library */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-6">
@@ -3467,17 +3467,17 @@ export default function PhysicianPortalPage() {
                 ].map((case_, idx) => (
                   <div key={idx} className="border-2 border-purple-200 rounded-xl p-5 bg-purple-50">
                     <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
+                    <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-bold text-gray-900">{case_.title}</h4>
                           <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">{case_.difficulty}</span>
-                        </div>
+                      </div>
                         <div className="text-sm text-gray-700 space-y-1 mb-3">
                           <div>Bài thuốc: {case_.formula}</div>
                           <div>Kết quả: {case_.result}</div>
                           <div>Lượt xem: {case_.views} • {case_.shared ? 'Đã chia sẻ' : 'Riêng tư'}</div>
-                        </div>
-                      </div>
+                    </div>
+                  </div>
                     </div>
                     <div className="flex gap-2">
                       <button className="flex-1 bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer">
@@ -3487,9 +3487,9 @@ export default function PhysicianPortalPage() {
                       <button className="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
                         <i className="ri-share-line mr-1"></i>
                         Chia sẻ (có phí)
-                      </button>
+                  </button>
+                </div>
                     </div>
-                  </div>
                 ))}
               </div>
             </div>
@@ -3513,21 +3513,21 @@ export default function PhysicianPortalPage() {
                 ].map((course, idx) => (
                   <div key={idx} className="border-2 border-indigo-200 rounded-xl p-5 bg-indigo-50">
                     <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
+                    <div className="flex-1">
                         <h4 className="font-bold text-gray-900 mb-2">{course.title}</h4>
                         <div className="grid grid-cols-3 gap-3 mb-3">
                           <div className="bg-white rounded-lg p-2">
                             <div className="text-xs text-gray-600">Thời lượng</div>
                             <div className="font-bold text-indigo-600">{course.duration}</div>
-                          </div>
+                      </div>
                           <div className="bg-white rounded-lg p-2">
                             <div className="text-xs text-gray-600">Học viên</div>
                             <div className="font-bold text-indigo-600">{course.students} người</div>
-                          </div>
+                    </div>
                           <div className="bg-white rounded-lg p-2">
                             <div className="text-xs text-gray-600">Học phí</div>
                             <div className="font-bold text-indigo-600">{course.price}</div>
-                          </div>
+                  </div>
                         </div>
                         <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">{course.status}</span>
                       </div>
@@ -3540,8 +3540,8 @@ export default function PhysicianPortalPage() {
                       <button className="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors cursor-pointer">
                         <i className="ri-add-line mr-1"></i>
                         Tạo khóa học mới
-                      </button>
-                    </div>
+                  </button>
+                </div>
                   </div>
                 ))}
               </div>

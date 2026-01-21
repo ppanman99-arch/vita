@@ -295,12 +295,12 @@ export default function CreatorHubPage() {
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <PortalSwitcher />
-              <button
+            <button
                 onClick={() => setShowMainMenu(!showMainMenu)}
                 className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all"
               >
                 <i className={`ri-${showMainMenu ? 'close-line' : 'menu-line'} text-xl`}></i>
-              </button>
+            </button>
             </div>
           </div>
 
@@ -335,7 +335,7 @@ export default function CreatorHubPage() {
               
               {/* Main Menu Dropdown */}
               <div className="relative">
-                <button
+            <button
                   onClick={() => setShowMainMenu(!showMainMenu)}
                   className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap cursor-pointer text-sm flex items-center gap-2 ${
                     showMainMenu
@@ -346,7 +346,7 @@ export default function CreatorHubPage() {
                   <i className="ri-menu-line"></i>
                   <span className="hidden sm:inline">Menu</span>
                   <i className={`ri-arrow-down-s-line transition-transform ${showMainMenu ? 'rotate-180' : ''}`}></i>
-                </button>
+            </button>
 
               {showMainMenu && (
                 <>
@@ -417,7 +417,7 @@ export default function CreatorHubPage() {
                       
                       {/* Logout Button */}
                       <div className="px-4 py-2 border-t border-gray-100 mt-2">
-                        <button
+            <button
                           onClick={() => {
                             handleLogout();
                             setShowMainMenu(false);
@@ -426,7 +426,7 @@ export default function CreatorHubPage() {
                         >
                           <i className="ri-logout-box-line"></i>
                           <span>Đăng xuất</span>
-                        </button>
+            </button>
                       </div>
                     </div>
                   </div>

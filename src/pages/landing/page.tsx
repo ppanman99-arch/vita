@@ -342,7 +342,7 @@ export default function LandingPage() {
 
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
             VITA PLATFORM<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300" style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 900, letterSpacing: '0.03em' }}>
               HỆ SINH THÁI KINH TẾ RỪNG DƯỢC SINH
             </span>
           </h1>
@@ -356,26 +356,6 @@ export default function LandingPage() {
             <span className="text-emerald-200">Tạo ra hạ tầng An sinh Xã hội Số • Đồng hành cùng con người qua mọi giai đoạn cuộc đời</span>
           </p>
 
-          {/* Feature Highlights */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 max-w-4xl mx-auto">
-            {[
-              { icon: 'ri-lightbulb-flash-line', label: 'CO-CREATE', color: 'from-purple-500 to-pink-500' },
-              { icon: 'ri-leaf-line', label: 'ESG Impact', color: 'from-emerald-500 to-teal-500' },
-              { icon: 'ri-shopping-cart-2-line', label: 'VITA Supply', color: 'from-orange-500 to-amber-500' },
-              { icon: 'ri-store-3-line', label: 'Brand Hub', color: 'from-indigo-500 to-purple-500' },
-            ].map((feature, idx) => (
-              <div
-                key={idx}
-                className="bg-white/10 backdrop-blur-md rounded-xl p-3 sm:p-4 border border-white/20 hover:bg-white/20 transition-all"
-              >
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-2 mx-auto`}>
-                  <i className={`${feature.icon} text-white text-lg sm:text-xl`}></i>
-                </div>
-                <p className="text-white text-xs sm:text-sm font-semibold">{feature.label}</p>
-              </div>
-            ))}
-          </div>
-
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button 
               onClick={() => navigate('/onboarding')}
@@ -384,25 +364,6 @@ export default function LandingPage() {
               <span>Khám phá hệ sinh thái</span>
               <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
             </button>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
-            {[
-              { value: '6', label: 'Hợp tác xã', icon: 'ri-team-line' },
-              { value: '5,620+', label: 'Xã viên', icon: 'ri-user-line' },
-              { value: '16%', label: 'Lợi tức TB', icon: 'ri-line-chart-line' },
-              { value: '100%', label: 'Truy xuất nguồn gốc', icon: 'ri-qr-code-line' },
-            ].map((stat, idx) => (
-              <div
-                key={idx}
-                className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center"
-              >
-                <i className={`${stat.icon} text-2xl text-emerald-300 mb-2`}></i>
-                <p className="text-2xl sm:text-3xl font-bold text-white mb-1">{stat.value}</p>
-                <p className="text-xs sm:text-sm text-white/80">{stat.label}</p>
-              </div>
-            ))}
           </div>
         </div>
 
