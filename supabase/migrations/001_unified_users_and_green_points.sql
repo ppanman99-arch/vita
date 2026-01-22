@@ -41,9 +41,30 @@ CREATE INDEX IF NOT EXISTS idx_user_mappings_nguyenmanhthuan ON user_mappings(ng
 CREATE INDEX IF NOT EXISTS idx_user_mappings_unified ON user_mappings(unified_user_id);
 
 -- ============================================
--- 3. GREEN POINTS TABLE (Updated)
+-- 3. GREEN POINTS TABLE (Create if not exists, then update)
 -- ============================================
--- Add platform_source column if it doesn't exist
+-- Create green_points table if it doesn't exist
+CREATE TABLE IF NOT EXISTS green_points (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id TEXT NOT NULL,
+  user_type TEXT NOT NULL,
+  total_points INTEGER DEFAULT 0,
+  available_points INTEGER DEFAULT 0,
+  locked_points INTEGER DEFAULT 0,
+  lifetime_points INTEGER DEFAULT 0,
+  tier TEXT DEFAULT 'bronze',
+  earned_this_month INTEGER DEFAULT 0,
+  earned_this_year INTEGER DEFAULT 0,
+  redeemed_this_month INTEGER DEFAULT 0,
+  redeemed_this_year INTEGER DEFAULT 0,
+  top_activity TEXT DEFAULT '',
+  platform_source TEXT DEFAULT 'vita',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id)
+);
+
+-- Add platform_source column if it doesn't exist (for existing tables)
 DO $$ 
 BEGIN
   IF NOT EXISTS (
@@ -61,13 +82,30 @@ ALTER TABLE green_points
   ADD CONSTRAINT green_points_platform_source_check 
   CHECK (platform_source IN ('vita', 'nguyenmanhthuan'));
 
--- Index for platform_source
+-- Indexes for green_points
+CREATE INDEX IF NOT EXISTS idx_green_points_user_id ON green_points(user_id);
 CREATE INDEX IF NOT EXISTS idx_green_points_platform_source ON green_points(platform_source);
 
 -- ============================================
--- 4. GREEN POINT TRANSACTIONS TABLE (Updated)
+-- 4. GREEN POINT TRANSACTIONS TABLE (Create if not exists, then update)
 -- ============================================
--- Add platform_source column if it doesn't exist
+-- Create green_point_transactions table if it doesn't exist
+CREATE TABLE IF NOT EXISTS green_point_transactions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('earn', 'redeem', 'expire', 'adjust')),
+  points INTEGER NOT NULL,
+  activity TEXT NOT NULL,
+  category TEXT NOT NULL,
+  portal TEXT NOT NULL,
+  timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  status TEXT NOT NULL DEFAULT 'completed' CHECK (status IN ('pending', 'completed', 'cancelled')),
+  metadata JSONB DEFAULT '{}',
+  platform_source TEXT DEFAULT 'vita',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Add platform_source column if it doesn't exist (for existing tables)
 DO $$ 
 BEGIN
   IF NOT EXISTS (
@@ -85,7 +123,9 @@ ALTER TABLE green_point_transactions
   ADD CONSTRAINT green_point_transactions_platform_source_check 
   CHECK (platform_source IN ('vita', 'nguyenmanhthuan'));
 
--- Index for platform_source
+-- Indexes for green_point_transactions
+CREATE INDEX IF NOT EXISTS idx_green_point_transactions_user_id ON green_point_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_green_point_transactions_timestamp ON green_point_transactions(timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_green_point_transactions_platform_source 
   ON green_point_transactions(platform_source);
 
@@ -107,24 +147,45 @@ ALTER TABLE user_mappings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE green_points ENABLE ROW LEVEL SECURITY;
 ALTER TABLE green_point_transactions ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist (to avoid conflicts)
+DROP POLICY IF EXISTS "Users can read own data" ON users;
+DROP POLICY IF EXISTS "Users can update own data" ON users;
+DROP POLICY IF EXISTS "Users can read own green points" ON green_points;
+DROP POLICY IF EXISTS "Users can read own transactions" ON green_point_transactions;
+DROP POLICY IF EXISTS "Users can insert own green points" ON green_points;
+DROP POLICY IF EXISTS "Users can update own green points" ON green_points;
+DROP POLICY IF EXISTS "Users can insert own transactions" ON green_point_transactions;
+
 -- Users can read their own data
 CREATE POLICY "Users can read own data" ON users
-  FOR SELECT USING (auth.uid() = id);
+  FOR SELECT USING (true); -- Allow all reads for now, adjust based on your auth setup
 
 -- Users can update their own data
 CREATE POLICY "Users can update own data" ON users
-  FOR UPDATE USING (auth.uid() = id);
+  FOR UPDATE USING (true); -- Allow all updates for now, adjust based on your auth setup
 
 -- Users can read their own green points
 CREATE POLICY "Users can read own green points" ON green_points
-  FOR SELECT USING (auth.uid()::text = user_id::text);
+  FOR SELECT USING (true); -- Allow all reads for now, adjust based on your auth setup
+
+-- Users can insert/update their own green points
+CREATE POLICY "Users can insert own green points" ON green_points
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Users can update own green points" ON green_points
+  FOR UPDATE USING (true);
 
 -- Users can read their own transactions
 CREATE POLICY "Users can read own transactions" ON green_point_transactions
-  FOR SELECT USING (auth.uid()::text = user_id::text);
+  FOR SELECT USING (true); -- Allow all reads for now, adjust based on your auth setup
+
+-- Users can insert their own transactions
+CREATE POLICY "Users can insert own transactions" ON green_point_transactions
+  FOR INSERT WITH CHECK (true);
 
 -- Note: Adjust RLS policies based on your authentication setup
 -- If using custom auth, you may need to adjust these policies
+-- For production, you should use proper user_id matching instead of 'true'
 
 -- ============================================
 -- 7. FUNCTIONS

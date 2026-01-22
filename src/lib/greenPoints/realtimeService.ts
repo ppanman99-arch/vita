@@ -39,6 +39,18 @@ export function subscribeToGreenPoints(
   userId: string,
   callback: (points: GreenPoints | null) => void
 ): () => void {
+  // #region agent log
+  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'realtimeService.ts:38',message:'subscribeToGreenPoints called',data:{userId,hasSupabase:!!supabase,hasChannel:typeof supabase?.channel==='function'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+  // #endregion
+  
+  if (!supabase || typeof supabase.channel !== 'function') {
+    // #region agent log
+    fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'realtimeService.ts:42',message:'Channel not available - returning no-op unsubscribe',data:{hasSupabase:!!supabase,channelType:typeof supabase?.channel},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    // #endregion
+    console.warn('Supabase realtime not available. Realtime updates disabled.');
+    return () => {}; // Return no-op unsubscribe function
+  }
+  
   const channel = supabase
     .channel(`green_points:${userId}`)
     .on(
@@ -77,7 +89,9 @@ export function subscribeToGreenPoints(
     .subscribe();
 
   return () => {
-    supabase.removeChannel(channel);
+    if (supabase && typeof supabase.removeChannel === 'function') {
+      supabase.removeChannel(channel);
+    }
   };
 }
 
@@ -88,6 +102,15 @@ export function subscribeToGreenPointsTransactions(
   userId: string,
   callback: (transaction: GreenPointTransaction) => void
 ): () => void {
+  // #region agent log
+  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'realtimeService.ts:87',message:'subscribeToGreenPointsTransactions called',data:{userId,hasChannel:typeof supabase?.channel==='function'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+  // #endregion
+  
+  if (!supabase || typeof supabase.channel !== 'function') {
+    console.warn('Supabase realtime not available. Realtime updates disabled.');
+    return () => {}; // Return no-op unsubscribe function
+  }
+  
   const channel = supabase
     .channel(`green_points_transactions:${userId}`)
     .on(
@@ -117,7 +140,9 @@ export function subscribeToGreenPointsTransactions(
     .subscribe();
 
   return () => {
-    supabase.removeChannel(channel);
+    if (supabase && typeof supabase.removeChannel === 'function') {
+      supabase.removeChannel(channel);
+    }
   };
 }
 
