@@ -18,9 +18,34 @@ interface FeedbackData {
 
 const GOOGLE_SHEETS_WEB_APP_URL = import.meta.env.VITE_GOOGLE_SHEETS_WEB_APP_URL || '';
 
+// #region agent log
+// Log environment variable check at module load (only in browser)
+if (typeof window !== 'undefined') {
+  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'feedbackService.ts:19',message:'Module loaded - checking env var',data:{hasUrl:!!GOOGLE_SHEETS_WEB_APP_URL,urlLength:GOOGLE_SHEETS_WEB_APP_URL.length,envKeys:Object.keys(import.meta.env).filter(k=>k.includes('GOOGLE')||k.includes('SHEET')).join(','),isDev:import.meta.env.DEV,isProd:import.meta.env.PROD},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'A'})}).catch(()=>{});
+}
+// #endregion
+
 export async function submitFeedbackToGoogleSheets(data: FeedbackData): Promise<boolean> {
+  // #region agent log
+  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'feedbackService.ts:26',message:'submitFeedbackToGoogleSheets called',data:{hasUrl:!!GOOGLE_SHEETS_WEB_APP_URL,urlPreview:GOOGLE_SHEETS_WEB_APP_URL.substring(0,50),allEnvVars:Object.keys(import.meta.env).filter(k=>k.startsWith('VITE_')).join(',')},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'B'})}).catch(()=>{});
+  // #endregion
+  
   if (!GOOGLE_SHEETS_WEB_APP_URL) {
-    console.warn('Google Sheets Web App URL chưa được cấu hình. Vui lòng thêm VITE_GOOGLE_SHEETS_WEB_APP_URL vào .env');
+    // #region agent log
+    fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'feedbackService.ts:30',message:'URL not configured warning',data:{envVarValue:import.meta.env.VITE_GOOGLE_SHEETS_WEB_APP_URL||'undefined',allViteVars:Object.keys(import.meta.env).filter(k=>k.startsWith('VITE_')).join(','),isDev:import.meta.env.DEV,isProd:import.meta.env.PROD},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
+    
+    // Only show warning in development to avoid console noise in production
+    if (import.meta.env.DEV) {
+      console.warn(
+        'Google Sheets Web App URL chưa được cấu hình. Vui lòng thêm VITE_GOOGLE_SHEETS_WEB_APP_URL vào .env (local) hoặc Vercel Environment Variables (production).'
+      );
+    } else {
+      // In production, log a more helpful message
+      console.error(
+        '⚠️ Google Sheets feedback không hoạt động: VITE_GOOGLE_SHEETS_WEB_APP_URL chưa được cấu hình trên Vercel. Vui lòng thêm biến môi trường trong Vercel Dashboard > Settings > Environment Variables và redeploy.'
+      );
+    }
     return false;
   }
 

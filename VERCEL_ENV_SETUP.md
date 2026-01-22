@@ -22,6 +22,7 @@
    |-----|-------|
    | `VITE_SUPABASE_URL` | `https://zuspekqswmubxlaeezgr.supabase.co` |
    | `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1c3Bla3Fzd211YnhsYWVlemdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc2ODMxMTQsImV4cCI6MjA4MzI1OTExNH0.O03fFqnYT1F1ZUV6JjHbdW2tO4z_xBJfykjciHn0vEQ` |
+   | `VITE_GOOGLE_SHEETS_WEB_APP_URL` | `https://script.google.com/macros/s/AKfycbynMxXJjfXegawvnSaj-7cUlP6faGJDgBeTZIfddqtjHm7isBGEExxMLkWxGA9ihyqYKQ/exec` |
 
 4. **Chọn Environment**
    - ✅ Production
