@@ -127,7 +127,17 @@ export default function HomePage() {
       buttonText: 'Truy cập Creator Hub'
     },
     
-    // NHÓM 4: ĐẦU TƯ VÀO CÔNG TY (Corporate Investment)
+    // NHÓM 4: GREENLIGHT & ĐẦU TƯ VÀO CÔNG TY (GreenLight & Corporate Investment)
+    {
+      id: 'greenlight',
+      title: 'GREENLIGHT & HỆ THỐNG',
+      subtitle: 'System Admin',
+      description: 'Dashboard tổng quan hệ sinh thái • Giám sát tuân thủ & Cảnh báo rủi ro • Báo cáo tài chính & ROI',
+      icon: 'ri-line-chart-line',
+      color: 'from-orange-600 to-amber-700',
+      path: '/login?role=admin',
+      buttonText: 'Truy cập Trung tâm Điều hành'
+    },
     {
       id: 'investor-portal',
       title: 'CỔNG QUAN HỆ NHÀ ĐẦU TƯ',
@@ -317,13 +327,13 @@ export default function HomePage() {
             {portals.slice(0, 4).map((portal) => (
               <div
                 key={portal.id}
-                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
               >
                 {/* Gradient Background on Hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
                 {/* Content */}
-                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
                   {/* Icon */}
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
@@ -333,13 +343,13 @@ export default function HomePage() {
                   <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
                   <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  {/* Description */}
-                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
+                  {/* Description - Flex grow để đẩy button xuống */}
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center flex-1 px-1">{portal.description}</p>
 
-                  {/* Button */}
+                  {/* Button - Luôn ở bottom */}
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 mt-auto`}
                   >
                     <span className="truncate flex-1">{portal.buttonText}</span>
                     <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
@@ -363,11 +373,11 @@ export default function HomePage() {
             {portals.slice(4, 5).map((portal) => (
               <div
                 key={portal.id}
-                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
@@ -375,11 +385,11 @@ export default function HomePage() {
                   <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
                   <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center flex-1 px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 mt-auto`}
                   >
                     <span className="truncate flex-1">{portal.buttonText}</span>
                     <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
@@ -398,16 +408,16 @@ export default function HomePage() {
             <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">(Khoa học • Chuyên gia • Chính quyền • Marketing)</span>
           </div>
 
-          {/* Nhóm 3: Đối tác - 5 thẻ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {portals.slice(5, 10).map((portal) => (
+          {/* Nhóm 3: Đối tác - 4 thẻ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+            {portals.slice(5, 9).map((portal) => (
               <div
                 key={portal.id}
-                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
@@ -415,11 +425,11 @@ export default function HomePage() {
                   <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
                   <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center flex-1 px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 mt-auto`}
                   >
                     <span className="truncate flex-1">{portal.buttonText}</span>
                     <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
@@ -431,23 +441,23 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Divider + Label Nhóm 4 - Đầu tư vào Công ty */}
+          {/* Divider + Label Nhóm 4 - GreenLight & Đầu tư vào Công ty */}
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-6 sm:mt-8 lg:mt-12">
-            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-emerald-600 to-teal-700 rounded-full"></div>
-            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Đầu tư vào Công ty</h2>
-            <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">(Investor Relations)</span>
+            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-orange-600 to-amber-700 rounded-full"></div>
+            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">GreenLight & Đầu tư vào Công ty</h2>
+            <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">(System Admin • Investor Relations)</span>
           </div>
 
-          {/* Nhóm 4: Đầu tư - 1 thẻ */}
+          {/* Nhóm 4: GreenLight & Đầu tư - 2 thẻ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {portals.slice(9, 10).map((portal) => (
+            {portals.slice(9, 11).map((portal) => (
               <div
                 key={portal.id}
-                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
                   {/* Badge for Private Portal */}
                   {portal.badge && (
                     <div className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-100 text-emerald-700 rounded-full text-[9px] sm:text-xs font-semibold">
@@ -463,11 +473,11 @@ export default function HomePage() {
                   <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
                   <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center flex-1 px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 mt-auto`}
                   >
                     <span className="truncate flex-1">{portal.buttonText}</span>
                     <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
@@ -491,11 +501,11 @@ export default function HomePage() {
             {portals.slice(11, 15).map((portal) => (
               <div
                 key={portal.id}
-                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
+                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
@@ -503,11 +513,11 @@ export default function HomePage() {
                   <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
                   <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center flex-1 px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 mt-auto`}
                   >
                     <span className="truncate flex-1">{portal.buttonText}</span>
                     <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>

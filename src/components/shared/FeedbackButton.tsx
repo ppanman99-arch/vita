@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { submitFeedbackToGoogleSheets } from '../../lib/googleSheets/feedbackService';
 
 interface FeedbackData {
   page: string;
@@ -44,7 +45,10 @@ export default function FeedbackButton() {
     };
 
     try {
-      // Try to save to Supabase first
+      // Gửi feedback đến Google Sheets (ưu tiên)
+      await submitFeedbackToGoogleSheets(feedbackData);
+      
+      // Fallback: Try to save to Supabase
       try {
         const { error } = await supabase.from('feedback').insert([feedbackData]);
         if (error) throw error;

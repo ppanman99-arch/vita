@@ -15,13 +15,16 @@ const isSupabaseConfigured = supabaseUrl && supabaseAnonKey &&
 let supabase: SupabaseClient;
 
 if (!isSupabaseConfigured) {
-  console.warn(
-    'Supabase environment variables are not set. App will run without Supabase features. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.'
-  );
-  
   // #region agent log
-  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'supabase.ts:17',message:'Supabase not configured - creating mock client',data:{isSupabaseConfigured:false,supabaseUrl:supabaseUrl||'empty',hasAnonKey:!!supabaseAnonKey},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'supabase.ts:17',message:'Supabase not configured - creating mock client',data:{isSupabaseConfigured:false,supabaseUrl:supabaseUrl||'empty',hasAnonKey:!!supabaseAnonKey,isDev:import.meta.env.DEV},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'A'})}).catch(()=>{});
   // #endregion
+  
+  // Only show warning in development mode to avoid console noise in production
+  if (import.meta.env.DEV) {
+    console.log(
+      'ℹ️ Supabase environment variables are not set. App will run without Supabase features. To enable Supabase, set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.'
+    );
+  }
   
   // Create a mock client that implements the minimum required interface
   // This prevents errors while allowing the app to run

@@ -111,7 +111,7 @@ export default function HtxBrandLoginPage() {
               </button>
             </p>
             <p className="text-xs text-gray-500">
-              <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "htx"/"coop"/"brand" | Password: <strong>1</strong> hoặc "brand123"
+              Demo: Email chứa "htx" hoặc "coop", password: brand123
             </p>
           </div>
         </div>

@@ -111,7 +111,7 @@ export default function VitaSupplyLoginPage() {
               </button>
             </p>
             <p className="text-xs text-gray-500">
-              <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "supply"/"htx"/"coop" | Password: <strong>1</strong> hoặc "supply123"
+              Demo: Email chứa "supply" hoặc "htx", password: supply123
             </p>
           </div>
         </div>

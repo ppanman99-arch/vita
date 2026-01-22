@@ -115,7 +115,7 @@ export default function InvestorLoginPage() {
             <div className="text-center text-xs text-gray-500 pt-4 border-t">
               <p>
                 <i className="ri-information-line mr-1"></i>
-                <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "investor" | Password: <strong>1</strong> hoặc "investor123"
+                Demo: email chứa "investor", password: "investor123"
               </p>
             </div>
 
