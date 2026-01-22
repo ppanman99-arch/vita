@@ -127,17 +127,7 @@ export default function HomePage() {
       buttonText: 'Truy cập Creator Hub'
     },
     
-    // NHÓM 4: GREENLIGHT & ĐẦU TƯ VÀO CÔNG TY (GreenLight & Corporate Investment)
-    {
-      id: 'greenlight',
-      title: 'GREENLIGHT & HỆ THỐNG',
-      subtitle: 'System Admin',
-      description: 'Dashboard tổng quan hệ sinh thái • Giám sát tuân thủ & Cảnh báo rủi ro • Báo cáo tài chính & ROI',
-      icon: 'ri-line-chart-line',
-      color: 'from-orange-600 to-amber-700',
-      path: '/login?role=admin',
-      buttonText: 'Truy cập Trung tâm Điều hành'
-    },
+    // NHÓM 4: ĐẦU TƯ VÀO CÔNG TY (Corporate Investment)
     {
       id: 'investor-portal',
       title: 'CỔNG QUAN HỆ NHÀ ĐẦU TƯ',
@@ -243,87 +233,87 @@ export default function HomePage() {
           isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
           {/* Top Bar - Logo & Back Button */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-2 sm:mb-4">
             {/* Back Button */}
             <button 
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors active:scale-95"
+              className="flex items-center gap-1 sm:gap-2 text-gray-600 hover:text-emerald-600 transition-colors active:scale-95"
             >
-              <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
-                <i className="ri-arrow-left-line text-lg"></i>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                <i className="ri-arrow-left-line text-base sm:text-lg"></i>
               </div>
-              <span className="text-sm font-medium hidden sm:inline">Về trang chủ</span>
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">Về trang chủ</span>
             </button>
 
             {/* Login & Register Buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button 
                 onClick={() => navigate('/onboarding-gateway')}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-emerald-600 rounded-full text-sm font-medium hover:bg-emerald-50 transition-all active:scale-95 shadow-sm border border-emerald-600"
+                className="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white text-emerald-600 rounded-full text-xs sm:text-sm font-medium hover:bg-emerald-50 transition-all active:scale-95 shadow-sm border border-emerald-600"
               >
-                <i className="ri-user-add-line text-base"></i>
+                <i className="ri-user-add-line text-sm sm:text-base"></i>
                 <span className="hidden sm:inline">Đăng ký</span>
               </button>
               <button 
                 onClick={() => navigate('/login')}
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-medium hover:bg-emerald-700 transition-all active:scale-95 shadow-sm"
+                className="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-emerald-600 text-white rounded-full text-xs sm:text-sm font-medium hover:bg-emerald-700 transition-all active:scale-95 shadow-sm"
               >
-                <i className="ri-login-circle-line text-base"></i>
-                <span>Đăng nhập</span>
+                <i className="ri-login-circle-line text-sm sm:text-base"></i>
+                <span className="text-xs sm:text-sm">Đăng nhập</span>
               </button>
             </div>
           </div>
 
           {/* Title Section */}
-          <div className="text-center space-y-2">
+          <div className="text-center space-y-1 sm:space-y-2">
             {/* Logo/Brand */}
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-md">
-                <i className="ri-leaf-line text-white text-lg"></i>
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-md">
+                <i className="ri-leaf-line text-white text-base sm:text-lg"></i>
               </div>
-              <h1 className="text-lg font-bold text-gray-900 tracking-tight">
+              <h1 className="text-base sm:text-lg font-bold text-gray-900 tracking-tight">
                 VITA PLATFORM
               </h1>
             </div>
 
             {/* Main Title */}
-            <h2 className="text-base font-semibold text-gray-900 leading-tight">
+            <h2 className="text-sm sm:text-base font-semibold text-gray-900 leading-tight px-2">
               Hệ Sinh Thái Rừng Dược Sinh Quốc Gia
             </h2>
 
             {/* Description */}
-            <p className="text-xs text-gray-600 leading-relaxed max-w-md mx-auto">
+            <p className="text-[10px] sm:text-xs text-gray-600 leading-relaxed max-w-md mx-auto px-2">
               Nền tảng kết nối chuỗi giá trị Dược liệu theo tiêu chuẩn VITA.
             </p>
 
             {/* Instruction */}
-            <p className="text-xs text-emerald-700 font-medium pt-2">
+            <p className="text-[10px] sm:text-xs text-emerald-700 font-medium pt-1 sm:pt-2 px-2">
               Vui lòng chọn vai trò của bạn để truy cập hệ thống
             </p>
           </div>
         </div>
       </div>
 
-      {/* Spacer để tránh content bị che bởi fixed header */}
-      <div className="h-[180px]"></div>
+      {/* Spacer để tránh content bị che bởi fixed header - Responsive height */}
+      <div className="h-[140px] sm:h-[160px] lg:h-[180px]"></div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 lg:py-8 xl:py-12">
         {/* Section Labels */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1 h-6 bg-gradient-to-b from-green-600 to-emerald-700 rounded-full"></div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Xã viên Hợp tác xã</h2>
-            <span className="text-xs sm:text-sm text-gray-500">(Góp sức • Góp đất • Góp vốn)</span>
+        <div className="mb-4 sm:mb-6 lg:mb-8">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-green-600 to-emerald-700 rounded-full"></div>
+            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Xã viên Hợp tác xã</h2>
+            <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">(Góp sức • Góp đất • Góp vốn)</span>
           </div>
         </div>
 
         {/* Portal Cards - Grid with sections */}
-        <div className="space-y-8 sm:space-y-12">
+        <div className="space-y-6 sm:space-y-8 lg:space-y-12">
           {/* Nhóm 1: Xã viên - 4 thẻ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {portals.slice(0, 4).map((portal) => (
               <div
                 key={portal.id}
@@ -333,26 +323,26 @@ export default function HomePage() {
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
                 {/* Content */}
-                <div className="relative p-5 sm:p-6 lg:p-8">
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
                   {/* Icon */}
-                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
-                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
+                  <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
                   {/* Description */}
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
 
                   {/* Button */}
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
                   >
-                    <span>{portal.buttonText}</span>
-                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                    <span className="truncate flex-1">{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
                   </button>
                 </div>
 
@@ -363,13 +353,13 @@ export default function HomePage() {
           </div>
 
           {/* Divider + Label Nhóm 2 */}
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-6 bg-gradient-to-b from-blue-600 to-cyan-700 rounded-full"></div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Quản trị Hợp tác xã</h2>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-blue-600 to-cyan-700 rounded-full"></div>
+            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Quản trị Hợp tác xã</h2>
           </div>
 
           {/* Nhóm 2: Quản trị - 1 thẻ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {portals.slice(4, 5).map((portal) => (
               <div
                 key={portal.id}
@@ -377,22 +367,22 @@ export default function HomePage() {
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-5 sm:p-6 lg:p-8">
-                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
 
-                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
-                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
+                  <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
                   >
-                    <span>{portal.buttonText}</span>
-                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                    <span className="truncate flex-1">{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
                   </button>
                 </div>
 
@@ -402,14 +392,14 @@ export default function HomePage() {
           </div>
 
           {/* Divider + Label Nhóm 3 */}
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-6 bg-gradient-to-b from-purple-600 to-indigo-700 rounded-full"></div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Đối tác Hệ sinh thái</h2>
-            <span className="text-xs sm:text-sm text-gray-500">(Khoa học • Chuyên gia • Chính quyền • Marketing)</span>
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-purple-600 to-indigo-700 rounded-full"></div>
+            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Đối tác Hệ sinh thái</h2>
+            <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">(Khoa học • Chuyên gia • Chính quyền • Marketing)</span>
           </div>
 
           {/* Nhóm 3: Đối tác - 5 thẻ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {portals.slice(5, 10).map((portal) => (
               <div
                 key={portal.id}
@@ -417,22 +407,22 @@ export default function HomePage() {
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-5 sm:p-6 lg:p-8">
-                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
 
-                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
-                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
+                  <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
                   >
-                    <span>{portal.buttonText}</span>
-                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                    <span className="truncate flex-1">{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
                   </button>
                 </div>
 
@@ -441,46 +431,46 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Divider + Label Nhóm 4 - GreenLight & Đầu tư vào Công ty */}
-          <div className="flex items-center gap-2 mt-8 sm:mt-12">
-            <div className="w-1 h-6 bg-gradient-to-b from-orange-600 to-amber-700 rounded-full"></div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900">GreenLight & Đầu tư vào Công ty</h2>
-            <span className="text-xs sm:text-sm text-gray-500">(System Admin • Investor Relations)</span>
+          {/* Divider + Label Nhóm 4 - Đầu tư vào Công ty */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-6 sm:mt-8 lg:mt-12">
+            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-emerald-600 to-teal-700 rounded-full"></div>
+            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Đầu tư vào Công ty</h2>
+            <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">(Investor Relations)</span>
           </div>
 
-          {/* Nhóm 4: GreenLight & Đầu tư - 2 thẻ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            {portals.slice(9, 11).map((portal) => (
+          {/* Nhóm 4: Đầu tư - 1 thẻ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+            {portals.slice(9, 10).map((portal) => (
               <div
                 key={portal.id}
                 className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-5 sm:p-6 lg:p-8">
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
                   {/* Badge for Private Portal */}
                   {portal.badge && (
-                    <div className="absolute top-4 right-4 px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">
-                      <i className="ri-lock-line mr-1"></i>
+                    <div className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-100 text-emerald-700 rounded-full text-[9px] sm:text-xs font-semibold">
+                      <i className="ri-lock-line mr-0.5 sm:mr-1"></i>
                       {portal.badge}
                     </div>
                   )}
 
-                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
 
-                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
-                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
+                  <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
                   >
-                    <span>{portal.buttonText}</span>
-                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                    <span className="truncate flex-1">{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
                   </button>
                 </div>
 
@@ -490,14 +480,14 @@ export default function HomePage() {
           </div>
 
           {/* Divider + Label Nhóm 5 - Đầu Ra Hệ Sinh thái */}
-          <div className="flex items-center gap-2 mt-8 sm:mt-12">
-            <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-blue-700 rounded-full"></div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Đầu Ra Hệ Sinh thái</h2>
-            <span className="text-xs sm:text-sm text-gray-500">(B2B Thu mua • Đầu tư ESG • Giao dịch Gỗ • Y tế)</span>
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-6 sm:mt-8 lg:mt-12">
+            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-indigo-600 to-blue-700 rounded-full"></div>
+            <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Đầu Ra Hệ Sinh thái</h2>
+            <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">(B2B Thu mua • Đầu tư ESG • Giao dịch Gỗ • Y tế)</span>
           </div>
 
           {/* Nhóm 5: Đầu Ra Hệ Sinh thái - 4 thẻ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {portals.slice(11, 15).map((portal) => (
               <div
                 key={portal.id}
@@ -505,22 +495,22 @@ export default function HomePage() {
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
-                <div className="relative p-5 sm:p-6 lg:p-8">
-                  <div className={`w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                    <i className={`${portal.icon} text-3xl sm:text-3xl lg:text-4xl text-white`}></i>
+                <div className="relative p-4 sm:p-5 md:p-6 lg:p-8">
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
 
-                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight">{portal.title}</h3>
-                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-3 sm:mb-4 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2 text-center leading-tight px-1">{portal.title}</h3>
+                  <p className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-500 mb-2 sm:mb-3 lg:mb-5 text-center uppercase tracking-wide">{portal.subtitle}</p>
 
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5 lg:mb-6 text-center min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]">{portal.description}</p>
+                  <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 lg:mb-6 text-center min-h-[50px] sm:min-h-[60px] md:min-h-[70px] lg:min-h-[80px] px-1">{portal.description}</p>
 
                   <button
                     onClick={() => navigate(portal.path)}
-                    className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r ${portal.color} text-white text-xs sm:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap`}
+                    className={`w-full py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 bg-gradient-to-r ${portal.color} text-white text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold rounded-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2`}
                   >
-                    <span>{portal.buttonText}</span>
-                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
+                    <span className="truncate flex-1">{portal.buttonText}</span>
+                    <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
                   </button>
                 </div>
 
@@ -531,37 +521,37 @@ export default function HomePage() {
         </div>
 
         {/* Info Section - VITA Values */}
-        <div className="mt-12 sm:mt-16 lg:mt-20 max-w-6xl mx-auto">
-          <div className="bg-gradient-to-br from-gray-50 to-emerald-50 rounded-xl sm:rounded-2xl shadow-md p-6 sm:p-8 lg:p-10 border border-gray-200">
-            <h3 className="text-center text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 lg:mb-10">Giá trị cốt lõi VITA</h3>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 text-center">
+        <div className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 max-w-6xl mx-auto">
+          <div className="bg-gradient-to-br from-gray-50 to-emerald-50 rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
+            <h3 className="text-center text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8 xl:mb-10">Giá trị cốt lõi VITA</h3>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 text-center">
               <div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <i className="ri-leaf-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg">
+                  <i className="ri-leaf-line text-xl sm:text-2xl lg:text-3xl text-white"></i>
                 </div>
-                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Vitality</h4>
-                <p className="text-xs sm:text-sm text-gray-600">Dược tính tự nhiên</p>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm md:text-base lg:text-lg">Vitality</h4>
+                <p className="text-[10px] sm:text-xs md:text-sm text-gray-600">Dược tính tự nhiên</p>
               </div>
               <div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <i className="ri-lightbulb-flash-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg">
+                  <i className="ri-lightbulb-flash-line text-xl sm:text-2xl lg:text-3xl text-white"></i>
                 </div>
-                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Innovation</h4>
-                <p className="text-xs sm:text-sm text-gray-600">Công nghệ tiên phong</p>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm md:text-base lg:text-lg">Innovation</h4>
+                <p className="text-[10px] sm:text-xs md:text-sm text-gray-600">Công nghệ tiên phong</p>
               </div>
               <div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <i className="ri-shield-check-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg">
+                  <i className="ri-shield-check-line text-xl sm:text-2xl lg:text-3xl text-white"></i>
                 </div>
-                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Trust</h4>
-                <p className="text-xs sm:text-sm text-gray-600">Minh bạch tuyệt đối</p>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm md:text-base lg:text-lg">Trust</h4>
+                <p className="text-[10px] sm:text-xs md:text-sm text-gray-600">Minh bạch tuyệt đối</p>
               </div>
               <div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
-                  <i className="ri-checkbox-circle-line text-2xl sm:text-2xl lg:text-3xl text-white"></i>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 shadow-lg">
+                  <i className="ri-checkbox-circle-line text-xl sm:text-2xl lg:text-3xl text-white"></i>
                 </div>
-                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base lg:text-lg">Accountability</h4>
-                <p className="text-xs sm:text-sm text-gray-600">Trách nhiệm rõ ràng</p>
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm md:text-base lg:text-lg">Accountability</h4>
+                <p className="text-[10px] sm:text-xs md:text-sm text-gray-600">Trách nhiệm rõ ràng</p>
               </div>
             </div>
           </div>
@@ -569,9 +559,9 @@ export default function HomePage() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-gray-200 mt-12 sm:mt-16 lg:mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <p className="text-center text-xs sm:text-sm text-gray-500">
+      <div className="border-t border-gray-200 mt-8 sm:mt-12 lg:mt-16 xl:mt-20">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+          <p className="text-center text-[10px] sm:text-xs md:text-sm text-gray-500">
             © 2024 VITA PLATFORM. Phát triển bởi GreenLight Ventures
           </p>
         </div>

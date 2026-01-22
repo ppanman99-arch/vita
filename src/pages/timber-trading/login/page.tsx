@@ -14,11 +14,15 @@ export default function TimberLoginPage() {
     e.preventDefault();
     setError('');
 
-    // Demo: Nếu email chứa "timber" hoặc "go" và password = "timber123"
-    if ((email.includes('timber') || email.includes('go')) && password === 'timber123') {
+    // Demo mode: Unified credentials (1@gmail.com / 1, password: 1)
+    const isUnifiedDemo = (email === '1@gmail.com' || email === '1') && password === '1';
+    // Legacy demo: Nếu email chứa "timber" hoặc "go" và password = "timber123"
+    const isLegacyDemo = (email.includes('timber') || email.includes('go')) && password === 'timber123';
+    
+    if (isUnifiedDemo || isLegacyDemo) {
       setShow2FA(true);
     } else {
-      setError('Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại.');
+      setError('Thông tin đăng nhập không đúng. Demo: Email: 1@gmail.com hoặc chứa "timber"/"go", Password: 1 hoặc "timber123"');
     }
   };
 
@@ -131,7 +135,7 @@ export default function TimberLoginPage() {
             <div className="text-center text-xs text-gray-500 pt-4 border-t">
               <p>
                 <i className="ri-information-line mr-1"></i>
-                Demo: email chứa "timber" hoặc "go", password: "timber123"
+                <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "timber"/"go" | Password: <strong>1</strong> hoặc "timber123"
               </p>
             </div>
           </form>

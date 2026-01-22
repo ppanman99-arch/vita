@@ -14,11 +14,15 @@ export default function ESGLoginPage() {
     e.preventDefault();
     setError('');
 
-    // Demo: Nếu email chứa "esg" và password = "esg123"
-    if (email.includes('esg') && password === 'esg123') {
+    // Demo mode: Unified credentials (1@gmail.com / 1, password: 1)
+    const isUnifiedDemo = (email === '1@gmail.com' || email === '1') && password === '1';
+    // Legacy demo: Nếu email chứa "esg" và password = "esg123"
+    const isLegacyDemo = email.includes('esg') && password === 'esg123';
+    
+    if (isUnifiedDemo || isLegacyDemo) {
       setShow2FA(true);
     } else {
-      setError('Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại.');
+      setError('Thông tin đăng nhập không đúng. Demo: Email: 1@gmail.com hoặc chứa "esg", Password: 1 hoặc "esg123"');
     }
   };
 
@@ -139,7 +143,7 @@ export default function ESGLoginPage() {
 
             <div className="border-t pt-4">
               <p className="text-xs text-gray-500 text-center">
-                Demo: Email chứa "esg", Password: "esg123"
+                <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "esg" | Password: <strong>1</strong> hoặc "esg123"
               </p>
             </div>
           </form>

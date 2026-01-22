@@ -12,15 +12,19 @@ export default function HtxBrandLoginPage() {
     e.preventDefault();
     setError('');
 
-    // Demo authentication
-    if ((email.includes('htx') || email.includes('coop') || email.includes('brand')) && password === 'brand123') {
+    // Demo mode: Unified credentials (1@gmail.com / 1, password: 1)
+    const isUnifiedDemo = (email === '1@gmail.com' || email === '1') && password === '1';
+    // Legacy demo authentication
+    const isLegacyDemo = (email.includes('htx') || email.includes('coop') || email.includes('brand')) && password === 'brand123';
+    
+    if (isUnifiedDemo || isLegacyDemo) {
       const coopName = email.split('@')[0].replace(/[0-9]/g, '') || 'HTX';
       sessionStorage.setItem('brand_authenticated', 'true');
       sessionStorage.setItem('brand_email', email);
       sessionStorage.setItem('brand_coop_name', coopName);
       navigate('/htx-brand');
     } else {
-      setError('Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại.');
+      setError('Thông tin đăng nhập không đúng. Demo: Email: 1@gmail.com hoặc chứa "htx"/"coop"/"brand", Password: 1 hoặc "brand123"');
     }
   };
 
@@ -107,7 +111,7 @@ export default function HtxBrandLoginPage() {
               </button>
             </p>
             <p className="text-xs text-gray-500">
-              Demo: Email chứa "htx" hoặc "coop", password: brand123
+              <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "htx"/"coop"/"brand" | Password: <strong>1</strong> hoặc "brand123"
             </p>
           </div>
         </div>

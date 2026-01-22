@@ -75,6 +75,19 @@ export default function ESGRegisterPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Demo mode: Accept simple credentials
+    const isDemoMode = formData.email === '1@gmail.com' && formData.phone === '1' && formData.password === '1' && formData.confirmPassword === '1';
+    
+    if (isDemoMode) {
+      // Skip validation for demo mode
+      if (formData.companyName) {
+        sessionStorage.setItem('esg_company_name', formData.companyName);
+      }
+      sessionStorage.setItem('esg_registered_email', formData.email);
+      setShowSuccessModal(true);
+      return;
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       alert('Mật khẩu xác nhận không khớp!');
       return;
@@ -297,6 +310,19 @@ export default function ESGRegisterPage() {
                   />
                 </div>
 
+                {/* Demo Info Banner */}
+                <div className="col-span-2 bg-blue-50 border-2 border-blue-300 rounded-xl p-4 mb-2">
+                  <div className="flex items-start gap-3">
+                    <i className="ri-information-line text-blue-600 text-xl mt-0.5"></i>
+                    <div>
+                      <p className="text-sm font-semibold text-blue-900 mb-1">Chế độ Demo - Xem nhanh</p>
+                      <p className="text-xs text-blue-700">
+                        Để xem demo nhanh, nhập: <strong>Email: 1@gmail.com</strong>, <strong>Số điện thoại: 1</strong>, <strong>Mật khẩu: 1</strong>, <strong>Xác nhận mật khẩu: 1</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Số điện thoại <span className="text-red-500">*</span>
@@ -307,6 +333,7 @@ export default function ESGRegisterPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
+                    placeholder="1 (demo)"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
@@ -321,6 +348,7 @@ export default function ESGRegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    placeholder="1@gmail.com (demo)"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>

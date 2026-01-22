@@ -3024,6 +3024,16 @@ function RepresentativeSignUp({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Demo mode: Accept simple credentials
+    const isDemoMode = email === '1@gmail.com' && phone === '1' && password === '1' && confirmPassword === '1';
+    
+    if (isDemoMode) {
+      // Skip validation for demo mode
+      onNext();
+      return;
+    }
+    
     if (password !== confirmPassword) {
       alert('Mật khẩu xác nhận không khớp!');
       return;
@@ -3055,6 +3065,19 @@ function RepresentativeSignUp({
           </h2>
         </div>
 
+        {/* Demo Info Banner */}
+        <div className="mb-6 bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <i className="ri-information-line text-blue-600 text-xl mt-0.5"></i>
+            <div>
+              <p className="text-sm font-semibold text-blue-900 mb-1">Chế độ Demo - Xem nhanh</p>
+              <p className="text-xs text-blue-700">
+                Để xem demo nhanh, nhập: <strong>Email: 1@gmail.com</strong>, <strong>Số điện thoại: 1</strong>, <strong>Mật khẩu: 1</strong>, <strong>Xác nhận mật khẩu: 1</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-6">
           {/* Email */}
@@ -3066,7 +3089,7 @@ function RepresentativeSignUp({
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@company.com"
+              placeholder="name@company.com hoặc 1@gmail.com (demo)"
               required
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
             />
@@ -3102,12 +3125,12 @@ function RepresentativeSignUp({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={8}
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+              minLength={password === '1' ? 1 : 8}
+              pattern={password === '1' ? undefined : "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
             />
             <p className="mt-1 text-xs text-gray-500">
-              Tối thiểu 8 ký tự, bao gồm chữ hoa, số và ký tự đặc biệt
+              {password === '1' ? 'Demo mode: Mật khẩu đơn giản được chấp nhận' : 'Tối thiểu 8 ký tự, bao gồm chữ hoa, số và ký tự đặc biệt'}
             </p>
           </div>
 

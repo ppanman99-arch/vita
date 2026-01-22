@@ -105,6 +105,15 @@ export default function InvestorRegisterPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Demo mode: Accept simple credentials
+    const isDemoMode = formData.email === '1@gmail.com' && formData.phone === '1' && formData.password === '1' && formData.confirmPassword === '1';
+    
+    if (isDemoMode) {
+      // Skip validation for demo mode
+      setShowSuccessModal(true);
+      return;
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       alert('Mật khẩu xác nhận không khớp!');
       return;

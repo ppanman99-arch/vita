@@ -12,15 +12,19 @@ export default function VitaSupplyLoginPage() {
     e.preventDefault();
     setError('');
 
-    // Demo authentication
-    if ((email.includes('supply') || email.includes('htx') || email.includes('coop')) && password === 'supply123') {
+    // Demo mode: Unified credentials (1@gmail.com / 1, password: 1)
+    const isUnifiedDemo = (email === '1@gmail.com' || email === '1') && password === '1';
+    // Legacy demo authentication
+    const isLegacyDemo = (email.includes('supply') || email.includes('htx') || email.includes('coop')) && password === 'supply123';
+    
+    if (isUnifiedDemo || isLegacyDemo) {
       const coopName = email.split('@')[0].replace(/[0-9]/g, '') || 'HTX';
       sessionStorage.setItem('supply_authenticated', 'true');
       sessionStorage.setItem('supply_email', email);
       sessionStorage.setItem('supply_coop_name', coopName);
       navigate('/vita-supply');
     } else {
-      setError('Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại.');
+      setError('Thông tin đăng nhập không đúng. Demo: Email: 1@gmail.com hoặc chứa "supply"/"htx"/"coop", Password: 1 hoặc "supply123"');
     }
   };
 
@@ -107,7 +111,7 @@ export default function VitaSupplyLoginPage() {
               </button>
             </p>
             <p className="text-xs text-gray-500">
-              Demo: Email chứa "supply" hoặc "htx", password: supply123
+              <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "supply"/"htx"/"coop" | Password: <strong>1</strong> hoặc "supply123"
             </p>
           </div>
         </div>

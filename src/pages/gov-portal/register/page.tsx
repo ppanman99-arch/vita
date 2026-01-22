@@ -101,6 +101,18 @@ export default function GovRegisterPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Demo mode: Accept simple credentials
+    const isDemoMode = formData.email === '1@gmail.com' && formData.phone === '1' && formData.password === '1' && formData.confirmPassword === '1';
+    
+    if (isDemoMode) {
+      // Skip validation for demo mode
+      sessionStorage.setItem('gov_registered_email', formData.email);
+      sessionStorage.setItem('gov_verified', 'true');
+      sessionStorage.removeItem('gov_pending_verification');
+      navigate('/gov-portal/login?registered=true');
+      return;
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       alert('Mật khẩu xác nhận không khớp!');
       return;
@@ -290,6 +302,19 @@ export default function GovRegisterPage() {
           {/* Step 2: Representative Info */}
           {currentStep === 2 && (
             <div className="space-y-4">
+              {/* Demo Info Banner */}
+              <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4 mb-4">
+                <div className="flex items-start gap-3">
+                  <i className="ri-information-line text-blue-600 text-xl mt-0.5"></i>
+                  <div>
+                    <p className="text-sm font-semibold text-blue-900 mb-1">Chế độ Demo - Xem nhanh</p>
+                    <p className="text-xs text-blue-700">
+                      Để xem demo nhanh, nhập: <strong>Email: 1@gmail.com</strong>, <strong>Số điện thoại: 1</strong>, <strong>Mật khẩu: 1</strong>, <strong>Xác nhận mật khẩu: 1</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Chức vụ <span className="text-red-500">*</span>
@@ -332,7 +357,7 @@ export default function GovRegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="example@ubnd-xa.gov.vn"
+                    placeholder="example@ubnd-xa.gov.vn hoặc 1@gmail.com (demo)"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>

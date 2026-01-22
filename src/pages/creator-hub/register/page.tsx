@@ -8,33 +8,8 @@ export default function CreatorRegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [otp, setOtp] = useState('');
-  const [showOtp, setShowOtp] = useState(false);
-  const [loginMethod, setLoginMethod] = useState<'phone' | 'email'>('phone');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState('');
-
-  const handlePhoneContinue = () => {
-    if (!phone.match(/^[0-9]{10}$/)) {
-      setError('Vui lòng nhập đúng số điện thoại 10 số!');
-      return;
-    }
-    setError('');
-    // Simulate OTP sending
-    setShowOtp(true);
-    alert(`Mã OTP 6 số đã được gửi đến ${phone}`);
-  };
-
-  const handleVerifyOtp = () => {
-    if (otp.length !== 6) {
-      setError('Mã OTP phải có 6 số!');
-      return;
-    }
-    // Save registration data
-    localStorage.setItem('creator_phone', phone);
-    sessionStorage.setItem('creator_registered_phone', phone);
-    setShowSuccessModal(true);
-  };
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +17,17 @@ export default function CreatorRegisterPage() {
 
     // Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Demo mode: Accept simple credentials
+    const isDemoMode = email === '1@gmail.com' && phone === '1' && password === '1' && confirmPassword === '1';
+    
+    if (isDemoMode) {
+      // Skip validation for demo mode
+      sessionStorage.setItem('creator_registered_email', email);
+      sessionStorage.setItem('creator_verified', 'true');
+      setShowSuccessModal(true);
+      return;
+    }
+    
     if (!emailRegex.test(email)) {
       setError('Vui lòng nhập email hợp lệ!');
       return;
@@ -100,38 +86,17 @@ export default function CreatorRegisterPage() {
           <p className="text-gray-600">Cổng Đối tác Sáng tạo Nội dung & Tiếp thị Liên kết</p>
         </div>
 
-        {/* Method Toggle */}
-        <div className="bg-gray-100 rounded-xl p-1 mb-6 flex gap-2">
-          <button
-            onClick={() => {
-              setLoginMethod('phone');
-              setShowOtp(false);
-              setError('');
-            }}
-            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all text-sm ${
-              loginMethod === 'phone'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            <i className="ri-phone-line mr-2"></i>
-            Số điện thoại
-          </button>
-          <button
-            onClick={() => {
-              setLoginMethod('email');
-              setShowOtp(false);
-              setError('');
-            }}
-            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all text-sm ${
-              loginMethod === 'email'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            <i className="ri-mail-line mr-2"></i>
-            Email
-          </button>
+        {/* Demo Info Banner */}
+        <div className="mb-6 bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <i className="ri-information-line text-blue-600 text-xl mt-0.5"></i>
+            <div>
+              <p className="text-sm font-semibold text-blue-900 mb-1">Chế độ Demo - Xem nhanh</p>
+              <p className="text-xs text-blue-700">
+                Để xem demo nhanh, nhập: <strong>Email: 1@gmail.com</strong>, <strong>Số điện thoại: 1</strong>, <strong>Mật khẩu: 1</strong>, <strong>Xác nhận mật khẩu: 1</strong>
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Error Message */}
@@ -141,117 +106,69 @@ export default function CreatorRegisterPage() {
           </div>
         )}
 
-        {/* Phone OTP Flow */}
-        {loginMethod === 'phone' && !showOtp && (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Nhập số điện thoại di động
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="0901234567"
-                maxLength={10}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <button
-              onClick={handlePhoneContinue}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
-            >
-              Tiếp tục
-            </button>
-          </div>
-        )}
-
-        {/* OTP Verification */}
-        {loginMethod === 'phone' && showOtp && (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Nhập mã OTP 6 số
-              </label>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                placeholder="123456"
-                maxLength={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-center text-2xl tracking-widest"
-              />
-            </div>
-            <button
-              onClick={handleVerifyOtp}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
-            >
-              Xác minh OTP
-            </button>
-            <button
-              onClick={() => {
-                setShowOtp(false);
-                setOtp('');
-              }}
-              className="w-full py-2 text-gray-600 text-sm hover:text-gray-900 transition-colors"
-            >
-              Quay lại
-            </button>
-          </div>
-        )}
-
         {/* Email Form */}
-        {loginMethod === 'email' && (
-          <form onSubmit={handleEmailSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="example@email.com"
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Mật khẩu
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Tối thiểu 6 ký tự"
-                required
-                minLength={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Xác nhận mật khẩu
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Nhập lại mật khẩu"
-                required
-                minLength={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
-            >
-              Đăng ký
-            </button>
-          </form>
-        )}
+        <form onSubmit={handleEmailSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="1@gmail.com (demo) hoặc email của bạn"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Số điện thoại <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="1 (demo) hoặc số điện thoại của bạn"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Mật khẩu <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="1 (demo) hoặc mật khẩu của bạn"
+              required
+              minLength={password === '1' ? 1 : 6}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Xác nhận mật khẩu <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="1 (demo) hoặc xác nhận mật khẩu"
+              required
+              minLength={confirmPassword === '1' ? 1 : 6}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
+          >
+            Đăng ký
+          </button>
+        </form>
 
         {/* Social Login Divider */}
         <div className="my-6 flex items-center">

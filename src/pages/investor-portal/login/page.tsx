@@ -14,11 +14,15 @@ export default function InvestorLoginPage() {
     e.preventDefault();
     setError('');
 
-    // Demo: Nếu email chứa "investor" và password = "investor123"
-    if (email.includes('investor') && password === 'investor123') {
+    // Demo mode: Unified credentials (1@gmail.com / 1, password: 1)
+    const isUnifiedDemo = (email === '1@gmail.com' || email === '1') && password === '1';
+    // Legacy demo: Nếu email chứa "investor" và password = "investor123"
+    const isLegacyDemo = email.includes('investor') && password === 'investor123';
+    
+    if (isUnifiedDemo || isLegacyDemo) {
       setShow2FA(true);
     } else {
-      setError('Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại.');
+      setError('Thông tin đăng nhập không đúng. Demo: Email: 1@gmail.com hoặc chứa "investor", Password: 1 hoặc "investor123"');
     }
   };
 
@@ -111,7 +115,7 @@ export default function InvestorLoginPage() {
             <div className="text-center text-xs text-gray-500 pt-4 border-t">
               <p>
                 <i className="ri-information-line mr-1"></i>
-                Demo: email chứa "investor", password: "investor123"
+                <strong>Demo:</strong> Email: <strong>1@gmail.com</strong> hoặc chứa "investor" | Password: <strong>1</strong> hoặc "investor123"
               </p>
             </div>
 

@@ -8,8 +8,6 @@ export default function HtxBrandRegisterPage() {
     coopName: '',
     email: '',
     phone: '',
-    address: '',
-    taxCode: '',
     password: '',
     confirmPassword: '',
   });
@@ -22,6 +20,21 @@ export default function HtxBrandRegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Demo mode: Accept simple credentials
+    const isDemoMode = formData.email === '1@gmail.com' && formData.phone === '1' && formData.password === '1' && formData.confirmPassword === '1';
+    
+    if (isDemoMode) {
+      // Skip validation for demo mode
+      if (formData.coopName) {
+        sessionStorage.setItem('brand_coop_name', formData.coopName);
+      }
+      sessionStorage.setItem('brand_email', formData.email);
+      alert('Đăng ký thành công! Vui lòng đăng nhập.');
+      navigate('/htx-brand/login');
+      return;
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       setError('Mật khẩu xác nhận không khớp.');
       return;
@@ -32,7 +45,9 @@ export default function HtxBrandRegisterPage() {
     }
 
     // Save registration and redirect to login
-    sessionStorage.setItem('brand_coop_name', formData.coopName);
+    if (formData.coopName) {
+      sessionStorage.setItem('brand_coop_name', formData.coopName);
+    }
     sessionStorage.setItem('brand_email', formData.email);
     alert('Đăng ký thành công! Vui lòng đăng nhập.');
     navigate('/htx-brand/login');
@@ -59,6 +74,19 @@ export default function HtxBrandRegisterPage() {
             </p>
           </div>
 
+          {/* Demo Info Banner */}
+          <div className="mb-6 bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <i className="ri-information-line text-blue-600 text-xl mt-0.5"></i>
+              <div>
+                <p className="text-sm font-semibold text-blue-900 mb-1">Chế độ Demo - Xem nhanh</p>
+                <p className="text-xs text-blue-700">
+                  Để xem demo nhanh, nhập: <strong>Email: 1@gmail.com</strong>, <strong>Số điện thoại: 1</strong>, <strong>Mật khẩu: 1</strong>, <strong>Xác nhận mật khẩu: 1</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
@@ -67,105 +95,75 @@ export default function HtxBrandRegisterPage() {
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tên Hợp tác xã *
-                </label>
-                <input
-                  type="text"
-                  value={formData.coopName}
-                  onChange={(e) => handleInputChange('coopName', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="HTX Sâm Ngọc Linh"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="htx@example.com"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Số điện thoại *
-                </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="0901234567"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mã số thuế *
-                </label>
-                <input
-                  type="text"
-                  value={formData.taxCode}
-                  onChange={(e) => handleInputChange('taxCode', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="0123456789"
-                  required
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tên Hợp tác xã
+              </label>
+              <input
+                type="text"
+                value={formData.coopName}
+                onChange={(e) => handleInputChange('coopName', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="HTX Sâm Ngọc Linh (tùy chọn)"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Địa chỉ *
+                Email <span className="text-red-500">*</span>
               </label>
-              <textarea
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Xã, Huyện, Tỉnh"
-                rows={3}
+                placeholder="1@gmail.com (demo) hoặc email của bạn"
                 required
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mật khẩu *
-                </label>
-                <input
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Xác nhận mật khẩu *
-                </label>
-                <input
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Số điện thoại <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="1 (demo) hoặc số điện thoại của bạn"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Mật khẩu <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="1 (demo) hoặc mật khẩu của bạn"
+                required
+                minLength={formData.password === '1' ? 1 : 6}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Xác nhận mật khẩu <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="1 (demo) hoặc xác nhận mật khẩu"
+                required
+                minLength={formData.confirmPassword === '1' ? 1 : 6}
+              />
             </div>
 
             <button
