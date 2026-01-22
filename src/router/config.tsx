@@ -19,6 +19,13 @@ const FarmerProducerPage = lazy(() => import("../pages/farmer-producer/page"));
 const FarmerResourcePage = lazy(() => import("../pages/farmer-resource/page"));
 const FarmerInvestorPage = lazy(() => import("../pages/farmer-investor/page"));
 const FarmerConsumerPage = lazy(() => import("../pages/farmer-consumer/page"));
+const ConsumerWalletPage = lazy(() => import("../pages/consumer-wallet/page"));
+const ConsumerCommunityPage = lazy(() => import("../pages/consumer-community/page"));
+const InvestorWalletPage = lazy(() => import("../pages/investor-wallet/page"));
+const InvestorCommunityPage = lazy(() => import("../pages/investor-community/page"));
+const InvestorHomePage = lazy(() => import("../pages/investor-home/page"));
+const MemberNotificationsPage = lazy(() => import("../pages/member-hub/notifications/page"));
+const VitaGreenDashboardPage = lazy(() => import("../pages/vita-green-dashboard/page"));
 
 // VITA FARMER - App cho Nông dân
 const FarmerDashboardPage = lazy(() => import("../pages/farmer-dashboard/page"));
@@ -92,6 +99,9 @@ const InvestorAboutPage = lazy(() => import("../pages/investor-about/page"));
 
 // Policy Support Page
 const PolicySupportPage = lazy(() => import("../pages/policy-support/page"));
+
+// Green Points Page
+const GreenPointsPage = lazy(() => import("../pages/green-points/page"));
 
 // GREENLIGHT INVESTOR PORTAL - Private Edition
 const InvestorPortalLoginPage = lazy(() => import("../pages/investor-portal/login/page"));
@@ -607,6 +617,14 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
+  {
+    path: "/member-hub/notifications",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <MemberNotificationsPage />
+      </Suspense>
+    ),
+  },
   
   // VITA FARMER - 3 vai trò tích hợp
   {
@@ -638,6 +656,46 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <FarmerConsumerPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/consumer-wallet",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ConsumerWalletPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/consumer-community",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ConsumerCommunityPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/investor-wallet",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <InvestorWalletPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/investor-community",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <InvestorCommunityPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/investor-home",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <InvestorHomePage />
       </Suspense>
     ),
   },
@@ -1138,6 +1196,22 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <HtxLandingPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/green-points",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <GreenPointsPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/vita-green-dashboard",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <VitaGreenDashboardPage />
       </Suspense>
     ),
   },

@@ -501,25 +501,25 @@ export default function FarmerInvestor() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
         <div className="flex items-center justify-around max-w-md mx-auto">
           <button 
-            onClick={() => navigate('/member-hub')}
+            onClick={() => navigate('/investor-home')}
             className="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-600 transition-colors cursor-pointer"
           >
             <i className="ri-home-4-line text-2xl"></i>
-            <span className="text-xs">Hub</span>
+            <span className="text-xs">Trang chủ</span>
           </button>
           <button className="flex flex-col items-center gap-1 text-amber-600 cursor-pointer">
             <i className="ri-hand-coin-line text-2xl"></i>
             <span className="text-xs font-semibold">Góp vốn</span>
           </button>
           <button 
-            onClick={() => navigate('/farmer/wallet')}
+            onClick={() => navigate('/investor-wallet')}
             className="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-600 transition-colors cursor-pointer"
           >
             <i className="ri-wallet-3-line text-2xl"></i>
             <span className="text-xs">Ví</span>
           </button>
           <button 
-            onClick={() => navigate('/farmer/community')}
+            onClick={() => navigate('/investor-community')}
             className="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-600 transition-colors cursor-pointer"
           >
             <i className="ri-team-line text-2xl"></i>

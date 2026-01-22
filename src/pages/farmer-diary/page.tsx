@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RoleSwitcher from '../../components/feature/RoleSwitcher';
+import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
+import { earnPoints } from '../../lib/greenPoints/service';
 
 export default function FarmerDiaryPage() {
   const navigate = useNavigate();
@@ -90,13 +92,29 @@ export default function FarmerDiaryPage() {
     setRecordingTime(0);
   };
 
-  const handleStopRecording = () => {
+  const handleStopRecording = async () => {
     setIsRecording(false);
     setShowSuccessModal(true);
+    
+    // Tích điểm khi ghi nhật ký
+    try {
+      await earnPoints(
+        sessionStorage.getItem('user_id') || 'demo-user',
+        'Ghi nhật ký điện tử',
+        5,
+        'production',
+        'farmer-diary',
+        { lotId: selectedLot, action: selectedAction, duration: recordingTime }
+      );
+    } catch (error) {
+      console.error('Error earning points:', error);
+    }
+    
     setTimeout(() => {
       setShowSuccessModal(false);
       setRecordingTime(0);
       setSelectedAction('');
+      setPhotos([]);
     }, 2000);
   };
 
@@ -106,10 +124,24 @@ export default function FarmerDiaryPage() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handlePhotoCapture = () => {
+  const handlePhotoCapture = async () => {
     // Simulate photo capture
     const newPhoto = `https://readdy.ai/api/search-image?query=Vietnamese%20medicinal%20plant%20farm%20close-up%20photo%2C%20healthy%20green%20leaves%2C%20natural%20outdoor%20setting%2C%20farmer%20documentation%20photography%2C%20authentic%20rural%20scene&width=400&height=400&seq=photo${photos.length + 1}&orientation=squarish`;
     setPhotos([...photos, newPhoto]);
+    
+    // Tích điểm khi upload ảnh
+    try {
+      await earnPoints(
+        sessionStorage.getItem('user_id') || 'demo-user',
+        'Upload ảnh canh tác',
+        3,
+        'production',
+        'farmer-diary',
+        { lotId: selectedLot, photoCount: photos.length + 1 }
+      );
+    } catch (error) {
+      console.error('Error earning points:', error);
+    }
   };
 
   const removePhoto = (index: number) => {
@@ -156,8 +188,11 @@ export default function FarmerDiaryPage() {
           </button>
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate flex-1 text-center px-2">Nhật ký Canh tác</h1>
           <div className="flex-shrink-0">
+          <div className="flex items-center gap-2">
+            <GreenPointsBadge className="hidden sm:flex" />
             <RoleSwitcher />
           </div>
+        </div>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PortalSwitcher from '../../../components/shared/PortalSwitcher';
+import GreenPointsBadge from '../../../components/shared/GreenPointsBadge';
 
 interface ExpertTopBarProps {
   expertName: string;
@@ -41,6 +42,7 @@ export default function ExpertTopBar({ expertName, isVerified = false }: ExpertT
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
+            <GreenPointsBadge className="hidden sm:flex" />
             <PortalSwitcher />
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -91,6 +93,7 @@ export default function ExpertTopBar({ expertName, isVerified = false }: ExpertT
           </div>
 
           <div className="flex items-center gap-3 lg:gap-4">
+            <GreenPointsBadge className="hidden lg:flex" />
             <div className="hidden lg:block">
               <PortalSwitcher />
             </div>

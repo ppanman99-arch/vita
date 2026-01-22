@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
+import { earnPoints } from '../../lib/greenPoints/service';
 
 interface ProcurementRequest {
   id: string;
@@ -183,7 +185,28 @@ export default function EnterpriseProcurementPage() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Tính điểm dựa trên giá trị đơn hàng (nếu có)
+    const orderValue = formData.quantity ? parseFloat(formData.quantity) * 100000 : 0; // Giả sử 100k/đơn vị
+    const pointsEarned = Math.floor(orderValue / 100000); // 1 điểm / 100k VNĐ
+    
+    try {
+      await earnPoints(
+        sessionStorage.getItem('user_id') || 'demo-user',
+        'Đặt hàng bao tiêu',
+        pointsEarned || 10, // Tối thiểu 10 điểm
+        'purchase',
+        'enterprise-procurement',
+        { 
+          plant: formData.medicinalPlant,
+          quantity: formData.quantity,
+          orderValue 
+        }
+      );
+    } catch (error) {
+      console.error('Error earning points:', error);
+    }
+    
     alert('Yêu cầu đặt trồng đã được gửi! Hệ thống đang phân tích và tìm kiếm HTX phù hợp...');
     setActiveTab('requests');
   };
@@ -209,17 +232,20 @@ export default function EnterpriseProcurementPage() {
       <div className="bg-gradient-to-r from-slate-700 to-gray-800 text-white px-4 sm:px-6 py-4 sm:py-6 sticky top-0 z-10 shadow-lg">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               <button 
                 onClick={() => navigate('/partner')}
-                className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
+                className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors flex-shrink-0"
               >
                 <i className="ri-arrow-left-line text-xl"></i>
               </button>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold">Lập Kế hoạch Thu mua</h1>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold truncate">Lập Kế hoạch Thu mua</h1>
                 <p className="text-sm opacity-90">Procurement Planning Tool</p>
               </div>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <GreenPointsBadge className="hidden sm:flex" />
             </div>
           </div>
 

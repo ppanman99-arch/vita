@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RoleSwitcher from '../../components/feature/RoleSwitcher';
+import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
+import { earnPoints } from '../../lib/greenPoints/service';
 
 export default function FarmerConsumer() {
   const navigate = useNavigate();
@@ -108,6 +110,7 @@ export default function FarmerConsumer() {
           </button>
           <h1 className="text-base sm:text-lg md:text-xl font-bold truncate flex-1 text-center px-2">VITA Mart</h1>
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <GreenPointsBadge className="hidden sm:flex" />
             <button className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-lg flex items-center justify-center hover:bg-white/30 transition-colors relative cursor-pointer">
               <i className="ri-shopping-cart-line text-lg sm:text-xl"></i>
               {cart.length > 0 && (
@@ -122,7 +125,7 @@ export default function FarmerConsumer() {
 
         {/* Member Benefits */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-sm text-blue-100 mb-1">Ưu đãi thành viên</p>
               <p className="text-2xl font-bold">Giảm 20-40%</p>
@@ -131,11 +134,21 @@ export default function FarmerConsumer() {
               <i className="ri-vip-crown-line text-4xl text-yellow-300"></i>
             </div>
           </div>
+          <div className="sm:hidden mb-3">
+            <GreenPointsBadge className="w-full" />
+          </div>
           <div className="mt-3 pt-3 border-t border-white/20">
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-sm mb-2">
               <span className="text-blue-100">Voucher khả dụng</span>
               <span className="font-bold">5 mã giảm giá</span>
             </div>
+            <button
+              onClick={() => navigate('/green-points')}
+              className="w-full mt-2 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            >
+              <i className="ri-gift-line"></i>
+              Xem Green Points
+            </button>
           </div>
         </div>
       </div>
@@ -244,16 +257,58 @@ export default function FarmerConsumer() {
                     </span>
                   </div>
 
-                  <button 
-                    onClick={() => toggleCart(product.id)}
-                    className={`w-full py-3 rounded-xl font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                      cart.includes(product.id)
-                        ? 'bg-green-500 text-white'
-                        : 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:shadow-lg'
-                    }`}
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => {
+                        // Quét QR để truy xuất nguồn gốc - tích điểm
+                        earnPoints(
+                          sessionStorage.getItem('user_id') || 'demo-user',
+                          'Quét QR truy xuất nguồn gốc',
+                          5,
+                          'engagement',
+                          'farmer-consumer',
+                          { productId: product.id, productName: product.name }
+                        ).catch(console.error);
+                        alert('Đã quét QR! +5 Green Points');
+                      }}
+                      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors cursor-pointer"
+                      title="Quét QR truy xuất nguồn gốc"
+                    >
+                      <i className="ri-qr-scan-line text-lg"></i>
+                    </button>
+                    <button 
+                      onClick={() => toggleCart(product.id)}
+                      className={`flex-1 py-3 rounded-xl font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        cart.includes(product.id)
+                          ? 'bg-green-500 text-white'
+                          : 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:shadow-lg'
+                      }`}
+                    >
+                      <i className={`${cart.includes(product.id) ? 'ri-check-line' : 'ri-shopping-cart-line'} mr-2`}></i>
+                      {cart.includes(product.id) ? 'Đã thêm vào giỏ' : 'Thêm vào giỏ hàng'}
+                    </button>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      // Đánh giá sản phẩm - tích điểm
+                      try {
+                        await earnPoints(
+                          sessionStorage.getItem('user_id') || 'demo-user',
+                          'Đánh giá sản phẩm',
+                          10,
+                          'engagement',
+                          'farmer-consumer',
+                          { productId: product.id, productName: product.name }
+                        );
+                        alert('Cảm ơn đánh giá! +10 Green Points');
+                      } catch (error) {
+                        console.error('Error earning points:', error);
+                      }
+                    }}
+                    className="w-full mt-2 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg font-medium transition-colors cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <i className={`${cart.includes(product.id) ? 'ri-check-line' : 'ri-shopping-cart-line'} mr-2`}></i>
-                    {cart.includes(product.id) ? 'Đã thêm vào giỏ' : 'Thêm vào giỏ hàng'}
+                    <i className="ri-star-line"></i>
+                    Đánh giá sản phẩm (+10 điểm)
                   </button>
                 </div>
               </div>
@@ -364,9 +419,34 @@ export default function FarmerConsumer() {
                   </div>
                 )}
 
-                <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold transition-colors cursor-pointer whitespace-nowrap">
-                  Xem chi tiết đơn hàng
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={async () => {
+                      // Mua hàng thành công - tích điểm
+                      const pointsEarned = Math.floor(order.total / 10000); // 1 điểm / 10k VNĐ
+                      try {
+                        await earnPoints(
+                          sessionStorage.getItem('user_id') || 'demo-user',
+                          `Mua sản phẩm - Đơn ${order.id}`,
+                          pointsEarned,
+                          'purchase',
+                          'farmer-consumer',
+                          { orderId: order.id, total: order.total }
+                        );
+                        alert(`Đã tích ${pointsEarned} Green Points từ đơn hàng này!`);
+                      } catch (error) {
+                        console.error('Error earning points:', error);
+                      }
+                    }}
+                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-semibold transition-colors cursor-pointer whitespace-nowrap flex items-center justify-center gap-2"
+                  >
+                    <i className="ri-gift-line"></i>
+                    Nhận điểm
+                  </button>
+                  <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold transition-colors cursor-pointer whitespace-nowrap">
+                    Xem chi tiết
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -535,14 +615,14 @@ export default function FarmerConsumer() {
             <span className="text-xs font-semibold">Siêu thị</span>
           </button>
           <button 
-            onClick={() => navigate('/farmer/wallet')}
+            onClick={() => navigate('/consumer-wallet')}
             className="flex flex-col items-center gap-1 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
           >
             <i className="ri-wallet-3-line text-2xl"></i>
             <span className="text-xs">Ví</span>
           </button>
           <button 
-            onClick={() => navigate('/farmer/community')}
+            onClick={() => navigate('/consumer-community')}
             className="flex flex-col items-center gap-1 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
           >
             <i className="ri-team-line text-2xl"></i>

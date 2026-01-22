@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RoleSwitcher from '../../components/feature/RoleSwitcher';
+import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
 
 export default function FarmerWalletPage() {
   const navigate = useNavigate();
@@ -163,7 +164,8 @@ export default function FarmerWalletPage() {
             <i className="ri-arrow-left-line text-xl sm:text-2xl"></i>
           </button>
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate flex-1 text-center px-2">Ví & Tín chỉ Carbon</h1>
-          <div className="flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <GreenPointsBadge className="hidden sm:flex" />
             <RoleSwitcher />
           </div>
         </div>

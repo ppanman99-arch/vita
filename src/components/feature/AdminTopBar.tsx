@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import GreenPointsBadge from '../shared/GreenPointsBadge';
 
 interface AdminTopBarProps {
   title: string;
@@ -26,6 +27,7 @@ export default function AdminTopBar({ title, subtitle }: AdminTopBarProps) {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
+          <GreenPointsBadge className="hidden sm:flex" />
           <button className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors relative">
             <i className="ri-notification-3-line text-lg text-gray-700"></i>
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">3</span>

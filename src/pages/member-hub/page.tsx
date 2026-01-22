@@ -1,10 +1,34 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { VitaGreenLinkService } from '../../lib/vitaScore/linkService';
+import VitaGreenBadge from '../../components/shared/VitaGreenBadge';
+import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
+import BackButton from '../../components/shared/BackButton';
+import RoleSwitcher from '../../components/feature/RoleSwitcher';
+import type { VitaScore } from '../../lib/vitaScore/types';
 
 export default function MemberHubPage() {
   const navigate = useNavigate();
   const [showWalletDetail, setShowWalletDetail] = useState(false);
+  const [vitaScore, setVitaScore] = useState<VitaScore | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadVitaScore();
+  }, []);
+
+  const loadVitaScore = async () => {
+    try {
+      const userId = sessionStorage.getItem('user_id') || 'demo-user';
+      const score = await VitaGreenLinkService.getVitaScore(userId);
+      setVitaScore(score);
+    } catch (error) {
+      console.error('Error loading VITA Score:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const memberData = {
     name: 'Nguyễn Văn Minh',
@@ -14,8 +38,8 @@ export default function MemberHubPage() {
       investment: 45000000,
       voucher: 20000000,
     },
-    creditScore: 950,
-    creditRank: 'Kim Cương',
+    creditScore: vitaScore?.score || 950,
+    creditRank: vitaScore ? VitaGreenLinkService.getVitaTierName(vitaScore.score) : 'Kim Cương',
     roles: {
       producer: {
         active: true,
@@ -49,23 +73,81 @@ export default function MemberHubPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Xin chào, Xã viên {memberData.name}
-              </h1>
-              <p className="text-gray-600 mt-1">Chào mừng bạn đến với Trung tâm Xã viên VITA Coop</p>
+      {/* Header - Sticky TopBar */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex items-center justify-between sm:hidden">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <BackButton className="bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 w-9 h-9 flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-base font-bold text-gray-900 truncate">
+                  Xã viên {memberData.name}
+                </h1>
+                <p className="text-xs text-gray-600 truncate">Trung tâm Xã viên</p>
+              </div>
             </div>
-            <button
-              onClick={() => navigate('/login')}
-              className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <i className="ri-logout-box-line text-xl"></i>
-              <span>Đăng xuất</span>
-            </button>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <VitaGreenBadge userId={sessionStorage.getItem('user_id') || 'demo-user'} className="hidden" />
+              <GreenPointsBadge className="hidden" />
+              <button 
+                onClick={() => navigate('/member-hub/notifications')}
+                className="relative w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
+              >
+                <i className="ri-notification-3-line text-lg text-gray-700"></i>
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-semibold">3</span>
+              </button>
+              <RoleSwitcher />
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+              <BackButton className="bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100" />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  Xin chào, Xã viên {memberData.name}
+                </h1>
+                <p className="text-gray-600 text-sm mt-0.5">Chào mừng bạn đến với Trung tâm Xã viên VITA Coop</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+              <VitaGreenBadge userId={sessionStorage.getItem('user_id') || 'demo-user'} className="hidden lg:flex" />
+              <GreenPointsBadge className="hidden lg:flex" />
+              <button 
+                onClick={() => navigate('/member-hub/notifications')}
+                className="relative w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
+              >
+                <i className="ri-notification-3-line text-xl text-gray-700"></i>
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-semibold">3</span>
+              </button>
+              <RoleSwitcher />
+              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-gray-200">
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-gray-800">{memberData.name}</p>
+                  <p className="text-xs text-gray-500">Xã viên</p>
+                </div>
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold">
+                  {memberData.name.charAt(0)}
+                </div>
+              </div>
+              <button
+                onClick={() => navigate('/login')}
+                className="hidden md:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Đăng xuất"
+              >
+                <i className="ri-logout-box-line text-lg"></i>
+                <span className="text-sm">Đăng xuất</span>
+              </button>
+              <button
+                onClick={() => navigate('/login')}
+                className="md:hidden w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
+                title="Đăng xuất"
+              >
+                <i className="ri-logout-box-line text-lg text-gray-700"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -105,7 +187,7 @@ export default function MemberHubPage() {
             </div>
             
             <div className="text-right">
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-3">
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-3 mb-2">
                 <p className="text-emerald-100 text-xs mb-1">Điểm tín nhiệm</p>
                 <div className="flex items-center gap-2">
                   <i className="ri-vip-diamond-fill text-2xl text-yellow-300"></i>
@@ -114,6 +196,9 @@ export default function MemberHubPage() {
                     <p className="text-xs text-emerald-100">Hạng {memberData.creditRank}</p>
                   </div>
                 </div>
+              </div>
+              <div className="flex justify-end">
+                <VitaGreenBadge userId={sessionStorage.getItem('user_id') || 'demo-user'} />
               </div>
             </div>
           </div>

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RoleSwitcher from '../../components/feature/RoleSwitcher';
 import BackButton from '../../components/shared/BackButton';
+import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
+import { earnPoints } from '../../lib/greenPoints/service';
 
 export default function FarmerDashboardPage() {
   const navigate = useNavigate();
@@ -91,6 +93,7 @@ export default function FarmerDashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            <GreenPointsBadge className="hidden sm:flex" />
             <RoleSwitcher />
             {/* Menu Dropdown */}
             <div className="relative">

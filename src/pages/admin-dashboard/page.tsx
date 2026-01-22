@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from './components/TopBar';
+import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
 import VitalSignsWidget from './components/VitalSignsWidget';
 import LiveGISMap from './components/LiveGISMap';
 import LiveFeed from './components/LiveFeed';

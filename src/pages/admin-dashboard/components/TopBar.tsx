@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BackButton from "../../../components/shared/BackButton";
+import GreenPointsBadge from "../../../components/shared/GreenPointsBadge";
 
 interface TopBarProps {
   title: string;
@@ -26,6 +27,7 @@ export default function TopBar({ title }: TopBarProps) {
           <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 truncate">{title}</h1>
         </div>
         <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+          <GreenPointsBadge className="hidden sm:flex" />
           {/* Role Switcher */}
           <div className="relative">
             <button
