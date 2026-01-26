@@ -5,6 +5,9 @@ import { RouteObject } from 'react-router-dom';
 const HomePage = lazy(() => import('../presentation/pages/HomePage'));
 const DashboardPage = lazy(() => import('../presentation/pages/DashboardPage'));
 const UsersPage = lazy(() => import('../presentation/pages/UsersPage'));
+const CartPage = lazy(() => import('../presentation/pages/CartPage'));
+const CheckoutPage = lazy(() => import('../presentation/pages/CheckoutPage'));
+const OrderHistoryPage = lazy(() => import('../presentation/pages/OrderHistoryPage'));
 
 export const nguyenManhthuanRoutes: RouteObject[] = [
   {
@@ -13,6 +16,9 @@ export const nguyenManhthuanRoutes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: 'dashboard', element: <DashboardPage /> },
       { path: 'users', element: <UsersPage /> },
+      { path: 'cart', element: <CartPage /> },
+      { path: 'checkout', element: <CheckoutPage /> },
+      { path: 'orders', element: <OrderHistoryPage /> },
     ],
   },
 ];
