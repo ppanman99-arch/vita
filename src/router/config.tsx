@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { RouteObject, Navigate } from "react-router-dom";
+import { nguyenManhthuanRoutes } from "@modules/nguyenmanhthuan/infrastructure/NguyenManhthuanModuleRouter";
 
 // Lazy load pages
 const HomePage = lazy(() => import("../pages/home/page"));
@@ -1214,6 +1215,18 @@ const routes: RouteObject[] = [
         <VitaGreenDashboardPage />
       </Suspense>
     ),
+  },
+  // NguyenManhThuan Module Routes
+  {
+    path: "/nguyen-manh-thuan",
+    children: nguyenManhthuanRoutes[0].children?.map(child => ({
+      ...child,
+      element: (
+        <Suspense fallback={<LoadingFallback />}>
+          {child.element}
+        </Suspense>
+      ),
+    })),
   },
   {
     path: "*",
