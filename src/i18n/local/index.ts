@@ -13,7 +13,7 @@ const defaultMessages = {
   vi: {
     translation: {
       'app.name': 'VITA COOP',
-      'app.title': 'Nền tảng Nông nghiệp Thông minh',
+      'app.title': 'Nền tảng quản trị rừng dược sinh',
     }
   }
 };

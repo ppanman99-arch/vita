@@ -5,7 +5,7 @@ export default function AdminBottomNav() {
   const location = useLocation();
 
   const navItems = [
-    { path: '/admin-dashboard', icon: 'ri-dashboard-3-line', label: 'Trung tâm' },
+    { path: '/cooperative/dashboard', icon: 'ri-dashboard-3-line', label: 'Trung tâm' },
     { path: '/admin-production', icon: 'ri-flow-chart', label: 'Sản xuất' },
     { path: '/admin-warehouse', icon: 'ri-store-3-line', label: 'Kho' },
     { path: '/admin-expert', icon: 'ri-stethoscope-line', label: 'Chuyên gia' }

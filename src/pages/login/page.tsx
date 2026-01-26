@@ -63,7 +63,7 @@ export default function Login() {
     if (username === '1' && password === '1') {
       switch(userType) {
         case 'cooperative':
-          navigate('/admin');
+          navigate('/cooperative/dashboard');
           break;
         case 'research':
           navigate('/research-lab');
@@ -117,7 +117,7 @@ export default function Login() {
         navigate('/forest-owner-register');
         break;
       case 'cooperative':
-        navigate('/cooperative-register');
+        navigate('/cooperative/onboarding');
         break;
       case 'research':
         navigate('/research-partner-register');

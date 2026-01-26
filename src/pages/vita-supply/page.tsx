@@ -96,8 +96,9 @@ export default function VitaSupplyPage() {
     
     // Check referrer as fallback (in case flag wasn't set)
     const referrer = document.referrer;
-    const isFromAdmin = referrer.includes('/admin-dashboard') || 
-                        referrer.includes('/admin') ||
+    const isFromAdmin = referrer.includes('/cooperative/dashboard') || 
+                        referrer.includes('/admin-dashboard') || // backward compat
+                        referrer.includes('/admin') || // backward compat
                         referrer.includes('/greenlight-command');
     
     if (isFromAdmin) {

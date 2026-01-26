@@ -1,13 +1,13 @@
 import { lazy, Suspense } from "react";
 import { RouteObject, Navigate } from "react-router-dom";
 import { nguyenManhthuanRoutes } from "@modules/nguyenmanhthuan/infrastructure/NguyenManhthuanModuleRouter";
+import { cooperativeRoutes } from "@modules/cooperative/infrastructure/CooperativeModuleRouter";
 
 // Lazy load pages
 const HomePage = lazy(() => import("../pages/home/page"));
 const LoginPage = lazy(() => import("../pages/login/page"));
 const LandingPage = lazy(() => import("../pages/landing/page"));
 const ForestOwnerRegisterPage = lazy(() => import("../pages/forest-owner-register/page"));
-const CooperativeRegisterPage = lazy(() => import("../pages/cooperative-register/page"));
 const EnterpriseRegisterPage = lazy(() => import("../pages/enterprise-register/page"));
 const ResearchPartnerRegisterPage = lazy(() => import("../pages/research-partner-register/page"));
 const PhysicianRegisterPage = lazy(() => import("../pages/physician-register/page"));
@@ -223,14 +223,6 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ForestOwnerRegisterPage />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/cooperative-register",
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <CooperativeRegisterPage />
       </Suspense>
     ),
   },
@@ -791,23 +783,7 @@ const routes: RouteObject[] = [
     ),
   },
   
-  // VITA ADMIN Routes
-  {
-    path: "/admin",
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <AdminDashboardPage />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/admin-dashboard",
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <AdminDashboardPage />
-      </Suspense>
-    ),
-  },
+  // VITA ADMIN Routes - /admin and /admin-dashboard removed, use /cooperative/dashboard instead
   {
     path: "/admin-gis",
     element: (
@@ -1220,6 +1196,18 @@ const routes: RouteObject[] = [
   {
     path: "/nguyen-manh-thuan",
     children: nguyenManhthuanRoutes[0].children?.map(child => ({
+      ...child,
+      element: (
+        <Suspense fallback={<LoadingFallback />}>
+          {child.element}
+        </Suspense>
+      ),
+    })),
+  },
+  // Cooperative Module Routes
+  {
+    path: "/cooperative",
+    children: cooperativeRoutes[0].children?.map(child => ({
       ...child,
       element: (
         <Suspense fallback={<LoadingFallback />}>

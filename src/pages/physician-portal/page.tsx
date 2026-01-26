@@ -58,7 +58,7 @@ export default function PhysicianPortalPage() {
   };
 
   const roles = [
-    { id: 'admin', name: 'HTX - Quản trị', icon: 'ri-dashboard-line', path: '/admin' },
+    { id: 'admin', name: 'HTX - Quản trị', icon: 'ri-dashboard-line', path: '/cooperative/dashboard' },
     { id: 'partner', name: 'Doanh nghiệp - Thu mua', icon: 'ri-building-line', path: '/partner-dashboard' },
     { id: 'physician', name: 'Bác sĩ - Kiểm định', icon: 'ri-stethoscope-line', path: '/physician-portal' },
     { id: 'greenlight', name: 'GreenLight - Command', icon: 'ri-shield-star-line', path: '/greenlight-command' },

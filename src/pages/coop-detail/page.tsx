@@ -926,7 +926,7 @@ const CoopDetailPage = () => {
                 </div>
               </div>
               <button
-                onClick={() => navigate('/cooperative-register', { state: { coopId: coop.id, coopName: coop.name, role: 'consumer' } })}
+                onClick={() => navigate('/cooperative/onboarding', { state: { coopId: coop.id, coopName: coop.name, role: 'consumer' } })}
                 className="w-full py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold text-sm sm:text-lg hover:shadow-lg transition-all whitespace-nowrap active:scale-98"
               >
                 <i className="ri-user-add-line mr-2"></i>

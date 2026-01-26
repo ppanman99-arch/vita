@@ -243,6 +243,20 @@ export default function OnboardingPage() {
       // Organization: Skip eKYC/Legal Entity Verification - Go directly to Security Setup
       return <SecuritySetup onNext={nextStep} progress={88} />;
     case 8:
+      // Skip InteractiveTour for cooperative portal
+      if (state.portal === 'cooperative') {
+        localStorage.removeItem(STORAGE_KEY);
+        const route = PORTAL_ROUTES[state.portal!] || '/cooperative/onboarding';
+        navigate(route);
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
+            <div className="text-center">
+              <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600 text-lg">Đang chuyển hướng...</p>
+            </div>
+          </div>
+        );
+      }
       return <InteractiveTour portal={state.portal!} onNext={() => {
         // Clear onboarding state and navigate
             localStorage.removeItem(STORAGE_KEY);
@@ -1196,13 +1210,18 @@ function PortalReveal({
   const hasExtendedContent = portal === 'physician' || portal === 'rnd';
   const hasForm = portal === 'forest-owner';
   const hasPhysicianForm = portal === 'physician';
+  const hasCooperativeSlides = portal === 'cooperative';
   // For rnd: Intro (0) + Benefits (1) + Extended Content slides (2-5) = 6 total
   // For physician: Intro (0) + Benefits (1) + Extended Content slides (2-5) + Form slides (6-8) = 9 total
   // For forest-owner: Intro (0) + Benefits (1) + Form (2) = 3 total
+  // For cooperative: Intro (0) + 6 Benefit slides (1-6) + Interests (7) + Commitment (8) = 9 total
   const rndExtendedSlides = portal === 'rnd' ? 4 : 0; // Slide 2-5: Vai trò, Lợi ích, Tiêu chí, Hợp tác+Quy trình
   const physicianExtendedSlides = portal === 'physician' ? 4 : 0; // Slide 2-5: Pain Points, Role, Network, Privileges
   const physicianFormSlides = portal === 'physician' ? 2 : 0; // Slide 5-6: Needs, Commitment (UserType removed, Professional Info and Contact moved to portal profile)
-  const totalSlides = 2 + (hasExtendedContent ? (rndExtendedSlides || physicianExtendedSlides) : 0) + (hasForm ? 1 : 0) + physicianFormSlides;
+  // Cooperative: Intro (0) + 6 Benefits (1-6) + Interests (7) + Commitment (8) = 9 total
+  const totalSlides = portal === 'cooperative' 
+    ? 9  // Intro + 6 benefits + interests + commitment
+    : 2 + (hasExtendedContent ? (rndExtendedSlides || physicianExtendedSlides) : 0) + (hasForm ? 1 : 0) + physicianFormSlides;
   const portalData: Record<string, { icon: string; title: string; slogan: string; benefits: string[]; heroImage?: string; cta?: string }> = {
     'coop-worker': {
       icon: 'ri-seedling-line',
@@ -1315,12 +1334,17 @@ function PortalReveal({
     'cooperative': {
       icon: 'ri-team-line',
       title: 'VITA CO-OP ADMIN',
-      slogan: 'Quản trị Tập trung - Vận hành Phi tập trung.',
+      slogan: 'CÙNG NHAU PHÁT TRIỂN - CÙNG NHAU THỊNH VƯỢNG',
+      heroImage: 'https://readdy.ai/api/search-image?query=Vietnamese%20cooperative%20farmers%20working%20together%20in%20medicinal%20plant%20forest%2C%20community%20collaboration%20harvesting%20herbs%20under%20tree%20canopy%2C%20teamwork%20in%20sustainable%20agriculture%2C%20traditional%20Vietnamese%20farming%20community%2C%20natural%20forest%20environment%20with%20organized%20cultivation%20areas%2C%20cooperative%20spirit&width=1920&height=800&seq=coop1&orientation=landscape',
       benefits: [
-        '✅ ERP Nông nghiệp: Quản lý đồng bộ 3 nguồn lực Đất - Sức - Vốn và tự động tính toán phân chia lợi nhuận (P&L) theo thời gian thực.',
-        '✅ Minh bạch Tài chính: Xuất báo cáo tài chính chuẩn xác để gọi vốn từ Nhà đầu tư và báo cáo chính quyền.',
-        '✅ Điều hành Số: Tổ chức đại hội xã viên online và biểu quyết điện tử (E-Voting) các quyết định quan trọng.',
+        'Thị trường đầu ra',
+        'Đào tạo chuyên sâu',
+        'Cây giống chất lượng',
+        'Chứng nhận VITA',
+        'Hỗ trợ tài chính',
+        'Mạng lưới rộng'
       ],
+      cta: 'Tham gia Hệ sinh thái Rừng Dược Sinh',
     },
     'farmer': {
       icon: 'ri-seedling-line',
@@ -1427,15 +1451,15 @@ function PortalReveal({
   // Slide 0: Intro (Icon + Title + Slogan)
   const renderIntroSlide = () => {
     // Individual portals with hero images: coop-worker, coop-land, forest-owner, coop-investor, coop-consumer, creator, physician
-    // Organization portals with hero images: factory, hospital, rnd
+    // Organization portals with hero images: factory, hospital, rnd, cooperative
     const individualPortalsWithHero = ['coop-worker', 'coop-land', 'forest-owner', 'coop-investor', 'coop-consumer', 'creator', 'physician'];
-    const organizationPortalsWithHero = ['factory', 'hospital', 'rnd'];
+    const organizationPortalsWithHero = ['factory', 'hospital', 'rnd', 'cooperative'];
     const allPortalsWithHero = [...individualPortalsWithHero, ...organizationPortalsWithHero];
     
     // Check if portal has heroImage and should use full-screen hero layout
     if (allPortalsWithHero.includes(portal) && data.heroImage) {
-  return (
-        <div className="fixed inset-0 w-screen h-screen overflow-hidden">
+      return (
+        <div className="fixed inset-0 w-screen h-screen overflow-hidden z-10">
           {/* Background Image - Full Screen */}
           <img 
             src={data.heroImage}
@@ -1459,7 +1483,12 @@ function PortalReveal({
                       Chấm dứt nỗi lo <span className="font-semibold">"Dược liệu rác"</span>. Hệ sinh thái Rừng Dược Sinh mang đến nguồn dược liệu chuẩn hóa VITA: Sạch, Dược tính cao, Minh bạch nguồn gốc để người thầy thuốc yên tâm cứu người.
                     </>
                   )}
-                  {portal !== 'physician' && (
+                  {portal === 'cooperative' && (
+                    <>
+                      Tham gia mạng lưới Hợp tác xã Rừng Dược Sinh - Nâng cao năng lực quản lý, mở rộng thị trường, tạo thu nhập bền vững cho thành viên.
+                    </>
+                  )}
+                  {portal !== 'physician' && portal !== 'cooperative' && (
                     <>
                       Chào mừng bạn đến với {data.title}. Khám phá những tiện ích và cơ hội đang chờ đón bạn.
                     </>
@@ -2387,6 +2416,222 @@ function PortalReveal({
     </div>
   );
 
+  // Cooperative Portal Slides
+  const cooperativeBenefits = [
+    {
+      title: 'Thị trường đầu ra',
+      description: 'Kết nối trực tiếp với doanh nghiệp, bao tiêu sản phẩm với giá ổn định',
+      icon: 'ri-shopping-bag-line',
+      color: 'from-amber-500 to-orange-600'
+    },
+    {
+      title: 'Đào tạo chuyên sâu',
+      description: 'Nâng cao năng lực quản lý HTX và kỹ thuật canh tác dược liệu',
+      icon: 'ri-graduation-cap-line',
+      color: 'from-orange-500 to-red-600'
+    },
+    {
+      title: 'Cây giống chất lượng',
+      description: 'Cung cấp cây giống F1 đã kiểm định, đảm bảo năng suất cao',
+      icon: 'ri-seedling-line',
+      color: 'from-red-500 to-pink-600'
+    },
+    {
+      title: 'Chứng nhận VITA',
+      description: 'Sản phẩm được chứng nhận theo tiêu chuẩn VITA, nâng cao giá trị',
+      icon: 'ri-shield-check-line',
+      color: 'from-pink-500 to-purple-600'
+    },
+    {
+      title: 'Hỗ trợ tài chính',
+      description: 'Kết nối nguồn vốn ưu đãi, hỗ trợ mở rộng sản xuất',
+      icon: 'ri-line-chart-line',
+      color: 'from-purple-500 to-indigo-600'
+    },
+    {
+      title: 'Mạng lưới rộng',
+      description: 'Tham gia mạng lưới HTX toàn quốc, chia sẻ kinh nghiệm',
+      icon: 'ri-global-line',
+      color: 'from-indigo-500 to-blue-600'
+    }
+  ];
+
+  const cooperativeInterestOptions = [
+    'Tham gia chuỗi cung ứng VITA',
+    'Nhận hỗ trợ kỹ thuật và đào tạo',
+    'Mở rộng quy mô sản xuất',
+    'Kết nối thị trường tiêu thụ',
+    'Nâng cao năng lực quản lý HTX'
+  ];
+
+  const [cooperativeInterests, setCooperativeInterests] = useState<string[]>(() => {
+    if (portal === 'cooperative') {
+      const saved = localStorage.getItem('cooperative_interests');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          return [];
+        }
+      }
+    }
+    return [];
+  });
+  
+  // Save cooperative interests to localStorage when changed
+  useEffect(() => {
+    if (portal === 'cooperative') {
+      localStorage.setItem('cooperative_interests', JSON.stringify(cooperativeInterests));
+    }
+  }, [cooperativeInterests, portal]);
+
+  // Render individual benefit slide for cooperative (slides 1-6)
+  const renderCooperativeBenefitSlide = (benefitIndex: number) => {
+    if (portal !== 'cooperative' || benefitIndex < 0 || benefitIndex >= cooperativeBenefits.length) return null;
+    
+    const benefit = cooperativeBenefits[benefitIndex];
+    
+    return (
+      <div className="max-w-4xl mx-auto pt-12">
+        <div className="text-center mb-8">
+          <div className={`w-20 h-20 bg-gradient-to-br ${benefit.color} rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg`}>
+            <i className={`${benefit.icon} text-white text-4xl`}></i>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            {benefit.title}
+          </h2>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-24">
+          <p className="text-lg text-gray-700 leading-relaxed text-center">
+            {benefit.description}
+          </p>
+        </div>
+
+        {/* Fixed bottom navigation buttons */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 safe-area-bottom shadow-lg">
+          <div className="max-w-4xl mx-auto flex gap-4">
+            <button 
+              onClick={() => setCurrentSlide(currentSlide - 1)} 
+              className="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+            >
+              Quay lại
+            </button>
+            <button
+              onClick={handleNext}
+              className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all"
+            >
+              Tiếp theo
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render interests slide for cooperative (slide 7)
+  const renderCooperativeInterestsSlide = () => {
+    if (portal !== 'cooperative') return null;
+
+    const handleCheckboxChange = (value: string) => {
+      const newInterests = cooperativeInterests.includes(value)
+        ? cooperativeInterests.filter(i => i !== value)
+        : [...cooperativeInterests, value];
+      setCooperativeInterests(newInterests);
+    };
+
+    return (
+      <div className="max-w-4xl mx-auto pt-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            HTX quan tâm đến
+          </h2>
+          <p className="text-gray-600">Chọn các mục bạn quan tâm (có thể chọn nhiều)</p>
+        </div>
+
+        <div className="space-y-3 mb-8">
+          {cooperativeInterestOptions.map((option) => (
+            <label key={option} className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:border-amber-300 transition-all">
+              <input
+                type="checkbox"
+                checked={cooperativeInterests.includes(option)}
+                onChange={() => handleCheckboxChange(option)}
+                className="w-5 h-5 text-amber-600 mt-0.5"
+              />
+              <span className="text-sm text-gray-700 flex-1">{option}</span>
+            </label>
+          ))}
+        </div>
+
+        {/* Fixed bottom navigation buttons */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 safe-area-bottom shadow-lg">
+          <div className="max-w-4xl mx-auto flex gap-4">
+            <button 
+              onClick={() => setCurrentSlide(currentSlide - 1)} 
+              className="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+            >
+              Quay lại
+            </button>
+            <button
+              onClick={handleNext}
+              className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all"
+            >
+              Tiếp theo
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render commitment slide for cooperative (slide 8)
+  const renderCooperativeCommitmentSlide = () => {
+    if (portal !== 'cooperative') return null;
+
+    return (
+      <div className="max-w-4xl mx-auto pt-12">
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
+            <i className="ri-hand-heart-line text-white text-4xl"></i>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Cam kết từ GreenLight
+          </h2>
+        </div>
+
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-8 mb-8">
+          <div className="flex items-start gap-4">
+            <i className="ri-hand-heart-line text-3xl text-amber-600 flex-shrink-0"></i>
+            <div>
+              <p className="font-semibold text-gray-900 mb-3 text-lg">Cam kết đồng hành</p>
+              <p className="text-gray-700 leading-relaxed">
+                Chúng tôi cam kết đồng hành cùng HTX trong việc nâng cao năng lực quản lý, mở rộng thị trường và tạo thu nhập bền vững cho thành viên. Cùng nhau xây dựng chuỗi giá trị dược liệu minh bạch và bền vững.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Fixed bottom navigation buttons */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 safe-area-bottom shadow-lg">
+          <div className="max-w-4xl mx-auto flex gap-4">
+            <button 
+              onClick={() => setCurrentSlide(currentSlide - 1)} 
+              className="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+            >
+              Quay lại
+            </button>
+            <button
+              onClick={handleNext}
+              className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all"
+            >
+              Hoàn tất
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Slide 3: Form (Forest Owner only)
   const renderFormSlide = () => {
     if (portal !== 'forest-owner') return null;
@@ -2515,6 +2760,33 @@ function PortalReveal({
   };
 
   // Main return - conditional rendering based on currentSlide
+  // For cooperative portal with hero image, render intro slide outside container
+  if (portal === 'cooperative' && currentSlide === 0 && data.heroImage) {
+    return (
+      <>
+        {/* Progress Bar */}
+        <div className="fixed top-0 left-0 right-0 h-1 bg-gray-200 z-20">
+          <div
+            className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+        {renderIntroSlide()}
+        {/* Slide Indicators - Fixed at bottom */}
+        <div className="fixed bottom-4 left-0 right-0 flex justify-center gap-2 z-[100] pointer-events-none pb-safe">
+          {Array.from({ length: totalSlides }).map((_, index) => (
+            <span
+              key={index}
+              className={`block w-2 h-2 rounded-full transition-all duration-300 pointer-events-auto ${
+                currentSlide === index ? 'bg-emerald-600 w-6' : 'bg-gray-300'
+              }`}
+            ></span>
+          ))}
+        </div>
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 py-12 px-4 sm:px-6">
       {/* Progress Bar */}
@@ -2541,8 +2813,12 @@ function PortalReveal({
       {portal === 'physician' && currentSlide === 5 && renderPhysicianNeedsSlide()}
       {portal === 'physician' && currentSlide === 6 && renderPhysicianCommitmentSlide()}
       {portal === 'physician' && currentSlide === 7 && renderBenefitsSlide()}
+      {/* Cooperative Portal Slides */}
+      {portal === 'cooperative' && currentSlide >= 1 && currentSlide <= 6 && renderCooperativeBenefitSlide(currentSlide - 1)}
+      {portal === 'cooperative' && currentSlide === 7 && renderCooperativeInterestsSlide()}
+      {portal === 'cooperative' && currentSlide === 8 && renderCooperativeCommitmentSlide()}
       {/* Default Benefits for other portals */}
-      {!['physician', 'rnd'].includes(portal) && currentSlide === 1 && renderBenefitsSlide()}
+      {!['physician', 'rnd', 'cooperative'].includes(portal) && currentSlide === 1 && renderBenefitsSlide()}
       {/* Forest Owner Form */}
       {portal === 'forest-owner' && currentSlide === 2 && renderFormSlide()}
 
@@ -3017,6 +3293,7 @@ function RepresentativeSignUp({
   onNext: () => void;
   progress: number;
 }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -3030,7 +3307,12 @@ function RepresentativeSignUp({
     
     if (isDemoMode) {
       // Skip validation for demo mode
-      onNext();
+      // Navigate directly to login page
+      if (portal === 'cooperative') {
+        navigate('/cooperative/login');
+      } else {
+        onNext();
+      }
       return;
     }
     
@@ -3039,12 +3321,17 @@ function RepresentativeSignUp({
       return;
     }
     if (!email.includes('@')) {
-      alert('Vui lòng nhập đúng địa chỉ email doanh nghiệp!');
+      alert('Vui lòng nhập đúng địa chỉ email!');
       return;
     }
     // Simulate email verification sending
     alert(`Email xác thực đã được gửi đến ${email}. Vui lòng kiểm tra email để kích hoạt tài khoản.`);
-    onNext();
+    // Navigate to login page after registration
+    if (portal === 'cooperative') {
+      navigate('/cooperative/login');
+    } else {
+      onNext();
+    }
   };
 
   return (

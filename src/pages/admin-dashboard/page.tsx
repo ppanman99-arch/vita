@@ -120,7 +120,7 @@ export default function AdminDashboardPage() {
     },
     { 
       name: 'HTX Brand Hub', 
-      path: '/htx-brand', 
+      path: '/cooperative/portal', 
       icon: 'ri-store-3-line', 
       color: 'bg-gradient-to-br from-indigo-500 to-purple-600',
       description: 'Shopee Connect • Landing Page • Tourism Booking',
@@ -286,7 +286,7 @@ export default function AdminDashboardPage() {
                     sessionStorage.setItem('supply_coop_name', coopName);
                   }
                   // Set flag for HTX Brand Hub to allow access without login
-                  if (link.path === '/htx-brand') {
+                  if (link.path === '/cooperative/portal') {
                     sessionStorage.setItem('navigating_from_admin', 'true');
                     sessionStorage.setItem('brand_authenticated', 'true');
                     // Set coop name if available

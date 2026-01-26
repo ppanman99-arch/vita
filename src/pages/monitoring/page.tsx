@@ -105,7 +105,7 @@ export default function MonitoringPage() {
       <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-4 sm:px-6 py-4 sm:py-6 sticky top-0 z-10 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center gap-3">
           <button 
-            onClick={() => navigate('/admin-dashboard')}
+            onClick={() => navigate('/cooperative/dashboard')}
             className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
           >
             <i className="ri-arrow-left-line text-xl"></i>

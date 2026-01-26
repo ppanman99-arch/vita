@@ -13,7 +13,7 @@ export default function Hub() {
 
   const registerPages = [
     { name: "Đăng ký Chủ Rừng", path: "/forest-owner-register", icon: "ri-plant-line", color: "bg-emerald-600" },
-    { name: "Đăng ký Hợp Tác Xã", path: "/cooperative-register", icon: "ri-team-line", color: "bg-amber-600" },
+    { name: "Đăng ký Hợp Tác Xã", path: "/cooperative/onboarding", icon: "ri-team-line", color: "bg-amber-600" },
     { name: "Đăng ký Doanh Nghiệp", path: "/enterprise-register", icon: "ri-building-line", color: "bg-blue-600" },
     { name: "Đăng ký Trung Tâm Gen", path: "/research-partner-register", icon: "ri-flask-line", color: "bg-purple-600" },
     { name: "Đăng ký Thầy Thuốc", path: "/physician-register", icon: "ri-stethoscope-line", color: "bg-teal-600" },
@@ -42,7 +42,7 @@ export default function Hub() {
   ];
 
   const adminPages = [
-    { name: "Dashboard Admin", path: "/admin", icon: "ri-dashboard-line", color: "bg-blue-600" },
+    { name: "Dashboard HTX", path: "/cooperative/dashboard", icon: "ri-dashboard-line", color: "bg-blue-600" },
     { name: "Bản đồ GIS", path: "/admin-gis", icon: "ri-map-pin-line", color: "bg-green-700" },
     { name: "Quản lý Kho", path: "/admin-warehouse", icon: "ri-store-2-line", color: "bg-purple-600" },
     { name: "Tài chính", path: "/admin-finance", icon: "ri-money-dollar-circle-line", color: "bg-indigo-600" },

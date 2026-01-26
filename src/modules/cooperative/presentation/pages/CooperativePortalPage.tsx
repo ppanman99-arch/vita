@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BrandTopBar from './components/BrandTopBar';
+import BrandTopBar from '../components/BrandTopBar';
+import CooperativeProfile from '../components/CooperativeProfile';
 
-type TabType = 'shopee' | 'landing' | 'tourism' | 'analytics';
+type TabType = 'profile' | 'shopee' | 'landing' | 'tourism' | 'analytics';
 
 interface Product {
   id: string;
@@ -50,7 +51,7 @@ interface Booking {
 
 export default function HtxBrandPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabType>('shopee');
+  const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [coopName, setCoopName] = useState('HTX');
   const [landingPageUrl, setLandingPageUrl] = useState('');
 
@@ -260,6 +261,7 @@ export default function HtxBrandPage() {
   };
 
   const tabs = [
+    { id: 'profile' as TabType, label: 'Thông tin HTX', icon: 'ri-building-line' },
     { id: 'shopee' as TabType, label: 'Shopee Connect', icon: 'ri-shopping-bag-3-line' },
     { id: 'landing' as TabType, label: 'Landing Page', icon: 'ri-global-line' },
     { id: 'tourism' as TabType, label: 'Du lịch & Dịch vụ', icon: 'ri-map-pin-line' },
@@ -304,6 +306,11 @@ export default function HtxBrandPage() {
 
         {/* Tab Content */}
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+          {/* Profile Tab */}
+          {activeTab === 'profile' && (
+            <CooperativeProfile />
+          )}
+
           {/* Shopee Connect Tab */}
           {activeTab === 'shopee' && (
             <div>

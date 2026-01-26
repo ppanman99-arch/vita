@@ -10,7 +10,7 @@ export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps)
   const location = useLocation();
 
   const menuItems = [
-    { id: 'dashboard', name: 'Tổng quan', icon: 'ri-dashboard-line', path: '/admin-dashboard' },
+    { id: 'dashboard', name: 'Tổng quan', icon: 'ri-dashboard-line', path: '/cooperative/dashboard' },
     { id: 'map', name: 'Bản đồ số', icon: 'ri-map-2-line', path: '/admin-map' },
     { id: 'production', name: 'Sản xuất', icon: 'ri-plant-line', path: '/admin-production' },
     { id: 'warehouse', name: 'Kho vận', icon: 'ri-store-3-line', path: '/admin-warehouse' },

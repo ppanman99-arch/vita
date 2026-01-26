@@ -27,7 +27,7 @@ export default function LandingPage() {
     const routes = [
       '/forest-owner-register',      // 0: Chủ Rừng
       '/coop-marketplace',           // 1: Nông Dân (tìm HTX)
-      '/cooperative-register',       // 2: Hợp Tác Xã
+      '/cooperative/onboarding',       // 2: Hợp Tác Xã
       '/coop-marketplace',           // 3: Nhà Góp Vốn (tìm dự án)
       '/enterprise-register',        // 4: Doanh Nghiệp
       '/research-partner-register',  // 5: Trung Tâm Gen
@@ -1394,7 +1394,7 @@ export default function LandingPage() {
               <h4 className="font-bold mb-4">Dịch vụ</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><button onClick={() => navigate('/forest-owner-register')} className="hover:text-white transition-colors">Đăng ký Chủ rừng</button></li>
-                <li><button onClick={() => navigate('/cooperative-register')} className="hover:text-white transition-colors">Đăng ký HTX</button></li>
+                <li><button onClick={() => navigate('/cooperative/onboarding')} className="hover:text-white transition-colors">Đăng ký HTX</button></li>
                 <li><button onClick={() => navigate('/enterprise-register')} className="hover:text-white transition-colors">Đăng ký Doanh nghiệp</button></li>
               </ul>
             </div>
