@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import EcosystemSection from './components/EcosystemSection';
 
 // Hero background image - dùng ảnh local từ public/images/
 const HERO_BACKGROUND_IMAGE = "/images/hero-background.png";
 // Fallback URL nếu cần: "https://readdy.ai/api/search-image?query=..."
 
-// Ecosystem illustration image - can be replaced with actual uploaded image
-const ECOSYSTEM_ILLUSTRATION = "https://readdy.ai/api/search-image?query=comprehensive%20digital%20ecosystem%20illustration%20interconnected%20panels%20management%20processes%20cloud%20services%20data%20storage%20creator%20expert%20hub%20e-commerce%20live%20streaming%20agriculture%20tourism%20monitoring%20QR%20code%20gate%20glowing%20lines%20data%20flow%20integration%20modern%20clean%20design%20blue%20green%20orange%20purple%20colors%20VITA%20platform%20ecosystem&width=1200&height=800&seq=vita-ecosystem-illustration&orientation=landscape";
-
 export default function LandingPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(0);
-  const [showModal, setShowModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Clear onboarding state when landing on home page - always start fresh
@@ -22,32 +18,6 @@ export default function LandingPage() {
     localStorage.removeItem('vita_land_digitization_data');
   }, []);
 
-  const handleCtaClick = () => {
-    // Map activeTab index to registration/login routes
-    const routes = [
-      '/forest-owner-register',      // 0: Chủ Rừng
-      '/coop-marketplace',           // 1: Nông Dân (tìm HTX)
-      '/cooperative/onboarding',       // 2: Hợp Tác Xã
-      '/coop-marketplace',           // 3: Nhà Góp Vốn (tìm dự án)
-      '/enterprise-register',        // 4: Doanh Nghiệp
-      '/research-partner-register',  // 5: Trung Tâm Gen
-      '/physician-register',         // 6: Thầy Thuốc
-      '/investor-portal/register',   // 7: Nhà Đầu Tư (private portal)
-      '/esg-portal/login',           // 8: ESG Impact
-      '/timber-trading/login',       // 9: Doanh Nghiệp Gỗ
-      '/admin-forestry',             // 10: Lâm Sinh (công cụ)
-      '/expert-portal/register',     // 11: Chuyên Gia
-      '/gov-portal/register',        // 12: Chính Quyền Xã
-      '/creator-hub/register',       // 13: KOL/KOC Creator
-    ];
-    
-    if (activeTab >= 0 && activeTab < routes.length) {
-      navigate(routes[activeTab]);
-    } else {
-      setShowModal(true);
-    }
-  };
-
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -55,206 +25,6 @@ export default function LandingPage() {
     }
     setShowMobileMenu(false);
   };
-
-  const tabs = [
-    {
-      id: 'forest-owner',
-      icon: 'ri-landscape-line',
-      label: 'Chủ Rừng',
-      title: 'Chủ Rừng & Chủ Đất',
-      description: 'Xã viên Góp đất - Biến tài sản đất rừng thành nguồn thu nhập thụ động bền vững. Quản lý tài sản số, nhận tiền môi trường và chia sẻ lợi nhuận.',
-      benefits: [
-        'Định giá tài sản đất minh bạch',
-        'Thu nhập từ cho thuê đất',
-        'Chia sẻ doanh thu sản phẩm',
-        'Tiền môi trường (PFES + Carbon)'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Vietnamese%20forest%20landowner%20standing%20proudly%20on%20their%20forested%20land%20holding%20land%20certificate%20document%20with%20lush%20green%20forest%20background%20sustainable%20land%20management%20natural%20resources%20conservation%20highland%20terrain%20professional%20portrait&width=800&height=600&seq=forest-owner-new-001&orientation=landscape'
-    },
-    {
-      id: 'farmer',
-      icon: 'ri-seedling-line',
-      label: 'Nông Dân',
-      title: 'Nông Dân & Cộng Sự',
-      description: 'Xã viên Sản xuất - Lực lượng lao động trực tiếp canh tác dược liệu. Nhận khoán đất, hỗ trợ kỹ thuật và thu nhập ổn định từ sản xuất.',
-      benefits: [
-        'Nhận khoán đất từ HTX',
-        'Hỗ trợ giống và kỹ thuật',
-        'Hợp đồng bao tiêu đầu ra',
-        'Thu nhập 30-50 triệu/ha/năm'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Vietnamese%20farmer%20working%20in%20medicinal%20herb%20field%20under%20forest%20canopy%20planting%20and%20caring%20for%20ginseng%20plants%20hands%20in%20soil%20traditional%20farming%20sustainable%20agriculture%20peaceful%20rural%20scene%20morning%20light%20organic%20cultivation&width=800&height=600&seq=farmer-worker-new-001&orientation=landscape'
-    },
-    {
-      id: 'cooperative',
-      icon: 'ri-team-line',
-      label: 'Hợp Tác Xã',
-      title: 'Hợp Tác Xã',
-      description: 'Tổ chức sản xuất quy mô lớn, nâng cao năng lực quản lý và đàm phán với thị trường.',
-      benefits: [
-        'Tăng sức mạnh thương lượng',
-        'Chia sẻ chi phí đầu vào',
-        'Đào tạo quản lý chuyên nghiệp',
-        'Truy cập thị trường xuất khẩu'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Vietnamese%20cooperative%20farmers%20meeting%20group%20discussion%20community%20collaboration%20rural%20development%20agricultural%20planning%20teamwork%20modern%20farming%20cooperative%20organized%20production%20professional%20management%20sustainable%20agriculture%20natural%20light%20clean%20simple%20background%20hopeful%20atmosphere%20unity%20and%20progress&width=800&height=600&seq=cooperative-hero-001&orientation=landscape'
-    },
-    {
-      id: 'investor',
-      icon: 'ri-hand-coin-line',
-      label: 'Nhà Góp Vốn',
-      title: 'Nhà Góp Vốn & Đầu Tư',
-      description: 'Xã viên Góp vốn - Đầu tư vào các dự án dược liệu sinh lời cao, minh bạch và bền vững. Nhận cổ tức định kỳ và quyền lợi xã viên.',
-      benefits: [
-        'Lợi nhuận bền vững',
-        'Chia cổ tức hàng quý',
-        'Mua sản phẩm giá ưu đãi',
-        'Quyền biểu quyết trong HTX'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Professional%20investor%20reviewing%20agricultural%20investment%20portfolio%20on%20tablet%20device%20with%20charts%20and%20graphs%20modern%20office%20setting%20business%20analysis%20financial%20planning%20sustainable%20agriculture%20investment%20green%20economy%20professional%20attire%20confident%20expression&width=800&height=600&seq=investor-new-001&orientation=landscape'
-    },
-    {
-      id: 'enterprise',
-      icon: 'ri-building-line',
-      label: 'Doanh Nghiệp',
-      title: 'Doanh Nghiệp Dược Phẩm',
-      description: 'Nguồn nguyên liệu sạch, ổn định và có thể truy xuất nguồn gốc cho sản xuất dược phẩm chất lượng cao.',
-      benefits: [
-        'Nguyên liệu chuẩn VITA',
-        'Cung ứng ổn định quanh năm',
-        'Truy xuất nguồn gốc minh bạch',
-        'Giá cả cạnh tranh'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Modern%20pharmaceutical%20manufacturing%20facility%20herbal%20medicine%20production%20quality%20control%20laboratory%20clean%20sterile%20environment%20professional%20equipment%20Vietnamese%20pharmaceutical%20company%20high-tech%20processing%20standardized%20production%20quality%20assurance%20natural%20ingredients%20bright%20lighting%20modern%20industrial%20design%20clean%20simple%20background&width=800&height=600&seq=enterprise-hero-001&orientation=landscape'
-    },
-    {
-      id: 'research',
-      icon: 'ri-flask-line',
-      label: 'Trung Tâm Gen',
-      title: 'Trung Tâm Nghiên Cứu Gen',
-      description: 'Nghiên cứu và phát triển giống dược liệu ưu việt, nâng cao chất lượng và năng suất.',
-      benefits: [
-        'Giống cây chất lượng cao',
-        'Nghiên cứu khoa học ứng dụng',
-        'Chuyển giao công nghệ',
-        'Hợp tác quốc tế'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Modern%20biotechnology%20research%20laboratory%20plant%20genetics%20study%20scientists%20working%20with%20medicinal%20plants%20DNA%20research%20microscope%20analysis%20clean%20lab%20environment%20Vietnamese%20research%20center%20advanced%20equipment%20scientific%20innovation%20green%20technology%20bright%20professional%20lighting%20modern%20facility%20clean%20simple%20background&width=800&height=600&seq=research-hero-001&orientation=landscape'
-    },
-    {
-      id: 'physician',
-      icon: 'ri-stethoscope-line',
-      label: 'Thầy Thuốc',
-      title: 'Thầy Thuốc & Bệnh Viện Đông Y',
-      description: 'Nguồn dược liệu sạch, dược tính cao và minh bạch nguồn gốc cho điều trị hiệu quả.',
-      benefits: [
-        'Dược liệu chuẩn VITA',
-        'Dược tính cao, hiệu quả tốt',
-        'Minh bạch nguồn gốc',
-        'Hỗ trợ thanh toán BHYT'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Traditional%20Vietnamese%20medicine%20doctor%20examining%20patient%20herbal%20medicine%20consultation%20professional%20medical%20setting%20traditional%20healing%20practice%20medicinal%20herbs%20display%20calm%20atmosphere%20trusted%20healthcare%20cultural%20medicine%20natural%20remedies%20doctor-patient%20interaction%20warm%20lighting%20clean%20clinic%20environment%20simple%20background&width=800&height=600&seq=physician-hero-001&orientation=landscape'
-    },
-    // NHÓM MỚI: ĐẦU TƯ & TÁC ĐỘNG MÔI TRƯỜNG
-    {
-      id: 'investor-portal',
-      icon: 'ri-shield-star-line',
-      label: 'Nhà Đầu Tư',
-      title: 'Cổng Quan hệ Nhà đầu tư',
-      description: 'Virtual Data Room • Valuation Simulator • Lộ trình IPO • Cap Table • Báo cáo IR cho các Quỹ đầu tư, Shark, Angel, VC.',
-      benefits: [
-        'Virtual Data Room bảo mật',
-        'Công cụ giả lập định giá',
-        'Lộ trình IPO rõ ràng',
-        'Báo cáo IR tự động'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=professional%20investor%20relations%20meeting%20handshake%20business%20partnership%20financial%20charts%20dashboard%20on%20screens%20modern%20conference%20room%20venture%20capital%20angel%20investor%20startup%20funding%20IPO%20valuation%20cap%20table%20presentation%20professional%20attire%20confident%20expression%20successful%20negotiation&width=800&height=600&seq=investor-portal-001&orientation=landscape'
-    },
-    {
-      id: 'esg-portal',
-      icon: 'ri-leaf-line',
-      label: 'ESG Impact',
-      title: 'Cổng Đầu tư ESG',
-      description: 'Sàn đầu tư Tác động - Kết nối dòng vốn ESG với các dự án trồng rừng bền vững, Tín chỉ Carbon, giám sát thời gian thực.',
-      benefits: [
-        'Dự án trồng rừng minh bạch',
-        'Tín chỉ Carbon được chứng nhận',
-        'Giám sát tác động thời gian thực',
-        'Báo cáo bền vững chuẩn quốc tế'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=ESG%20environmental%20social%20governance%20green%20leaf%20sustainable%20forestry%20project%20carbon%20credits%20impact%20investment%20dashboard%20environmental%20monitoring%20green%20finance%20corporate%20sustainability%20renewable%20energy%20climate%20action%20professional%20presentation%20modern%20office%20clean%20background&width=800&height=600&seq=esg-portal-001&orientation=landscape'
-    },
-    {
-      id: 'timber-trading',
-      icon: 'ri-tree-line',
-      label: 'Doanh Nghiệp Gỗ',
-      title: 'Cổng Giao dịch Gỗ Nguyên liệu',
-      description: 'Đặt hàng rừng trồng tương lai • Chứng chỉ FSC/PEFC • Tính toán hiệu suất • Kế hoạch khai thác bền vững.',
-      benefits: [
-        'Nguồn gỗ hợp pháp ổn định',
-        'Chứng chỉ FSC/PEFC tự động',
-        'Dự báo sản lượng chính xác',
-        'Khai thác không ảnh hưởng dược liệu'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=modern%20office%20building%20wood%20trading%20company%20timber%20commodity%20futures%20forestry%20management%20sustainable%20logging%20FSC%20certified%20wood%20supply%20chain%20professional%20business%20environment%20charts%20graphs%20growth%20trends%20financial%20dashboard&width=800&height=600&seq=timber-trading-001&orientation=landscape'
-    },
-    {
-      id: 'forestry',
-      icon: 'ri-plant-line',
-      label: 'Lâm Sinh',
-      title: 'Bộ Tiêu chuẩn & Công cụ Lâm sinh',
-      description: 'Quản lý Hệ sinh thái Đa tầng tán - Rừng gỗ lớn che bóng cho dược liệu. Kiến Trúc Sư Rừng, AI đo độ che phủ.',
-      benefits: [
-        'Thiết kế rừng đa tầng tối ưu',
-        'Công cụ tính toán mật độ trồng',
-        'AI đo độ che phủ tự động',
-        'Nhật ký lâm sinh số hóa'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=agroforestry%20system%20multi-layer%20canopy%20forest%20Vietnamese%20highlands%20medicinal%20plants%20growing%20underneath%20tall%20trees%20sustainable%20forestry%20management%20shade-grown%20agriculture%20biodiversity%20conservation%20lush%20green%20forest%20landscape%20professional%20forestry%20management&width=800&height=600&seq=forestry-001&orientation=landscape'
-    },
-    {
-      id: 'expert-portal',
-      icon: 'ri-user-star-line',
-      label: 'Chuyên Gia',
-      title: 'VITA EXPERT HUB - Cổng làm việc cho Chuyên gia',
-      description: 'Cổng làm việc chuyên nghiệp dành cho các Chuyên gia nông nghiệp. Tư vấn kỹ thuật từ xa, kê đơn số, bán quy trình SOP, và nhận thù lao minh bạch.',
-      benefits: [
-        'Phòng khám từ xa với công cụ AR',
-        'Kê đơn số và liên kết e-commerce',
-        'Bán quy trình SOP kiếm tiền thụ động',
-        'Hợp đồng dài hạn và giám sát diện rộng'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=professional%20agricultural%20expert%20scientist%20consulting%20with%20tablet%20device%20remote%20video%20call%20farmers%20using%20augmented%20reality%20tools%20digital%20prescription%20system%20knowledge%20sharing%20platform%20modern%20technology%20agricultural%20advice%20clean%20professional%20setting%20white%20coat&width=800&height=600&seq=expert-hub-001&orientation=landscape'
-    },
-    {
-      id: 'gov-portal',
-      icon: 'ri-government-line',
-      label: 'Chính Quyền Xã',
-      title: 'VITA GOV PORTAL - Xã Nông Thôn Mới Số',
-      description: 'Cổng quản trị số dành cho chính quyền cơ sở (Xã). Giám sát kinh tế - xã hội, quản lý quy hoạch đất đai, theo dõi tiêu chí Nông thôn mới, và kênh tuyên truyền số đến người dân.',
-      benefits: [
-        'Dashboard tổng quan kinh tế - xã hội real-time',
-        'Tự động mapping vào tiêu chí Nông thôn mới',
-        'Quản lý quy hoạch & xác nhận nguồn gốc đất',
-        'Kênh tuyên truyền số gửi thông báo đến App'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=Vietnamese%20commune%20government%20office%20administrative%20building%20justice%20scales%20symbol%20digital%20dashboard%20sustainable%20rural%20development%20monitoring%20economic%20growth%20social%20welfare%20agricultural%20management%20professional%20government%20setting%20modern%20technology%20clean%20background&width=800&height=600&seq=gov-portal-001&orientation=landscape'
-    },
-    {
-      id: 'creator-hub',
-      icon: 'ri-video-add-line',
-      label: 'KOL/KOC Creator',
-      title: 'VITA CREATOR HUB - Cổng Đối tác Sáng tạo Nội dung',
-      description: 'Cổng làm việc dành cho KOL/KOC (Key Opinion Leaders/Consumers). Truy cập Kho Tài nguyên Số, tham gia Chiến dịch Marketing, tạo Link Affiliate, và đặt lịch thăm vườn để quay video.',
-      benefits: [
-        'Chợ Chiến dịch: Ứng tuyển brief từ HTX/Doanh nghiệp',
-        'Kho Tài nguyên Số: Camera, Timelapse, Nhật ký, Chứng thư',
-        'Affiliate & Livestream: Link chia sẻ, công cụ bán hàng',
-        'Booking Vườn: Đặt lịch thăm vườn với QR code ra vào'
-      ],
-      image: 'https://readdy.ai/api/search-image?query=social%20media%20content%20creator%20influencer%20KOL%20KOC%20working%20with%20laptop%20video%20editing%20microphone%20camera%20social%20media%20icons%20agricultural%20products%20medicinal%20herbs%20content%20creation%20marketing%20affiliate%20modern%20creative%20workspace%20youtube%20instagram&width=800&height=600&seq=creator-hub-001&orientation=landscape'
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -274,11 +44,11 @@ export default function LandingPage() {
 
             {/* Desktop Menu */}
             <nav className="hidden lg:flex items-center gap-8">
-              <button onClick={() => scrollToSection('about')} className="text-gray-700 hover:text-emerald-600 transition-colors">Giới thiệu</button>
-              <button onClick={() => scrollToSection('vita-standard')} className="text-gray-700 hover:text-emerald-600 transition-colors">Tiêu chuẩn VITA</button>
-              <button onClick={() => scrollToSection('ecosystem')} className="text-gray-700 hover:text-emerald-600 transition-colors">Hệ sinh thái</button>
-              <button onClick={() => scrollToSection('platform')} className="text-gray-700 hover:text-emerald-600 transition-colors">Nền tảng</button>
-              <button onClick={() => scrollToSection('contact')} className="text-gray-700 hover:text-emerald-600 transition-colors">Liên hệ</button>
+              <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Giới thiệu</a>
+              <a href="#vita-standard" onClick={(e) => { e.preventDefault(); scrollToSection('vita-standard'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Tiêu chuẩn VITA</a>
+              <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Hệ sinh thái</a>
+              <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Nền tảng</a>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Liên hệ</a>
               <button onClick={() => navigate('/home')} className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all whitespace-nowrap">
                 Truy cập VITA PLATFORM
               </button>
@@ -296,11 +66,11 @@ export default function LandingPage() {
           {/* Mobile Menu */}
           {showMobileMenu && (
             <nav className="lg:hidden mt-4 pb-4 border-t pt-4 space-y-3">
-              <button onClick={() => scrollToSection('about')} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Giới thiệu</button>
-              <button onClick={() => scrollToSection('vita-standard')} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Tiêu chuẩn VITA</button>
-              <button onClick={() => scrollToSection('ecosystem')} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Hệ sinh thái</button>
-              <button onClick={() => scrollToSection('platform')} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Nền tảng</button>
-              <button onClick={() => scrollToSection('contact')} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Liên hệ</button>
+              <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Giới thiệu</a>
+              <a href="#vita-standard" onClick={(e) => { e.preventDefault(); scrollToSection('vita-standard'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Tiêu chuẩn VITA</a>
+              <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Hệ sinh thái</a>
+              <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Nền tảng</a>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Liên hệ</a>
               <button onClick={() => navigate('/home')} className="w-full px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all whitespace-nowrap">
                 Truy cập VITA PLATFORM
               </button>
@@ -371,6 +141,11 @@ export default function LandingPage() {
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
           <i className="ri-arrow-down-line text-white text-2xl opacity-60"></i>
         </div>
+      </section>
+
+      {/* Ecosystem Section: 6 nhóm + Flow dọc (mobile) / Bánh xe (desktop) - ngay dưới Hero */}
+      <section id="ecosystem">
+        <EcosystemSection />
       </section>
 
       {/* About Section */}
@@ -523,7 +298,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-
       {/* Policy Section */}
       {/* Policy Support Section - Link to dedicated page */}
       <section className="py-16 sm:py-24 bg-white">
@@ -543,437 +317,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Platform Section */}
-      <section className="py-16 sm:py-24 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Hệ Thống Nền Tảng VITA</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Hệ thống nền tảng công nghệ kết nối toàn bộ chuỗi giá trị dược liệu
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-blue-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-dashboard-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA ADMIN</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Bảng điều khiển cho HTX: Quản lý xã viên, giám sát vùng trồng GIS, kho bãi, tài chính, sản xuất
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Dashboard tổng quan</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Bản đồ GIS & Thành viên</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Kho bãi & Tài chính</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Sản xuất & Chuyên gia</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA RESEARCH */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-purple-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-flask-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA RESEARCH</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Trung tâm Gen & Khoa học: Nghiên cứu giống, phân tích DNA, thử nghiệm lâm sàng, chuyển giao công nghệ
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Ngân hàng Gen</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Phân tích DNA & Lab</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Thử nghiệm lâm sàng</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Chuyển giao công nghệ</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA PARTNER */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-amber-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-store-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA PARTNER</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Cổng thông tin B2B cho doanh nghiệp: Đặt hàng, theo dõi đơn hàng, truy xuất nguồn gốc minh bạch
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>Dashboard doanh nghiệp</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>Quản lý đơn hàng</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>Truy xuất nguồn gốc</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>Báo cáo chất lượng</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA PHYSICIAN */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-teal-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-stethoscope-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA PHYSICIAN</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Cổng thông tin cho Thầy thuốc & Bệnh viện: Kiểm định dược liệu, kê đơn, theo dõi hiệu quả điều trị
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-teal-600"></i>
-                  <span>Portal Thầy thuốc</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-teal-600"></i>
-                  <span>Kiểm định chất lượng</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-teal-600"></i>
-                  <span>Kê đơn điện tử</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-teal-600"></i>
-                  <span>Theo dõi điều trị</span>
-                </div>
-              </div>
-            </div>
-
-            {/* GREENLIGHT COMMAND */}
-            <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-emerald-400">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-shield-star-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">GREENLIGHT COMMAND</h3>
-              <p className="text-white/90 text-sm leading-relaxed mb-4">
-                Trung tâm Điều hành & Giám sát: Quản trị toàn hệ thống, giám sát tuân thủ, tài chính, tín chỉ Carbon, ESG
-              </p>
-              <div className="space-y-2 text-sm text-white/90">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-white"></i>
-                  <span>Tổng quan toàn hệ thống</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-white"></i>
-                  <span>Giám sát & Tuân thủ VITA</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-white"></i>
-                  <span>Tài chính & Đầu tư</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-white"></i>
-                  <span>Tín chỉ Carbon & ESG</span>
-                </div>
-              </div>
-            </div>
-
-            {/* INVESTOR PORTAL */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-emerald-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-shield-star-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">INVESTOR PORTAL</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Cổng Quan hệ Nhà đầu tư (Private): Virtual Data Room, Valuation Simulator, Lộ trình IPO, Cap Table Management
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Virtual Data Room bảo mật</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Valuation Simulator</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Lộ trình IPO & Cap Table</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Báo cáo IR tự động</span>
-                </div>
-              </div>
-            </div>
-
-            {/* ESG PORTAL */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-green-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-leaf-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">ESG IMPACT HUB</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Sàn đầu tư Tác động: Dự án trồng rừng, Tín chỉ Carbon, Giám sát thời gian thực, Báo cáo bền vững
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-green-600"></i>
-                  <span>Dự án trồng rừng minh bạch</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-green-600"></i>
-                  <span>Tín chỉ Carbon chứng nhận</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-green-600"></i>
-                  <span>Giám sát tác động real-time</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-green-600"></i>
-                  <span>Báo cáo ESG chuẩn quốc tế</span>
-                </div>
-              </div>
-            </div>
-
-            {/* TIMBER TRADING */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-amber-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-tree-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">TIMBER TRADING HUB</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Cổng Giao dịch Gỗ Nguyên liệu: Đặt hàng rừng trồng tương lai, Chứng chỉ FSC/PEFC, Tính toán hiệu suất
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>Timber Futures Booking</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>FSC/PEFC Certificate Management</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>Yield Calculator & Harvesting Plan</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-amber-600"></i>
-                  <span>Timber Stock Map</span>
-                </div>
-              </div>
-            </div>
-
-            {/* FORESTRY MODULE */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-emerald-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-plant-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA FORESTRY</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Bộ Tiêu chuẩn & Công cụ Lâm sinh: Quản lý Hệ sinh thái Đa tầng tán, Kiến Trúc Sư Rừng, AI đo độ che phủ
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Tiêu chuẩn VITA Lâm Sinh</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Forest Architect - Thiết kế rừng</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>AI đo độ che phủ</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-emerald-600"></i>
-                  <span>Nhật ký Lâm sinh số hóa</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA SUPPLY */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-orange-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-shopping-cart-2-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA SUPPLY</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Sàn Cung Ứng Vật Tư & Thiết Bị: Mua chung giá sỉ, trả chậm vụ sau, gói vật tư theo vụ, thiết bị IoT
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-orange-600"></i>
-                  <span>Vật tư canh tác giá sỉ</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-orange-600"></i>
-                  <span>Mua trả chậm (BNPL)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-orange-600"></i>
-                  <span>Gói vật tư theo vụ</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-orange-600"></i>
-                  <span>Thiết bị IoT VITA Tech</span>
-                </div>
-              </div>
-            </div>
-
-            {/* HTX BRAND HUB */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-indigo-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-store-3-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">HTX BRAND HUB</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Cổng Thương hiệu & Dịch vụ: Shopee Connect, Landing Page Builder, Tourism Booking (PMS), VITA POS
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-indigo-600"></i>
-                  <span>Đồng bộ Shopee (Haravan API)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-indigo-600"></i>
-                  <span>Landing Page Builder</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-indigo-600"></i>
-                  <span>Tourism PMS (ezCloud)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-indigo-600"></i>
-                  <span>VITA POS & Revenue Recon</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA EXPERT HUB */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-pink-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-user-star-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA EXPERT HUB</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Cổng làm việc Chuyên gia: Tư vấn kỹ thuật từ xa (Stringee), Kê đơn số, Bán quy trình SOP
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-pink-600"></i>
-                  <span>Video Call tư vấn (Stringee)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-pink-600"></i>
-                  <span>Kê đơn điện tử</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-pink-600"></i>
-                  <span>Bán quy trình SOP</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-pink-600"></i>
-                  <span>Thư viện kiến thức</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA CREATOR HUB */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-purple-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-video-add-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA CREATOR HUB</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Cổng Đối tác Sáng tạo: KOL/KOC, Kho tài nguyên số, Chiến dịch Marketing, Affiliate & Livestream
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Quản lý KOL/KOC</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Kho tài nguyên số</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Chiến dịch Marketing</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-purple-600"></i>
-                  <span>Affiliate & Livestream</span>
-                </div>
-              </div>
-            </div>
-
-            {/* VITA GOV PORTAL */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-blue-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4">
-                <i className="ri-government-line text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">VITA GOV PORTAL</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Xã Nông Thôn Mới Số: Quản trị số chính quyền Xã, Giám sát kinh tế-xã hội, Quản lý quy hoạch đất đai
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Dashboard chính quyền</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Giám sát kinh tế-xã hội</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Quy hoạch đất đai</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <i className="ri-checkbox-circle-fill text-blue-600"></i>
-                  <span>Tiêu chí Nông thôn mới</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* CTA Button */}
-          <div className="text-center mt-12">
-            <button 
-              onClick={() => navigate('/home')}
-              className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-lg font-semibold rounded-lg hover:shadow-2xl transition-all whitespace-nowrap"
-            >
-              Truy cập VITA Platform ngay
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Roadmap Section */}
 
       {/* Roadmap Section */}
       <section className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
@@ -1321,7 +664,7 @@ export default function LandingPage() {
 
           {/* View More Button */}
           <div className="text-center mt-12">
-            <button className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all inline-flex items-center gap-2">
+            <button type="button" onClick={() => scrollToSection('contact')} className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-semibold hover:shadow-xl transition-all inline-flex items-center gap-2">
               <span>Xem tất cả tin tức</span>
               <i className="ri-arrow-right-line"></i>
             </button>
@@ -1384,9 +727,9 @@ export default function LandingPage() {
             <div>
               <h4 className="font-bold mb-4">Về chúng tôi</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><button onClick={() => scrollToSection('about')} className="hover:text-white transition-colors">Giới thiệu</button></li>
-                <li><button onClick={() => scrollToSection('vita-standard')} className="hover:text-white transition-colors">Tiêu chuẩn VITA</button></li>
-                <li><button onClick={() => scrollToSection('ecosystem')} className="hover:text-white transition-colors">Hệ sinh thái</button></li>
+                <li><a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }} className="hover:text-white transition-colors">Giới thiệu</a></li>
+                <li><a href="#vita-standard" onClick={(e) => { e.preventDefault(); scrollToSection('vita-standard'); }} className="hover:text-white transition-colors">Tiêu chuẩn VITA</a></li>
+                <li><a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="hover:text-white transition-colors">Hệ sinh thái</a></li>
               </ul>
             </div>
 
@@ -1402,7 +745,7 @@ export default function LandingPage() {
             <div>
               <h4 className="font-bold mb-4">Liên hệ</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li>Hotline: 1900 xxxx</li>
+                <li>Hotline: 1900 xxxx (Đang cập nhật)</li>
                 <li>Email: info@greenlight-vita.vn</li>
                 <li>Địa chỉ: Hà Nội, Việt Nam</li>
               </ul>
@@ -1410,45 +753,13 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm">© 2024 GreenLight VITA. All rights reserved.</p>
-            <a href="https://readdy.ai/?ref=logo" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Powered by Readdy
+            <p className="text-gray-400 text-sm">© 2024–2025 GreenLight VITA. All rights reserved.</p>
+            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+              Powered by Đắc Lực Tech
             </a>
           </div>
         </div>
       </footer>
-
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 sm:p-8">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="ri-check-line text-white text-3xl"></i>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Đăng ký thành công!</h3>
-              <p className="text-gray-600">Chúng tôi sẽ liên hệ với bạn trong vòng 24-48 giờ</p>
-            </div>
-            <div className="flex gap-3">
-              <button 
-                onClick={() => {
-                  setShowModal(false);
-                  navigate('/');
-                }}
-                className="flex-1 px-6 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:shadow-xl transition-all whitespace-nowrap"
-              >
-                Về trang chủ
-              </button>
-              <button 
-                onClick={() => setShowModal(false)}
-                className="flex-1 px-6 py-3 sm:py-4 bg-gray-100 text-gray-700 text-sm sm:text-base font-semibold rounded-lg hover:bg-gray-200 transition-all whitespace-nowrap"
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
