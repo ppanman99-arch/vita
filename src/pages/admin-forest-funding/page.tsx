@@ -748,7 +748,7 @@ export default function AdminForestFundingPage() {
                           </button>
                         )}
                         <button
-                          onClick={() => navigate('/esg-portal')}
+                          onClick={() => navigate('/esg-portal/dashboard')}
                           className="px-6 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all"
                         >
                           <i className="ri-eye-line mr-2"></i>

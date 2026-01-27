@@ -317,27 +317,34 @@ export default function ESGPortalPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* Header */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
-            <BackButton />
-            <PortalSwitcher />
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                <i className="ri-leaf-line text-emerald-600 mr-2"></i>
-                VITA Impact Investment Hub
-              </h1>
-              <p className="text-sm sm:text-base text-gray-600">
-                Sàn đầu tư Tác động - Kết nối dòng vốn ESG với các dự án trồng rừng bền vững
-              </p>
+        {/* Topbar */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-4 sm:mb-6 px-3 sm:px-4 py-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+              <BackButton className="flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-gray-900 truncate flex items-center gap-2">
+                  <i className="ri-leaf-line text-emerald-600 flex-shrink-0 text-lg sm:text-xl"></i>
+                  <span className="truncate">VITA Impact Investment Hub</span>
+                </h1>
+                <p className="text-xs text-gray-600 truncate mt-0.5 hidden sm:block">
+                  Sàn đầu tư Tác động - Kết nối dòng vốn ESG với các dự án trồng rừng bền vững
+                </p>
+              </div>
             </div>
-            <div className="text-left sm:text-right">
-              <p className="text-xs sm:text-sm text-gray-600">Xin chào</p>
-              <p className="text-base sm:text-lg font-bold text-emerald-600">
-                {companyName || 'Doanh nghiệp ESG'}
-              </p>
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                  {(companyName || 'E').charAt(0).toUpperCase()}
+                </div>
+                <div className="text-right min-w-0">
+                  <p className="text-[10px] sm:text-xs text-gray-500 leading-tight">Xin chào</p>
+                  <p className="text-xs sm:text-sm font-bold text-emerald-600 truncate max-w-[100px] sm:max-w-[140px]">
+                    {companyName || 'Doanh nghiệp ESG'}
+                  </p>
+                </div>
+              </div>
+              <PortalSwitcher />
             </div>
           </div>
         </div>
@@ -1258,44 +1265,52 @@ export default function ESGPortalPage() {
 
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="space-y-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                     Dashboard ESG - Giám sát Thời gian thực
                   </h2>
-                  <p className="text-gray-600">
+                  <button
+                    onClick={() => navigate('/esg-portal/dashboard')}
+                    className="text-xs sm:text-sm text-emerald-600 hover:underline font-medium"
+                  >
+                    <i className="ri-dashboard-line mr-1"></i>
+                    <span className="hidden sm:inline">Xem Tổng quan ESG (điểm số, chứng nhận, dự án)</span>
+                    <span className="sm:hidden">Xem Tổng quan ESG</span>
+                  </button>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
                     {dashboardView === 'overview' 
                       ? 'Theo dõi tổng hợp tất cả các dự án bạn đã đầu tư'
                       : 'Theo dõi chi tiết dự án được chọn'
                     }
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   {/* View Mode Toggle */}
-                  <div className="bg-gray-100 rounded-lg p-1 flex">
+                  <div className="bg-gray-100 rounded-lg p-1 flex w-full sm:w-auto">
                     <button
                       onClick={() => {
                         setDashboardView('overview');
                         setSelectedProjectForDashboard(null);
                       }}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                         dashboardView === 'overview'
                           ? 'bg-white text-emerald-600 shadow-sm'
                           : 'text-gray-600 hover:text-gray-900'
                       }`}
                     >
-                      <i className="ri-dashboard-line mr-2"></i>
+                      <i className="ri-dashboard-line mr-1 sm:mr-2"></i>
                       Tổng hợp
                     </button>
                     <button
                       onClick={() => setDashboardView('project')}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                         dashboardView === 'project'
                           ? 'bg-white text-emerald-600 shadow-sm'
                           : 'text-gray-600 hover:text-gray-900'
                       }`}
                     >
-                      <i className="ri-focus-3-line mr-2"></i>
+                      <i className="ri-focus-3-line mr-1 sm:mr-2"></i>
                       Từng dự án
                     </button>
                   </div>
@@ -1305,7 +1320,7 @@ export default function ESGPortalPage() {
                     <select
                       value={selectedProjectForDashboard || ''}
                       onChange={(e) => setSelectedProjectForDashboard(e.target.value || null)}
-                      className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 bg-white"
+                      className="w-full sm:w-auto min-w-0 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 bg-white truncate"
                     >
                       <option value="">-- Chọn dự án --</option>
                       {myInvestments.map((investment) => (

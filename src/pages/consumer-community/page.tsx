@@ -276,7 +276,7 @@ export default function ConsumerCommunityPage() {
         <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2">
           <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
             <button 
-              onClick={() => navigate('/farmer-consumer')}
+              onClick={() => navigate('/farmer/consumer')}
               className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer flex-shrink-0"
             >
               <i className="ri-arrow-left-line text-xl"></i>
@@ -691,7 +691,7 @@ export default function ConsumerCommunityPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
         <div className="flex items-center justify-around max-w-md mx-auto">
           <button 
-            onClick={() => navigate('/farmer-consumer')}
+            onClick={() => navigate('/member-hub')}
             className="flex flex-col items-center gap-1 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
           >
             <i className="ri-home-4-line text-2xl"></i>
@@ -714,13 +714,6 @@ export default function ConsumerCommunityPage() {
           <button className="flex flex-col items-center gap-1 text-blue-600 cursor-pointer">
             <i className="ri-community-line text-2xl"></i>
             <span className="text-xs font-semibold">Cộng đồng</span>
-          </button>
-          <button 
-            onClick={() => navigate('/farmer-consumer')}
-            className="flex flex-col items-center gap-1 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
-          >
-            <i className="ri-user-line text-2xl"></i>
-            <span className="text-xs">Tài khoản</span>
           </button>
         </div>
       </div>

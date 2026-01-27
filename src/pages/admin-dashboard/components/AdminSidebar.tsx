@@ -15,7 +15,8 @@ export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps)
     { id: 'production', name: 'Sản xuất', icon: 'ri-plant-line', path: '/admin-production' },
     { id: 'warehouse', name: 'Kho vận', icon: 'ri-store-3-line', path: '/admin-warehouse' },
     { id: 'finance', name: 'Tài chính', icon: 'ri-money-dollar-circle-line', path: '/admin-finance' },
-    { id: 'members', name: 'Xã viên', icon: 'ri-group-line', path: '/admin-members' },
+    { id: 'members', name: 'Xã viên', icon: 'ri-group-line', path: '/cooperative/members' },
+    { id: 'contracts', name: 'Hợp đồng', icon: 'ri-file-contract-line', path: '/cooperative/contracts' },
     { id: 'reports', name: 'Báo cáo', icon: 'ri-file-chart-line', path: '/admin-reports' },
     { id: 'expert', name: 'Chuyên gia', icon: 'ri-microscope-line', path: '/admin-expert' }
   ];

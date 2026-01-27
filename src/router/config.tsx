@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { RouteObject, Navigate } from "react-router-dom";
 import { nguyenManhthuanRoutes } from "@modules/nguyenmanhthuan/infrastructure/NguyenManhthuanModuleRouter";
 import { cooperativeRoutes } from "@modules/cooperative/infrastructure/CooperativeModuleRouter";
+import { memberRoutes } from "@modules/member/infrastructure/MemberModuleRouter";
 
 // Lazy load pages
 const HomePage = lazy(() => import("../pages/home/page"));
@@ -12,8 +13,7 @@ const EnterpriseRegisterPage = lazy(() => import("../pages/enterprise-register/p
 const ResearchPartnerRegisterPage = lazy(() => import("../pages/research-partner-register/page"));
 const PhysicianRegisterPage = lazy(() => import("../pages/physician-register/page"));
 
-// Member Hub - Trung tâm Xã viên
-const MemberHubPage = lazy(() => import("../pages/member-hub/page"));
+// Member Hub - Trung tâm Xã viên (module)
 
 // VITA FARMER - 3 vai trò tích hợp
 const FarmerProducerPage = lazy(() => import("../pages/farmer-producer/page"));
@@ -25,7 +25,6 @@ const ConsumerCommunityPage = lazy(() => import("../pages/consumer-community/pag
 const InvestorWalletPage = lazy(() => import("../pages/investor-wallet/page"));
 const InvestorCommunityPage = lazy(() => import("../pages/investor-community/page"));
 const InvestorHomePage = lazy(() => import("../pages/investor-home/page"));
-const MemberNotificationsPage = lazy(() => import("../pages/member-hub/notifications/page"));
 const VitaGreenDashboardPage = lazy(() => import("../pages/vita-green-dashboard/page"));
 
 // VITA FARMER - App cho Nông dân
@@ -109,10 +108,13 @@ const InvestorPortalLoginPage = lazy(() => import("../pages/investor-portal/logi
 const InvestorPortalRegisterPage = lazy(() => import("../pages/investor-portal/register/page"));
 const InvestorPortalPage = lazy(() => import("../pages/investor-portal/page"));
 
-// VITA ESG PORTAL - Impact Investment Hub
-const ESGPortalPage = lazy(() => import("../pages/esg-portal/page"));
-const ESGLoginPage = lazy(() => import("../pages/esg-portal/login/page"));
-const ESGRegisterPage = lazy(() => import("../pages/esg-portal/register/page"));
+// VITA ESG PORTAL - Impact Investment Hub (module)
+const ESGPortalPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGPortalPage"));
+const ESGLoginPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGLoginPage"));
+const ESGRegisterPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGRegisterPage"));
+const ESGDashboardPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGDashboardPage"));
+const ESGProjectsPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGProjectsPage"));
+const ESGProjectDetailPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGProjectDetailPage"));
 
 // VITA TIMBER TRADING HUB - Gỗ Nguyên liệu
 const TimberTradingPage = lazy(() => import("../pages/timber-trading/page"));
@@ -293,7 +295,7 @@ const routes: RouteObject[] = [
     ),
   },
   
-  // VITA ESG PORTAL - Impact Investment Hub
+  // VITA ESG PORTAL - Impact Investment Hub (module)
   {
     path: "/esg-portal/login",
     element: (
@@ -315,6 +317,30 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ESGPortalPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-portal/dashboard",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGDashboardPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-portal/projects",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGProjectsPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-portal/projects/:id",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGProjectDetailPage />
       </Suspense>
     ),
   },
@@ -601,24 +627,19 @@ const routes: RouteObject[] = [
     ),
   },
   
-  // Member Hub - Trung tâm Xã viên
+  // Member Hub - Trung tâm Xã viên (module)
   {
     path: "/member-hub",
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <MemberHubPage />
-      </Suspense>
-    ),
+    children: memberRoutes?.[0]?.children?.map((child) => ({
+      ...child,
+      element: (
+        <Suspense fallback={<LoadingFallback />}>
+          {child.element}
+        </Suspense>
+      ),
+    })) || [],
   },
-  {
-    path: "/member-hub/notifications",
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <MemberNotificationsPage />
-      </Suspense>
-    ),
-  },
-  
+
   // VITA FARMER - 3 vai trò tích hợp
   {
     path: "/farmer/producer",

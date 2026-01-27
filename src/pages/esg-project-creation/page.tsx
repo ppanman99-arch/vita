@@ -407,7 +407,7 @@ export default function ESGProjectCreationPage() {
                 Quay về Dashboard
               </button>
               <button
-                onClick={() => navigate('/esg-portal')}
+                onClick={() => navigate('/esg-portal/dashboard')}
                 className="flex-1 py-3 px-6 bg-white border-2 border-emerald-600 text-emerald-600 rounded-lg font-semibold hover:bg-emerald-50 transition-all"
               >
                 Xem trên ESG Portal

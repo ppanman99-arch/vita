@@ -20,10 +20,10 @@ export default function BackButton({
   return (
     <button
       onClick={handleBack}
-      className={`flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all text-gray-700 ${className}`}
+      className={`flex items-center ${label ? 'gap-2 px-4 py-2' : 'justify-center px-0 py-0'} bg-white rounded-lg shadow-sm hover:shadow-md transition-all text-gray-700 ${className}`}
     >
       <i className={`${icon} text-lg`}></i>
-      <span>{label}</span>
+      {label && <span>{label}</span>}
     </button>
   );
 }

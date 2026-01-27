@@ -45,11 +45,11 @@ export default function ESGLoginPage() {
           : emailName.charAt(0).toUpperCase() + emailName.slice(1).replace(/[0-9]/g, '');
       }
       
-      // Lưu session và chuyển đến portal
+      // Lưu session và chuyển đến dashboard
       sessionStorage.setItem('esg_authenticated', 'true');
       sessionStorage.setItem('esg_email', email);
       sessionStorage.setItem('esg_company_name', companyName || 'Doanh nghiệp ESG');
-      navigate('/esg-portal');
+      navigate('/esg-portal/dashboard');
     } else {
       setError('Mã xác thực 2FA không đúng. Vui lòng thử lại.');
     }

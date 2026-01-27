@@ -15,7 +15,7 @@ export default function AdminDashboardPage() {
   const quickLinks = [
     { 
       name: 'Quản lý Xã viên', 
-      path: '/admin-members', 
+      path: '/cooperative/members', 
       icon: 'ri-team-line', 
       color: 'bg-gradient-to-br from-blue-600 to-indigo-700',
       description: 'Hồ sơ, VITA Score, vùng trồng'
@@ -65,7 +65,7 @@ export default function AdminDashboardPage() {
     },
     { 
       name: 'Hợp đồng Bao tiêu', 
-      path: '/admin-contracts', 
+      path: '/cooperative/contracts', 
       icon: 'ri-file-list-3-line', 
       color: 'bg-gradient-to-br from-teal-600 to-cyan-700',
       description: 'Quản lý tiến độ sinh trưởng'

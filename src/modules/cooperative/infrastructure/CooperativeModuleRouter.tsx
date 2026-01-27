@@ -8,6 +8,8 @@ const CooperativeRegisterAccountPage = lazy(() => import('../presentation/pages/
 const CooperativePortalPage = lazy(() => import('../presentation/pages/CooperativePortalPage'));
 const CooperativeDashboardPage = lazy(() => import('../presentation/pages/CooperativeDashboardPage'));
 const CooperativeProfilePage = lazy(() => import('../presentation/pages/CooperativeProfilePage'));
+const CooperativeMembersPage = lazy(() => import('../presentation/pages/CooperativeMembersPage'));
+const CooperativeContractsPage = lazy(() => import('../presentation/pages/CooperativeContractsPage'));
 
 export const cooperativeRoutes: RouteObject[] = [
   {
@@ -19,6 +21,8 @@ export const cooperativeRoutes: RouteObject[] = [
       { path: 'portal', element: <CooperativePortalPage /> },
       { path: 'dashboard', element: <CooperativeDashboardPage /> },
       { path: 'profile', element: <CooperativeProfilePage /> },
+      { path: 'members', element: <CooperativeMembersPage /> },
+      { path: 'contracts', element: <CooperativeContractsPage /> },
     ],
   },
 ];

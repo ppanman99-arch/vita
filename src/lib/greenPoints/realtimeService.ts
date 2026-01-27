@@ -70,14 +70,32 @@ export function subscribeToGreenPoints(
         }
 
         // Fetch updated data
-        const { data, error } = await supabase
-          .from('green_points')
-          .select('*')
-          .eq('user_id', userId)
-          .single();
+        let data, error;
+        try {
+          const result = await supabase
+            .from('green_points')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+          data = result.data;
+          error = result.error;
+        } catch (networkError: any) {
+          // Network errors - silently fail (expected when offline)
+          if (networkError?.message?.includes('Failed to fetch') || 
+              networkError?.message?.includes('ERR_NAME_NOT_RESOLVED')) {
+            return;
+          }
+          // Log unexpected errors
+          console.error('Error fetching updated green points:', networkError);
+          return;
+        }
         
         if (error) {
-          console.error('Error fetching updated green points:', error);
+          // Only log non-network errors
+          if (!error.message?.includes('Failed to fetch') && 
+              !error.message?.includes('ERR_NAME_NOT_RESOLVED')) {
+            console.error('Error fetching updated green points:', error);
+          }
           return;
         }
 
@@ -85,8 +103,12 @@ export function subscribeToGreenPoints(
           callback(transformGreenPoints(data));
         }
       }
-    )
-    .subscribe();
+    );
+  
+  // Subscribe - WebSocket errors are expected when offline
+  // Supabase client handles connection errors and retries automatically
+  // We don't need to handle errors here as they're expected when Supabase is unavailable
+  channel.subscribe();
 
   return () => {
     if (supabase && typeof supabase.removeChannel === 'function') {

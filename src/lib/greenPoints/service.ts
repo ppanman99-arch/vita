@@ -73,14 +73,32 @@ export const getUserGreenPoints = async (
     }
 
     // Try to get from Supabase
-    const { data, error } = await supabase
-      .from('green_points')
-      .select('*')
-      .eq('user_id', unifiedUserId)
-      .single();
+    let data, error;
+    try {
+      const result = await supabase
+        .from('green_points')
+        .select('*')
+        .eq('user_id', unifiedUserId)
+        .single();
+      data = result.data;
+      error = result.error;
+    } catch (networkError: any) {
+      // Network errors (offline, DNS failure, etc.) - silently fail
+      // These are expected when Supabase is unavailable
+      if (networkError?.message?.includes('Failed to fetch') || 
+          networkError?.message?.includes('ERR_NAME_NOT_RESOLVED')) {
+        return null; // Return null instead of throwing
+      }
+      // Re-throw unexpected errors
+      throw networkError;
+    }
     
     if (error && error.code !== 'PGRST116') { // PGRST116 = not found
-      console.error('Error fetching green points:', error);
+      // Only log non-network errors
+      if (!error.message?.includes('Failed to fetch') && 
+          !error.message?.includes('ERR_NAME_NOT_RESOLVED')) {
+        console.error('Error fetching green points:', error);
+      }
     }
     
     if (data) {

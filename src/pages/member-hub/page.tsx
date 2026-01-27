@@ -102,39 +102,43 @@ export default function MemberHubPage() {
           </div>
 
           {/* Desktop Layout */}
-          <div className="hidden sm:flex items-center justify-between">
-            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-              <BackButton className="bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100" />
-              <div className="min-w-0 flex-1">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          <div className="hidden sm:flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 overflow-hidden">
+              <BackButton className="bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 flex-shrink-0" />
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                   Xin chào, Xã viên {memberData.name}
                 </h1>
-                <p className="text-gray-600 text-sm mt-0.5">Chào mừng bạn đến với Trung tâm Xã viên VITA Coop</p>
+                <p className="text-gray-600 text-xs sm:text-sm mt-0.5 truncate">
+                  Chào mừng bạn đến với Trung tâm Xã viên VITA Coop
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              <VitaGreenBadge userId={sessionStorage.getItem('user_id') || 'demo-user'} className="hidden lg:flex" />
-              <GreenPointsBadge className="hidden lg:flex" />
+              <VitaGreenBadge userId={sessionStorage.getItem('user_id') || 'demo-user'} className="hidden lg:flex flex-shrink-0" />
+              <GreenPointsBadge className="hidden lg:flex flex-shrink-0" />
               <button 
                 onClick={() => navigate('/member-hub/notifications')}
-                className="relative w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
+                className="relative w-9 h-9 sm:w-10 sm:h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0"
               >
-                <i className="ri-notification-3-line text-xl text-gray-700"></i>
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-semibold">3</span>
+                <i className="ri-notification-3-line text-lg sm:text-xl text-gray-700"></i>
+                <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-semibold">3</span>
               </button>
-              <RoleSwitcher />
-              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-gray-200">
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-800">{memberData.name}</p>
+              <div className="flex-shrink-0">
+                <RoleSwitcher />
+              </div>
+              <div className="hidden lg:flex items-center gap-2 xl:gap-3 pl-3 xl:pl-4 border-l border-gray-200 flex-shrink-0">
+                <div className="text-right hidden xl:block">
+                  <p className="text-sm font-semibold text-gray-800 truncate max-w-[120px]">{memberData.name}</p>
                   <p className="text-xs text-gray-500">Xã viên</p>
                 </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold">
+                <div className="w-9 h-9 xl:w-10 xl:h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm xl:text-base flex-shrink-0">
                   {memberData.name.charAt(0)}
                 </div>
               </div>
               <button
                 onClick={() => navigate('/login')}
-                className="hidden md:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="hidden xl:flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0 whitespace-nowrap"
                 title="Đăng xuất"
               >
                 <i className="ri-logout-box-line text-lg"></i>
@@ -142,7 +146,7 @@ export default function MemberHubPage() {
               </button>
               <button
                 onClick={() => navigate('/login')}
-                className="md:hidden w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
+                className="xl:hidden w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0"
                 title="Đăng xuất"
               >
                 <i className="ri-logout-box-line text-lg text-gray-700"></i>

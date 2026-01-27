@@ -1,4 +1,5 @@
 import type { Cooperative } from '../domain/Cooperative';
+import type { CooperativeMember, MemberRole, MemberStatus } from '../domain/CooperativeMember';
 import type { IDatabasePort } from '@core/infrastructure/ports/IDatabasePort';
 import { SupabaseDatabaseAdapter } from '@core/infrastructure/adapters/database/SupabaseDatabaseAdapter';
 import { supabase } from '../../../../src/lib/supabase';
@@ -166,6 +167,100 @@ export class CooperativeService {
     }
   }
 
+  /**
+   * Get all members of a cooperative
+   */
+  async getMembers(cooperativeId: string): Promise<CooperativeMember[]> {
+    try {
+      const results = await this.dbAdapter.query<any>({
+        table: 'cooperative_members',
+        filters: { cooperative_id: cooperativeId },
+        orderBy: { column: 'joined_at', ascending: false },
+      });
+
+      return results.map(row => this.mapDbRowToMember(row));
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      // Return mock data if table doesn't exist yet
+      return [];
+    }
+  }
+
+  /**
+   * Add a new member to cooperative
+   */
+  async addMember(
+    cooperativeId: string,
+    userId: string,
+    role: MemberRole
+  ): Promise<CooperativeMember> {
+    try {
+      const dbData: any = {
+        cooperative_id: cooperativeId,
+        user_id: userId,
+        role: role,
+        status: 'pending',
+        joined_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const result = await this.dbAdapter.create<any>('cooperative_members', dbData);
+      return this.mapDbRowToMember(result);
+    } catch (error) {
+      console.error('Error adding member:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Remove a member from cooperative
+   */
+  async removeMember(memberId: string): Promise<void> {
+    try {
+      await this.dbAdapter.delete('cooperative_members', memberId);
+    } catch (error) {
+      console.error('Error removing member:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update member role
+   */
+  async updateMemberRole(memberId: string, role: MemberRole): Promise<CooperativeMember> {
+    try {
+      const dbData: any = {
+        role: role,
+        updated_at: new Date().toISOString(),
+      };
+
+      const result = await this.dbAdapter.update<any>('cooperative_members', memberId, dbData);
+      return this.mapDbRowToMember(result);
+    } catch (error) {
+      console.error('Error updating member role:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update member status
+   */
+  async updateMemberStatus(memberId: string, status: MemberStatus): Promise<CooperativeMember> {
+    try {
+      const dbData: any = {
+        status: status,
+        updated_at: new Date().toISOString(),
+      };
+
+      const result = await this.dbAdapter.update<any>('cooperative_members', memberId, dbData);
+      return this.mapDbRowToMember(result);
+    } catch (error) {
+      console.error('Error updating member status:', error);
+      throw error;
+    }
+  }
+
   private mapDbRowToCooperative(row: any): Cooperative {
     return {
       id: row.id,
@@ -184,6 +279,25 @@ export class CooperativeService {
       additionalInfo: row.additional_info,
       logoUrl: row.logo_url,
       status: row.status || 'pending',
+      createdAt: new Date(row.created_at),
+      updatedAt: new Date(row.updated_at),
+    };
+  }
+
+  private mapDbRowToMember(row: any): CooperativeMember {
+    return {
+      id: row.id,
+      cooperativeId: row.cooperative_id,
+      userId: row.user_id,
+      role: row.role || 'producer',
+      status: row.status || 'pending',
+      joinedAt: new Date(row.joined_at),
+      name: row.name || undefined,
+      email: row.email || undefined,
+      phone: row.phone || undefined,
+      vitaScore: row.vita_score || undefined,
+      area: row.area || undefined,
+      compliance: row.compliance || undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
     };
