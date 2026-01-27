@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import PortalSwitcher from '../../components/shared/PortalSwitcher';
 import BackButton from '../../components/shared/BackButton';
 
 export default function ESGPortalPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [companyName, setCompanyName] = useState('');
   
   // Check authentication and get company info
@@ -29,7 +30,7 @@ export default function ESGPortalPage() {
     }
   }, [navigate]);
   
-  const [activeTab, setActiveTab] = useState<'projects' | 'target-builder' | 'seed-sponsor' | 'dashboard' | 'change-stories' | 'impact' | 'reports'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'target-builder' | 'seed-sponsor' | 'dashboard' | 'change-stories' | 'impact' | 'reports'>('dashboard');
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [investmentType, setInvestmentType] = useState<'sponsor' | 'share'>('sponsor');
   const [galleryFilter, setGalleryFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
@@ -166,14 +167,17 @@ export default function ESGPortalPage() {
     { month: 'T6', co2: 350, cumulative: 1000 },
   ];
 
-  const tabs = [
-    { id: 'projects', name: 'Dự án Trồng Rừng', icon: 'ri-plant-line' },
-    { id: 'target-builder', name: 'Tạo Mục tiêu ESG', icon: 'ri-target-line' },
-    { id: 'seed-sponsor', name: 'Tài trợ Giống', icon: 'ri-seedling-line' },
+  const tabs: { id: string; name: string; icon: string; path?: string }[] = [
     { id: 'dashboard', name: 'Dashboard ESG', icon: 'ri-dashboard-line' },
+    { id: 'target-builder', name: 'Tạo Mục tiêu ESG', icon: 'ri-target-line' },
+    { id: 'projects', name: 'Dự án Trồng Rừng', icon: 'ri-plant-line' },
+    { id: 'seed-sponsor', name: 'Tài trợ Giống', icon: 'ri-seedling-line' },
     { id: 'change-stories', name: 'Câu chuyện Thay đổi', icon: 'ri-book-open-line' },
     { id: 'impact', name: 'Tác động Môi trường', icon: 'ri-leaf-line' },
     { id: 'reports', name: 'Báo cáo Bền vững', icon: 'ri-file-text-line' },
+    { id: 'carbon-report', name: 'Báo cáo Carbon', icon: 'ri-file-chart-line', path: '/esg-portal/carbon-report' },
+    { id: 'marketplace', name: 'Sàn Tín chỉ Carbon', icon: 'ri-exchange-line', path: '/esg-portal/marketplace' },
+    { id: 'certifications', name: 'Chứng nhận ESG', icon: 'ri-award-line', path: '/esg-portal/certifications' },
   ];
 
   // Multi-Dimensional Matching Algorithm - Enhanced with SDG criteria
@@ -352,20 +356,24 @@ export default function ESGPortalPage() {
         {/* Tab Navigation - Desktop */}
         <div className="hidden md:block bg-white rounded-xl shadow-sm mb-4 sm:mb-6 p-2">
           <div className="flex flex-wrap gap-2">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all text-sm lg:text-base ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                <i className={`${tab.icon} text-base lg:text-lg`}></i>
-                <span>{tab.name}</span>
-              </button>
-            ))}
+            {tabs.map((tab) => {
+              const isLink = Boolean(tab.path);
+              const isActive = isLink ? location.pathname === tab.path : activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => (isLink ? navigate(tab.path!) : setActiveTab(tab.id as any))}
+                  className={`flex items-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all text-sm lg:text-base ${
+                    isActive
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <i className={`${tab.icon} text-base lg:text-lg`}></i>
+                  <span>{tab.name}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -374,37 +382,42 @@ export default function ESGPortalPage() {
           <button
             onClick={() => setShowTabMenu(!showTabMenu)}
             className={`w-full flex items-center justify-between px-4 py-3 rounded-lg font-medium transition-all ${
-              activeTab
+              (activeTab || tabs.some(t => t.path && location.pathname === t.path))
                 ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
                 : 'text-gray-600 bg-gray-100'
             }`}
           >
             <div className="flex items-center gap-2">
-              <i className={`${tabs.find(t => t.id === activeTab)?.icon || 'ri-menu-line'} text-lg`}></i>
-              <span>{tabs.find(t => t.id === activeTab)?.name || 'Menu'}</span>
+              <i className={`${tabs.find(t => t.path ? location.pathname === t.path : t.id === activeTab)?.icon || 'ri-menu-line'} text-lg`}></i>
+              <span>{tabs.find(t => t.path ? location.pathname === t.path : t.id === activeTab)?.name || 'Menu'}</span>
             </div>
             <i className={`ri-${showTabMenu ? 'arrow-up' : 'arrow-down'}-s-line text-xl`}></i>
           </button>
           
           {showTabMenu && (
             <div className="mt-2 space-y-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id as any);
-                    setShowTabMenu(false);
-                  }}
-                  className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all text-sm ${
-                    activeTab === tab.id
-                      ? 'bg-emerald-50 text-emerald-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <i className={`${tab.icon} text-base`}></i>
-                  <span>{tab.name}</span>
-                </button>
-              ))}
+              {tabs.map((tab) => {
+                const isLink = Boolean(tab.path);
+                const isActive = isLink ? location.pathname === tab.path : activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      if (isLink) navigate(tab.path!);
+                      else setActiveTab(tab.id as any);
+                      setShowTabMenu(false);
+                    }}
+                    className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all text-sm ${
+                      isActive
+                        ? 'bg-emerald-50 text-emerald-600'
+                        : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <i className={`${tab.icon} text-base`}></i>
+                    <span>{tab.name}</span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

@@ -115,6 +115,19 @@ const ESGRegisterPage = lazy(() => import("@modules/esg-enterprise/presentation/
 const ESGDashboardPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGDashboardPage"));
 const ESGProjectsPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGProjectsPage"));
 const ESGProjectDetailPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/ESGProjectDetailPage"));
+const CarbonReportPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/CarbonReportPage"));
+const CarbonMarketplacePage = lazy(() => import("@modules/esg-enterprise/presentation/pages/CarbonMarketplacePage"));
+const CertificationsPage = lazy(() => import("@modules/esg-enterprise/presentation/pages/CertificationsPage"));
+
+// VITA ESG INDIVIDUAL - Cổng ESG Cá nhân (module)
+const ESGIndividualDashboardPage = lazy(() => import("@modules/esg-individual/presentation/pages/ESGIndividualDashboardPage"));
+const CarbonFootprintTrackerPage = lazy(() => import("@modules/esg-individual/presentation/pages/CarbonFootprintTrackerPage"));
+const ESGPortfolioPage = lazy(() => import("@modules/esg-individual/presentation/pages/ESGPortfolioPage"));
+const GreenImpactPage = lazy(() => import("@modules/esg-individual/presentation/pages/GreenImpactPage"));
+const ESGLearningPage = lazy(() => import("@modules/esg-individual/presentation/pages/ESGLearningPage"));
+const ESGChallengesPage = lazy(() => import("@modules/esg-individual/presentation/pages/ESGChallengesPage"));
+const ESGCommunityPage = lazy(() => import("@modules/esg-individual/presentation/pages/ESGCommunityPage"));
+const ESGOpportunitiesPage = lazy(() => import("@modules/esg-individual/presentation/pages/ESGOpportunitiesPage"));
 
 // VITA TIMBER TRADING HUB - Gỗ Nguyên liệu
 const TimberTradingPage = lazy(() => import("../pages/timber-trading/page"));
@@ -344,7 +357,95 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+  {
+    path: "/esg-portal/carbon-report",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <CarbonReportPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-portal/marketplace",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <CarbonMarketplacePage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-portal/certifications",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <CertificationsPage />
+      </Suspense>
+    ),
+  },
+  // VITA ESG INDIVIDUAL - Cổng ESG Cá nhân
+  {
+    path: "/esg-individual",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGIndividualDashboardPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-individual/carbon",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <CarbonFootprintTrackerPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-individual/portfolio",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGPortfolioPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-individual/impact",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <GreenImpactPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-individual/learning",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGLearningPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-individual/challenges",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGChallengesPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-individual/community",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGCommunityPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/esg-individual/opportunities",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <ESGOpportunitiesPage />
+      </Suspense>
+    ),
+  },
   // VITA TIMBER TRADING HUB - Gỗ Nguyên liệu
   {
     path: "/timber-trading/login",

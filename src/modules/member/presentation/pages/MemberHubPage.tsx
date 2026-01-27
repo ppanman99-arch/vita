@@ -220,6 +220,33 @@ export default function MemberHubPage() {
         <div className="mb-8">
           <h3 className="text-2xl font-bold text-gray-900 mb-6">Chọn vai trò của bạn</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl shadow-lg p-8 text-white hover:shadow-2xl transition-all cursor-pointer transform hover:scale-105 md:col-span-2">
+              <div className="flex items-start justify-between mb-6">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  <i className="ri-leaf-line text-4xl" />
+                </div>
+                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Công dân Xanh</span>
+              </div>
+              <h4 className="text-2xl font-bold mb-2">ESG CÁ NHÂN</h4>
+              <p className="text-teal-100 text-sm mb-4">Tổng hợp đóng góp xanh, dấu chân carbon, thử thách & cộng đồng</p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2">
+                  <i className="ri-dashboard-line text-teal-200" />
+                  <span className="text-sm">Dashboard Impact · Dấu chân Carbon · Danh mục ESG</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <i className="ri-medal-line text-yellow-300" />
+                  <span className="text-sm">Huy hiệu · Thử thách · Cộng đồng Công dân Xanh</span>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate('/esg-individual')}
+                className="w-full bg-white text-teal-600 font-semibold py-3 rounded-lg hover:bg-teal-50 transition-colors whitespace-nowrap"
+              >
+                Mở ESG Cá nhân
+              </button>
+            </div>
+
             <div className="bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl shadow-lg p-8 text-white hover:shadow-2xl transition-all cursor-pointer transform hover:scale-105">
               <div className="flex items-start justify-between mb-6">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">

@@ -47,6 +47,20 @@ export default function ESGDashboardPage() {
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         <ESGScoreCard report={r} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <button onClick={() => navigate('/esg-portal/carbon-report')} className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col items-center gap-2 hover:shadow-md hover:border-emerald-200 transition-all text-left">
+            <i className="ri-file-chart-line text-2xl text-emerald-600" />
+            <span className="text-sm font-medium text-gray-700">Báo cáo Carbon</span>
+          </button>
+          <button onClick={() => navigate('/esg-portal/marketplace')} className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col items-center gap-2 hover:shadow-md hover:border-emerald-200 transition-all text-left">
+            <i className="ri-exchange-line text-2xl text-emerald-600" />
+            <span className="text-sm font-medium text-gray-700">Sàn Tín chỉ Carbon</span>
+          </button>
+          <button onClick={() => navigate('/esg-portal/certifications')} className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col items-center gap-2 hover:shadow-md hover:border-emerald-200 transition-all text-left">
+            <i className="ri-award-line text-2xl text-emerald-600" />
+            <span className="text-sm font-medium text-gray-700">Chứng nhận ESG</span>
+          </button>
+        </div>
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="font-semibold text-gray-900 mb-4">Carbon offset</h3>
           <p className="text-3xl font-bold text-emerald-600">{r.carbonOffsetTotal.toLocaleString('vi-VN')} <span className="text-lg font-normal text-gray-500">tấn CO₂</span></p>
@@ -57,10 +71,10 @@ export default function ESGDashboardPage() {
             <h3 className="font-semibold text-gray-900 mb-4">Chứng nhận</h3>
             <div className="flex flex-wrap gap-3">
               {r.certifications.map((c) => (
-                <div key={c.id} className="px-4 py-2 bg-green-50 rounded-lg border border-green-200">
+                <button key={c.id} onClick={() => navigate('/esg-portal/certifications')} className="px-4 py-2 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors text-left">
                   <p className="font-medium text-gray-900">{c.name}</p>
                   <p className="text-xs text-gray-500">{c.issuer} · {c.issuedAt}</p>
-                </div>
+                </button>
               ))}
             </div>
           </div>

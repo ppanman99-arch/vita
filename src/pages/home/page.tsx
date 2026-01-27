@@ -72,7 +72,17 @@ export default function HomePage() {
       path: '/login?role=farmer&redirect=consumer',
       buttonText: 'Truy cập Siêu thị'
     },
-    
+    {
+      id: 'esg-individual',
+      title: 'ESG CÁ NHÂN',
+      subtitle: 'Công dân Xanh',
+      description: 'Dashboard đóng góp xanh • Dấu chân Carbon • Danh mục ESG • Thử thách & Cộng đồng',
+      icon: 'ri-leaf-line',
+      color: 'from-teal-500 to-emerald-600',
+      path: '/esg-individual',
+      buttonText: 'Mở ESG Cá nhân'
+    },
+
     // NHÓM 2: QUẢN TRỊ (Management)
     {
       id: 'cooperative',
@@ -322,7 +332,7 @@ export default function HomePage() {
 
         {/* Portal Cards - Grid with sections */}
         <div className="space-y-6 sm:space-y-8 lg:space-y-12">
-          {/* Nhóm 1: Xã viên - 4 thẻ */}
+          {/* Nhóm 1: Xã viên - 5 thẻ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {portals.slice(0, 4).map((portal) => (
               <div
@@ -370,7 +380,7 @@ export default function HomePage() {
 
           {/* Nhóm 2: Quản trị - 1 thẻ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {portals.slice(4, 5).map((portal) => (
+            {portals.slice(5, 6).map((portal) => (
               <div
                 key={portal.id}
                 className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
@@ -410,7 +420,7 @@ export default function HomePage() {
 
           {/* Nhóm 3: Đối tác - 4 thẻ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {portals.slice(5, 9).map((portal) => (
+            {portals.slice(6, 10).map((portal) => (
               <div
                 key={portal.id}
                 className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
@@ -450,7 +460,7 @@ export default function HomePage() {
 
           {/* Nhóm 4: GreenLight & Đầu tư - 2 thẻ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {portals.slice(9, 11).map((portal) => (
+            {portals.slice(10, 12).map((portal) => (
               <div
                 key={portal.id}
                 className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
@@ -498,7 +508,7 @@ export default function HomePage() {
 
           {/* Nhóm 5: Đầu Ra Hệ Sinh thái - 4 thẻ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {portals.slice(11, 15).map((portal) => (
+            {portals.slice(12, 16).map((portal) => (
               <div
                 key={portal.id}
                 className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"

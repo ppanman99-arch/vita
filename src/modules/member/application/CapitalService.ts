@@ -5,6 +5,7 @@ import type {
   Dividend,
   CapitalTransaction,
 } from '../domain/capital';
+import { greenInvestmentOpportunityService } from './GreenInvestmentOpportunityService';
 
 const DEMO_USER = 'demo-user';
 
@@ -118,13 +119,38 @@ function getUserId(): string {
  */
 export class CapitalService {
   async getInvestmentOpportunities(): Promise<InvestmentOpportunity[]> {
+    const fromShared = await greenInvestmentOpportunityService.getOpportunitiesForIndividuals();
+    if (fromShared.length > 0) {
+      return fromShared.map((o) => ({
+        id: o.id,
+        name: o.name,
+        cooperative: o.cooperative,
+        cooperativeId: o.cooperativeId,
+        image: o.image,
+        targetAmount: o.targetAmount,
+        raised: o.raised,
+        minInvest: o.minInvest,
+        expectedReturn: o.expectedReturn,
+        duration: o.duration,
+        investors: o.investors,
+        description: o.description,
+        benefits: o.benefits,
+      }));
+    }
     return Promise.resolve([...MOCK_OPPORTUNITIES]);
   }
 
   async invest(_opportunityId: string, amount: number): Promise<Investment> {
-    const opp = MOCK_OPPORTUNITIES.find((o) => o.id === _opportunityId);
+    const fromShared = await greenInvestmentOpportunityService.getOpportunitiesForIndividuals();
+    let opp: InvestmentOpportunity | undefined = fromShared.length > 0
+      ? fromShared.find((o) => o.id === _opportunityId) as InvestmentOpportunity | undefined
+      : undefined;
+    if (!opp) opp = MOCK_OPPORTUNITIES.find((o) => o.id === _opportunityId);
     if (!opp) throw new Error('Cơ hội đầu tư không tồn tại');
     if (amount < opp.minInvest) throw new Error(`Số tiền tối thiểu ${opp.minInvest.toLocaleString('vi-VN')} VNĐ`);
+    if (fromShared.length > 0 && fromShared.some((o) => o.id === _opportunityId)) {
+      await greenInvestmentOpportunityService.updateRaised(_opportunityId, amount);
+    }
     // TODO: integrate payment gateway; for now return a stub
     const inv: Investment = {
       id: `inv-new-${Date.now()}`,

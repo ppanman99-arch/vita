@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import TopBar from '../admin-dashboard/components/TopBar';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { greenInvestmentOpportunityService } from '@/modules/member/application/GreenInvestmentOpportunityService';
 
 interface ForestLot {
   id: string;
@@ -251,11 +252,26 @@ export default function AdminForestFundingPage() {
     setActiveTab('projects');
   };
 
-  const publishToESG = (projectId: string) => {
+  const publishToESG = async (project: ESGProject) => {
     setEsgProjects(prev => prev.map(p =>
-      p.id === projectId ? { ...p, status: 'published' } : p
+      p.id === project.id ? { ...p, status: 'published' as const } : p
     ));
-    alert('Dự án đã được đăng lên Sàn ESG! Các doanh nghiệp ESG có thể xem và đầu tư.');
+    await greenInvestmentOpportunityService.addOpportunity({
+      id: project.id,
+      name: project.name,
+      cooperative: 'HTX Rừng Dược (GreenLight)',
+      targetAmount: project.fundingNeeded,
+      raised: 0,
+      minInvest: 5_000_000,
+      expectedReturn: 12,
+      duration: project.timeline,
+      investors: 0,
+      description: `Dự án trồng rừng ${project.targetArea} ha, ${project.treesToPlant} cây. Ước tính ${project.carbonCredits} tấn CO2.`,
+      carbonCreditsEstimate: project.carbonCredits,
+      esgCategory: 'rừng',
+      source: 'admin_forest_funding',
+    });
+    alert('Dự án đã được đăng lên Sàn ESG và Cơ hội đầu tư Cá nhân! Doanh nghiệp ESG và cá nhân có thể xem và đầu tư.');
   };
 
   return (
@@ -740,7 +756,7 @@ export default function AdminForestFundingPage() {
                       <div className="flex gap-3">
                         {project.status === 'draft' && (
                           <button
-                            onClick={() => publishToESG(project.id)}
+                            onClick={() => publishToESG(project)}
                             className="px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
                           >
                             <i className="ri-upload-cloud-line mr-2"></i>
