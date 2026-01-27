@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ECOSYSTEM_GROUPS, WHEEL_ORBIT_ORDER, type EcosystemGroup } from './ecosystemData';
+import { ECOSYSTEM_GROUPS, type EcosystemGroup } from './ecosystemData';
 
 const GROUP_COLORS: Record<string, string> = {
   'input': 'from-amber-500 to-orange-600',
@@ -73,7 +73,7 @@ function FlowCard({
   );
 }
 
-/** Flow dọc - Phiên bản A (Mobile) */
+/** Flow dọc - dùng chung mobile & desktop */
 function EcosystemFlowVertical({
   onTogglePortals,
   expandedId,
@@ -81,7 +81,6 @@ function EcosystemFlowVertical({
   onTogglePortals: (id: string) => void;
   expandedId: string | null;
 }) {
-  const productionIndex = ECOSYSTEM_GROUPS.findIndex((g) => g.id === 'production');
   const governanceGroup = ECOSYSTEM_GROUPS.find((g) => g.id === 'governance');
   const flowGroups = ECOSYSTEM_GROUPS.filter((g) => g.id !== 'governance');
 
@@ -125,145 +124,6 @@ function EcosystemFlowVertical({
   );
 }
 
-/** Bánh xe Desktop: tâm = Chất lượng & Khoa học, 4 nhóm trên vòng, Điều hành = hình chữ nhật nằm ngang bên dưới (nền) */
-function EcosystemWheel({
-  onTogglePortals,
-  expandedId,
-}: {
-  onTogglePortals: (id: string) => void;
-  expandedId: string | null;
-}) {
-  const centerGroup = ECOSYSTEM_GROUPS.find((g) => g.id === 'quality-science');
-  const governanceGroup = ECOSYSTEM_GROUPS.find((g) => g.id === 'governance');
-  const orbitGroups = WHEEL_ORBIT_ORDER.map((id) => ECOSYSTEM_GROUPS.find((g) => g.id === id)).filter(Boolean) as EcosystemGroup[];
-
-  // Vòng tròn: 4 điểm đặt trên orbit. Góc để flow: Đầu vào (trên-trái) → Sản xuất (trái) → Đầu ra (phải) → Vốn (trên-phải) → nối lại Đầu vào
-  // Góc tính từ tâm: 0 = phải, 90 = dưới, 180 = trái, 270 = trên. Ta muốn Đầu vào ~10h, Sản xuất ~8h, Đầu ra ~4h, Vốn ~2h.
-  const positions = [
-    { angle: 150 }, // Đầu vào - trên trái
-    { angle: 210 }, // Sản xuất - trái
-    { angle: 330 }, // Đầu ra - phải
-    { angle: 30 },  // Vốn & Tác động - trên phải
-  ];
-  const radius = 160; // px from center to orbit
-  const cx = 50; // % or use fixed - we'll use a wrapper with aspect
-  const cy = 45;
-
-  return (
-    <div className="w-full flex flex-col items-center">
-      {/* Phần vòng tròn đặt trên nền */}
-      <div className="relative w-full max-w-2xl aspect-square flex items-center justify-center">
-        {/* Orbit nodes */}
-        {orbitGroups.map((group, i) => {
-          const pos = positions[i];
-          const rad = (pos.angle * Math.PI) / 180;
-          const x = 50 + (radius / 280) * 50 * Math.cos(rad);
-          const y = 50 + (radius / 280) * 50 * Math.sin(rad);
-          const gradientClass = GROUP_COLORS[group.id];
-          const expanded = expandedId === group.id;
-          return (
-            <div
-              key={group.id}
-              className="absolute w-28 sm:w-32 flex flex-col items-center justify-center"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => onTogglePortals(group.id)}
-                className={`w-full rounded-xl bg-gradient-to-br ${gradientClass} p-3 shadow-lg hover:shadow-xl transition-all text-white text-center`}
-              >
-                <i className={`${group.icon} text-xl sm:text-2xl block mb-1`}></i>
-                <span className="text-xs sm:text-sm font-bold leading-tight block">{group.label}</span>
-              </button>
-              {expanded && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-10 w-56 bg-white rounded-lg shadow-xl border border-gray-200 p-3">
-                  <p className="text-xs font-semibold text-gray-700 mb-2">Portals</p>
-                  <ul className="space-y-1 text-xs text-gray-600">
-                    {group.portals.map((p, j) => (
-                      <li key={j}>{p.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-        {/* Center hub: Chất lượng & Khoa học */}
-        {centerGroup && (
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            <button
-              type="button"
-              onClick={() => onTogglePortals(centerGroup.id)}
-              className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br ${GROUP_COLORS[centerGroup.id]} shadow-xl hover:shadow-2xl transition-all flex flex-col items-center justify-center text-white border-4 border-white`}
-            >
-              <i className={`${centerGroup.icon} text-2xl sm:text-3xl mb-0.5`}></i>
-              <span className="text-[10px] sm:text-xs font-bold leading-tight text-center px-1">{centerGroup.label}</span>
-            </button>
-            {expandedId === centerGroup.id && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 z-20 w-56 bg-white rounded-lg shadow-xl border border-gray-200 p-3">
-                <ul className="space-y-1 text-xs text-gray-600">
-                  {centerGroup.portals.map((p, j) => (
-                    <li key={j}>{p.name}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* SVG ring + flow arrows (optional decorative circle) */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-          <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-emerald-200" />
-          {/* Flow arrows along circle: input -> production -> output -> capital -> (back to input for visual loop) */}
-          <path d="M 28 35 Q 22 50 28 65" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-emerald-400" markerEnd="url(#arrow)" />
-          <path d="M 28 65 Q 50 72 72 65" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-emerald-400" markerEnd="url(#arrow)" />
-          <path d="M 72 65 Q 78 50 72 35" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-emerald-400" markerEnd="url(#arrow)" />
-          <path d="M 72 35 Q 50 28 28 35" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-emerald-400" markerEnd="url(#arrow)" />
-          <defs>
-            <marker id="arrow" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto">
-              <path d="M0,0 L4,2 L0,4 Z" fill="currentColor" className="text-emerald-500" />
-            </marker>
-          </defs>
-        </svg>
-      </div>
-
-      {/* Nền: Điều hành & Chính sách - hình chữ nhật nằm ngang bên dưới vòng tròn */}
-      {governanceGroup && (
-        <div className="w-full max-w-2xl mt-4 sm:mt-6">
-          <button
-            type="button"
-            onClick={() => onTogglePortals(governanceGroup.id)}
-            className="w-full rounded-xl bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3 border-2 border-gray-500"
-          >
-            <i className={`${governanceGroup.icon} text-2xl sm:text-3xl`}></i>
-            <div className="text-left">
-              <span className="font-bold text-base sm:text-lg block">{governanceGroup.label}</span>
-              <span className="text-xs sm:text-sm text-gray-300">{governanceGroup.shortDescription}</span>
-            </div>
-          </button>
-          {expandedId === governanceGroup.id && (
-            <div className="mt-2 p-4 bg-white rounded-xl border border-gray-200 shadow-lg">
-              <ul className="space-y-1.5 text-sm text-gray-600">
-                {governanceGroup.portals.map((p, j) => (
-                  <li key={j} className="flex items-center gap-2">
-                    <i className="ri-checkbox-blank-circle-fill text-emerald-500 text-[6px]"></i>
-                    {p.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function EcosystemSection() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -284,15 +144,8 @@ export default function EcosystemSection() {
           </p>
         </div>
 
-        {/* Mobile: Flow dọc (Version A) */}
-        <div className="lg:hidden">
-          <EcosystemFlowVertical onTogglePortals={handleTogglePortals} expandedId={expandedId} />
-        </div>
-
-        {/* Desktop: Bánh xe + nền chữ nhật */}
-        <div className="hidden lg:block">
-          <EcosystemWheel onTogglePortals={handleTogglePortals} expandedId={expandedId} />
-        </div>
+        {/* Flow dọc: dùng chung cho mobile và desktop */}
+        <EcosystemFlowVertical onTogglePortals={handleTogglePortals} expandedId={expandedId} />
       </div>
     </div>
   );

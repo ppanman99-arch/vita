@@ -1,5 +1,5 @@
 /**
- * 6 nhóm Hệ sinh thái VITA cho sơ đồ Flow dọc (mobile) và Bánh xe (desktop).
+ * 6 nhóm Hệ sinh thái VITA cho sơ đồ Flow dọc (mobile & desktop).
  */
 
 export interface PortalItem {
@@ -85,6 +85,3 @@ export const ECOSYSTEM_GROUPS: EcosystemGroup[] = [
     ],
   },
 ];
-
-/** Ids của 4 nhóm nằm trên vòng tròn (bánh xe), theo thứ tự flow. Tâm = Chất lượng & Khoa học. */
-export const WHEEL_ORBIT_ORDER = ['input', 'production', 'output', 'capital-impact'] as const;
