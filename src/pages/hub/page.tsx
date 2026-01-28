@@ -36,6 +36,7 @@ export default function Hub() {
   ];
 
   const coopPages = [
+    { name: "Quyền lợi HTX", path: "/htx-benefits", icon: "ri-gift-line", color: "bg-teal-500" },
     { name: "Sàn Kết Nối HTX", path: "/coop-marketplace", icon: "ri-store-3-line", color: "bg-emerald-600" },
     { name: "Chi tiết HTX", path: "/coop-detail/HTX001", icon: "ri-file-list-3-line", color: "bg-green-600" },
     { name: "Trung tâm Xã viên", path: "/member-hub", icon: "ri-home-4-line", color: "bg-gray-600" },

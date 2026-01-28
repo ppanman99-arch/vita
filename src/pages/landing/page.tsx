@@ -49,6 +49,9 @@ export default function LandingPage() {
               <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Hệ sinh thái</a>
               <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Nền tảng</a>
               <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }} className="text-gray-700 hover:text-emerald-600 transition-colors">Liên hệ</a>
+              <button onClick={() => navigate('/htx-benefits')} className="text-gray-700 hover:text-emerald-600 transition-colors whitespace-nowrap">
+                Quyền lợi HTX
+              </button>
               <button onClick={() => navigate('/home')} className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all whitespace-nowrap">
                 Truy cập VITA PLATFORM
               </button>
@@ -71,6 +74,7 @@ export default function LandingPage() {
               <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Hệ sinh thái</a>
               <a href="#ecosystem" onClick={(e) => { e.preventDefault(); scrollToSection('ecosystem'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Nền tảng</a>
               <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Liên hệ</a>
+              <button onClick={() => { navigate('/htx-benefits'); setShowMobileMenu(false); }} className="block w-full text-left py-2 text-gray-700 hover:text-emerald-600 transition-colors">Quyền lợi HTX</button>
               <button onClick={() => navigate('/home')} className="w-full px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all whitespace-nowrap">
                 Truy cập VITA PLATFORM
               </button>
@@ -736,6 +740,7 @@ export default function LandingPage() {
             <div>
               <h4 className="font-bold mb-4">Dịch vụ</h4>
               <ul className="space-y-2 text-sm text-gray-400">
+                <li><button onClick={() => navigate('/htx-benefits')} className="hover:text-white transition-colors">Quyền lợi HTX</button></li>
                 <li><button onClick={() => navigate('/forest-owner-register')} className="hover:text-white transition-colors">Đăng ký Chủ rừng</button></li>
                 <li><button onClick={() => navigate('/cooperative/onboarding')} className="hover:text-white transition-colors">Đăng ký HTX</button></li>
                 <li><button onClick={() => navigate('/enterprise-register')} className="hover:text-white transition-colors">Đăng ký Doanh nghiệp</button></li>

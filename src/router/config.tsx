@@ -184,6 +184,8 @@ const HtxBrandRegisterPage = lazy(() => import("../pages/htx-brand/register/page
 
 // HTX LANDING PAGES - Landing pages cho các Hợp tác xã
 const HtxLandingPage = lazy(() => import("../pages/htx-landing/page"));
+const HtxBenefitsPage = lazy(() => import("../pages/htx-benefits/page"));
+
 
 // Shared
 const ProductTracePage = lazy(() => import("../pages/product-trace/page"));
@@ -281,7 +283,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // GREENLIGHT INVESTOR PORTAL - Private Edition
   {
     path: "/investor-portal/login",
@@ -307,7 +309,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA ESG PORTAL - Impact Investment Hub (module)
   {
     path: "/esg-portal/login",
@@ -471,7 +473,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA GOV PORTAL - Xã Nông Thôn Mới Số
   {
     path: "/gov-portal/login",
@@ -505,7 +507,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA ONBOARDING FLOW - Luồng Chào đón & Định hướng
   {
     path: "/onboarding",
@@ -515,7 +517,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA WORKFLOWS - PHẦN 1: KHỞI TẠO & SỐ HÓA
   {
     path: "/onboarding-gateway",
@@ -541,7 +543,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA WORKFLOWS - PHẦN 2: KÍCH HOẠT THỊ TRƯỜNG & KHỚP LỆNH
   {
     path: "/offtake-booking",
@@ -575,7 +577,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA WORKFLOWS - PHẦN 3: TRIỂN KHAI SẢN XUẤT & GIÁM SÁT
   {
     path: "/input-sourcing",
@@ -609,7 +611,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA WORKFLOWS - PHẦN 4: THU HOẠCH, THƯƠNG MẠI & TÁI ĐẦU TƯ
   {
     path: "/digital-harvest",
@@ -651,7 +653,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA CREATOR HUB - Cổng Đối tác Sáng tạo Nội dung
   {
     path: "/creator-hub/login",
@@ -727,7 +729,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // Member Hub - Trung tâm Xã viên (module)
   {
     path: "/member-hub",
@@ -814,7 +816,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA FARMER Routes
   {
     path: "/farmer",
@@ -904,7 +906,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA ADMIN Routes - /admin and /admin-dashboard removed, use /cooperative/dashboard instead
   {
     path: "/admin-gis",
@@ -1018,7 +1020,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA RESEARCH Routes
   {
     path: "/research-lab",
@@ -1092,7 +1094,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA PARTNER Routes
   {
     path: "/partner",
@@ -1126,7 +1128,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA ENTERPRISE - B2B Procurement System (NEW)
   {
     path: "/enterprise-procurement",
@@ -1168,7 +1170,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA PHYSICIAN Routes
   {
     path: "/physician-portal",
@@ -1186,7 +1188,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA HOSPITAL PORTAL Routes
   {
     path: "/hospital-portal",
@@ -1204,7 +1206,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // VITA EXPERT PORTAL Routes
   {
     path: "/expert-portal/login",
@@ -1230,7 +1232,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // GREENLIGHT Routes
   {
     path: "/greenlight-command",
@@ -1240,7 +1242,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
   },
-  
+
   // Shared Routes
   {
     path: "/product/:id",
@@ -1295,6 +1297,14 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <HtxLandingPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/htx-benefits",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <HtxBenefitsPage />
       </Suspense>
     ),
   },

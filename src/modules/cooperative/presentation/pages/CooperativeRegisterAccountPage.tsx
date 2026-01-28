@@ -25,16 +25,16 @@ export default function CooperativeRegisterAccountPage() {
     const isDemoMode = formData.email === '1@gmail.com' && formData.phone === '1' && formData.password === '1' && formData.confirmPassword === '1';
     
     if (isDemoMode) {
-      // Skip validation for demo mode
+      // Skip validation for demo mode – auto-login to HTX admin portal
       if (formData.coopName) {
         sessionStorage.setItem('brand_coop_name', formData.coopName);
       }
       sessionStorage.setItem('brand_email', formData.email);
-      alert('Đăng ký thành công! Vui lòng đăng nhập.');
-      navigate('/htx-brand/login');
+      sessionStorage.setItem('brand_authenticated', 'true');
+      navigate('/cooperative/dashboard');
       return;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       setError('Mật khẩu xác nhận không khớp.');
       return;
@@ -44,13 +44,13 @@ export default function CooperativeRegisterAccountPage() {
       return;
     }
 
-    // Save registration and redirect to login
+    // Save registration and auto-login to portal quản trị HTX
     if (formData.coopName) {
       sessionStorage.setItem('brand_coop_name', formData.coopName);
     }
     sessionStorage.setItem('brand_email', formData.email);
-    alert('Đăng ký thành công! Vui lòng đăng nhập.');
-    navigate('/htx-brand/login');
+    sessionStorage.setItem('brand_authenticated', 'true');
+    navigate('/cooperative/dashboard');
   };
 
   return (
@@ -193,7 +193,8 @@ export default function CooperativeRegisterAccountPage() {
 
           <div className="mt-6 text-center">
             <button
-              onClick={() => navigate('/htx-brand/login')}
+              type="button"
+              onClick={() => navigate('/cooperative/login')}
               className="text-sm text-purple-600 hover:underline"
             >
               Đã có tài khoản? Đăng nhập
