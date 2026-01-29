@@ -39,12 +39,6 @@ export function AppRoutes() {
 
   // useRoutes always returns an element or null, but with our routes config
   // it should always find a match (at least the catch-all NotFoundPage)
-  if (!element) {
-    // #region agent log
-    fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'router/index.tsx:43', message: 'WARNING: useRoutes returned null, showing loading fallback', data: { currentPath: window.location.pathname }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'D' }) }).catch(() => { });
-    // #endregion
-  }
-
   const content = element || (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
       <div className="text-center">

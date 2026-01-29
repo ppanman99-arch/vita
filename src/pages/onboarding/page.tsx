@@ -36,10 +36,6 @@ const PORTAL_ROUTES: Record<string, string> = {
 const STORAGE_KEY = 'vita_onboarding_state';
 
 export default function OnboardingPage() {
-  // #region agent log
-  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'onboarding/page.tsx:32',message:'OnboardingPage component rendering',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-  // #endregion
-  
   const navigate = useNavigate();
   const [state, setState] = useState<OnboardingState>(() => {
     // Load saved state from localStorage
@@ -61,10 +57,6 @@ export default function OnboardingPage() {
     }
     return { currentStep: 1 };
   });
-
-  // #region agent log
-  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'onboarding/page.tsx:50',message:'OnboardingPage state loaded',data:{currentStep:state.currentStep,entityType:state.entityType,portal:state.portal},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-  // #endregion
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
@@ -96,10 +88,6 @@ export default function OnboardingPage() {
   const progress = (state.currentStep / 8) * 100;
 
   // Render current step
-  // #region agent log
-  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'onboarding/page.tsx:69',message:'Rendering switch case',data:{currentStep:state.currentStep},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-  // #endregion
-  
   switch (state.currentStep) {
     case 1:
       return <SplashScreen onNext={nextStep} progress={10} />;

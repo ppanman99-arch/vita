@@ -15,10 +15,6 @@ const isSupabaseConfigured = supabaseUrl && supabaseAnonKey &&
 let supabase: SupabaseClient;
 
 if (!isSupabaseConfigured) {
-  // #region agent log
-  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'supabase.ts:17',message:'Supabase not configured - creating mock client',data:{isSupabaseConfigured:false,supabaseUrl:supabaseUrl||'empty',hasAnonKey:!!supabaseAnonKey,isDev:import.meta.env.DEV},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'A'})}).catch(()=>{});
-  // #endregion
-  
   // Only show warning in development mode to avoid console noise in production
   if (import.meta.env.DEV) {
     console.log(
@@ -58,10 +54,6 @@ if (!isSupabaseConfigured) {
     removeChannel: () => {},
   } as any;
 } else {
-  // #region agent log
-  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'supabase.ts:47',message:'Supabase configured - creating real client',data:{isSupabaseConfigured:true,supabaseUrl:supabaseUrl.substring(0,30)+'...',hasAnonKey:!!supabaseAnonKey},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
-  
   supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,
@@ -69,10 +61,6 @@ if (!isSupabaseConfigured) {
       detectSessionInUrl: true,
     },
   });
-  
-  // #region agent log
-  fetch('http://127.0.0.1:7245/ingest/c51fb21a-bcb4-42b8-8955-cb726530edc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'supabase.ts:56',message:'Supabase client created',data:{hasChannel:typeof supabase.channel==='function',hasRemoveChannel:typeof supabase.removeChannel==='function'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-  // #endregion
 }
 
 export { supabase };
