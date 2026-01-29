@@ -21,6 +21,7 @@ export class CooperativeService {
     const dbData: any = {
       name: data.name,
       email: data.email,
+      auth_user_id: data.authUserId || null,
       tax_code: data.taxCode || null,
       established_year: data.establishedYear || null,
       member_count: data.memberCount || null,
@@ -84,6 +85,19 @@ export class CooperativeService {
     });
 
     return results.map(row => this.mapDbRowToCooperative(row));
+  }
+
+  /**
+   * Get cooperative by Supabase Auth user id (for login flow).
+   */
+  async getCooperativeByAuthUserId(authUserId: string): Promise<Cooperative | null> {
+    const results = await this.dbAdapter.query<any>({
+      table: 'cooperatives',
+      filters: { auth_user_id: authUserId },
+      orderBy: { column: 'created_at', ascending: false },
+    });
+    if (!results.length) return null;
+    return this.mapDbRowToCooperative(results[0]);
   }
 
   /**
@@ -264,6 +278,7 @@ export class CooperativeService {
   private mapDbRowToCooperative(row: any): Cooperative {
     return {
       id: row.id,
+      authUserId: row.auth_user_id,
       name: row.name,
       taxCode: row.tax_code,
       establishedYear: row.established_year,

@@ -1,32 +1,67 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PortalSwitcher from '../../../../components/shared/PortalSwitcher';
+import { AuthService } from '../../../../core/application/auth/AuthService';
+import { SupabaseAuthAdapter } from '../../../../core/infrastructure/adapters/auth/SupabaseAuthAdapter';
+import { CooperativeService } from '../../application/CooperativeService';
+import { useRealAuth } from '../../../../config/featureFlags';
 
 export default function CooperativeLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const useAuth = useRealAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // Demo mode: Unified credentials (1@gmail.com / 1, password: 1)
-    const isUnifiedDemo = (email === '1@gmail.com' || email === '1') && password === '1';
-    // Legacy demo authentication
-    const isLegacyDemo = (email.includes('htx') || email.includes('coop') || email.includes('brand')) && password === 'brand123';
-    
+    // Demo mode when real auth is off
+    const isUnifiedDemo = !useAuth && (email === '1@gmail.com' || email === '1') && password === '1';
+    const isLegacyDemo = !useAuth && (email.includes('htx') || email.includes('coop') || email.includes('brand')) && password === 'brand123';
+
     if (isUnifiedDemo || isLegacyDemo) {
       const coopName = email.split('@')[0].replace(/[0-9]/g, '') || 'HTX';
       sessionStorage.setItem('brand_authenticated', 'true');
       sessionStorage.setItem('brand_email', email);
       sessionStorage.setItem('brand_coop_name', coopName);
-      // Navigate to cooperative dashboard
       navigate('/cooperative/dashboard');
-    } else {
-      setError('Thông tin đăng nhập không đúng. Demo: Email: 1@gmail.com hoặc chứa "htx"/"coop"/"brand", Password: 1 hoặc "brand123"');
+      return;
     }
+
+    if (useAuth) {
+      setLoading(true);
+      try {
+        const authService = new AuthService(new SupabaseAuthAdapter());
+        const authResult = await authService.signIn({ email, password });
+        if (authResult.error || !authResult.user) {
+          setError(authResult.error || 'Đăng nhập thất bại.');
+          setLoading(false);
+          return;
+        }
+        const cooperativeService = new CooperativeService();
+        const cooperative = await cooperativeService.getCooperativeByAuthUserId(authResult.user.id);
+        if (!cooperative) {
+          setError('Không tìm thấy thông tin HTX cho tài khoản này.');
+          setLoading(false);
+          return;
+        }
+        sessionStorage.setItem('cooperative_id', cooperative.id);
+        sessionStorage.setItem('brand_authenticated', 'true');
+        sessionStorage.setItem('brand_email', cooperative.email);
+        sessionStorage.setItem('brand_coop_name', cooperative.name);
+        navigate('/cooperative/dashboard');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Đăng nhập thất bại. Vui lòng thử lại.');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    setError('Thông tin đăng nhập không đúng. Demo: Email: 1@gmail.com hoặc chứa "htx"/"coop"/"brand", Password: 1 hoặc "brand123"');
   };
 
   return (
@@ -94,9 +129,10 @@ export default function CooperativeLoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all transform hover:scale-[1.02]"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all transform hover:scale-[1.02] disabled:opacity-50"
             >
-              Đăng nhập vào Dashboard
+              {loading ? 'Đang đăng nhập...' : 'Đăng nhập vào Dashboard'}
             </button>
           </form>
 

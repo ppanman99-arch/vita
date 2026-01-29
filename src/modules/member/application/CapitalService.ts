@@ -151,9 +151,66 @@ export class CapitalService {
     if (fromShared.length > 0 && fromShared.some((o) => o.id === _opportunityId)) {
       await greenInvestmentOpportunityService.updateRaised(_opportunityId, amount);
     }
-    // TODO: integrate payment gateway; for now return a stub
+    const userId = getUserId();
+    const tempId = `inv-new-${Date.now()}`;
+    // Payment gateway: when VITE_PAYMENT_GATEWAY_URL is set, createPaymentUrl may return redirectUrl
+    try {
+      const { createPaymentUrl } = await import('../../../lib/payment/paymentGateway');
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+      const paymentResult = await createPaymentUrl({
+        amount,
+        orderId: tempId,
+        userId,
+        opportunityId: _opportunityId,
+        returnUrl: `${baseUrl}/member-hub/capital/portfolio?paid=1`,
+        cancelUrl: `${baseUrl}/member-hub/capital/opportunities`,
+        description: `Góp vốn ${opp.name}`,
+      });
+      if (paymentResult.redirectUrl) {
+        window.location.href = paymentResult.redirectUrl;
+        return Promise.reject(new Error('Redirecting to payment'));
+      }
+    } catch (e) {
+      if ((e as Error)?.message === 'Redirecting to payment') throw e;
+    }
+    // E-contract: create contract (stub or real)
+    let contractId: string | null = null;
+    try {
+      const { createContract } = await import('../../../lib/contract/eContractService');
+      const contractResult = await createContract({
+        investmentId: tempId,
+        userId,
+        opportunityId: _opportunityId,
+        amount,
+        partyNames: { investor: userId, cooperative: opp.cooperative },
+      });
+      contractId = contractResult.contractId;
+    } catch {
+      // stub or provider not configured
+    }
+    // Persist investment (capital_investments table) when Supabase available; id is UUID from DB
+    let persistedId: string = tempId;
+    try {
+      const { supabase } = await import('../../../lib/supabase');
+      const { data, error } = await supabase
+        .from('capital_investments')
+        .insert({
+          user_id: userId,
+          opportunity_id: _opportunityId,
+          amount,
+          contract_id: contractId,
+          payment_status: 'paid',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select('id')
+        .single();
+      if (!error && data?.id) persistedId = data.id;
+    } catch {
+      // Supabase not configured or table missing
+    }
     const inv: Investment = {
-      id: `inv-new-${Date.now()}`,
+      id: persistedId,
       opportunityId: opp.id,
       projectName: opp.name,
       cooperative: opp.cooperative,

@@ -10,6 +10,7 @@ const CooperativeDashboardPage = lazy(() => import('../presentation/pages/Cooper
 const CooperativeProfilePage = lazy(() => import('../presentation/pages/CooperativeProfilePage'));
 const CooperativeMembersPage = lazy(() => import('../presentation/pages/CooperativeMembersPage'));
 const CooperativeContractsPage = lazy(() => import('../presentation/pages/CooperativeContractsPage'));
+const CooperativeProjectsPage = lazy(() => import('../presentation/pages/CooperativeProjectsPage'));
 
 export const cooperativeRoutes: RouteObject[] = [
   {
@@ -23,6 +24,7 @@ export const cooperativeRoutes: RouteObject[] = [
       { path: 'profile', element: <CooperativeProfilePage /> },
       { path: 'members', element: <CooperativeMembersPage /> },
       { path: 'contracts', element: <CooperativeContractsPage /> },
+      { path: 'projects', element: <CooperativeProjectsPage /> },
     ],
   },
 ];

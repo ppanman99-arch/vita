@@ -1,4 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { isLiveRoute, isRouteVisibleInNav } from '../../../config/goLiveRoutes';
+import { showDemoFeatures } from '../../../config/featureFlags';
+import FeatureBadge from '../../../components/shared/FeatureBadge';
 
 interface AdminSidebarProps {
   collapsed: boolean;
@@ -46,7 +49,7 @@ export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps)
 
       {/* Menu Items */}
       <nav className="p-3 mt-2">
-        {menuItems.map((item) => {
+        {menuItems.filter((item) => isRouteVisibleInNav(item.path, showDemoFeatures())).map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <button
@@ -59,7 +62,12 @@ export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps)
               }`}
             >
               <i className={`${item.icon} text-xl`}></i>
-              {!collapsed && <span className="text-sm font-medium whitespace-nowrap">{item.name}</span>}
+              {!collapsed && (
+                <>
+                  <span className="text-sm font-medium whitespace-nowrap">{item.name}</span>
+                  <FeatureBadge variant={isLiveRoute(item.path) ? 'live' : 'demo'} size="sm" className="ml-auto" />
+                </>
+              )}
             </button>
           );
         })}

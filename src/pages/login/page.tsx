@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PortalSwitcher from '../../components/shared/PortalSwitcher';
+import { useRealAuth } from '../../config/featureFlags';
+import { AuthService } from '../../core/application/auth/AuthService';
+import { SupabaseAuthAdapter } from '../../core/infrastructure/adapters/auth/SupabaseAuthAdapter';
+import { CooperativeService } from '../../modules/cooperative/application/CooperativeService';
 
 export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const roleFromUrl = searchParams.get('role') as 'farmer' | 'cooperative' | 'research' | 'enterprise' | 'physician' | 'admin' | null;
   const redirectTo = searchParams.get('redirect') as 'forestry' | 'investor' | 'consumer' | null;
-  
+  const useAuth = useRealAuth();
+
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [memberEmail, setMemberEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState<'farmer' | 'cooperative' | 'research' | 'enterprise' | 'physician' | 'admin' | null>(roleFromUrl);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Nếu có role từ URL, tự động set userType
   useEffect(() => {
@@ -28,59 +35,99 @@ export default function Login() {
     }
   }, [userType, roleFromUrl, navigate]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setError('');
-    
-    // Kiểm tra đăng nhập cho Nông dân (số điện thoại)
+
     if (userType === 'farmer') {
-      if (phoneNumber === '1') {
-        // Lưu redirect vào sessionStorage để sử dụng sau
-        if (redirectTo) {
-          sessionStorage.setItem('farmer_redirect', redirectTo);
+      if (useAuth) {
+        const email = memberEmail.trim();
+        if (!email || !password) {
+          setError('Vui lòng nhập email và mật khẩu.');
+          return;
         }
-        
-        // Điều hướng dựa trên redirect parameter
-        switch(redirectTo) {
-          case 'forestry':
-            navigate('/farmer-forestry');
-            break;
-          case 'investor':
-            navigate('/farmer/investor');
-            break;
-          case 'consumer':
-            navigate('/farmer/consumer');
-            break;
-          default:
-            navigate('/member-hub');
+        setLoading(true);
+        try {
+          const authService = new AuthService(new SupabaseAuthAdapter());
+          const result = await authService.signIn({ email, password });
+          if (result.error || !result.user) {
+            setError(result.error || 'Đăng nhập thất bại.');
+            setLoading(false);
+            return;
+          }
+          sessionStorage.setItem('user_id', result.user.id);
+          if (redirectTo) sessionStorage.setItem('farmer_redirect', redirectTo);
+          switch (redirectTo) {
+            case 'forestry': navigate('/farmer-forestry'); break;
+            case 'investor': navigate('/farmer/investor'); break;
+            case 'consumer': navigate('/farmer/consumer'); break;
+            default: navigate('/member-hub');
+          }
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Đăng nhập thất bại.');
+        } finally {
+          setLoading(false);
+        }
+        return;
+      }
+      if (phoneNumber === '1') {
+        if (redirectTo) sessionStorage.setItem('farmer_redirect', redirectTo);
+        switch (redirectTo) {
+          case 'forestry': navigate('/farmer-forestry'); break;
+          case 'investor': navigate('/farmer/investor'); break;
+          case 'consumer': navigate('/farmer/consumer'); break;
+          default: navigate('/member-hub');
         }
       } else {
         setError('Số điện thoại không đúng. Vui lòng nhập: 1');
       }
       return;
     }
-    
-    // Kiểm tra đăng nhập cho các vai trò khác (username + password)
-    if (username === '1' && password === '1') {
-      switch(userType) {
-        case 'cooperative':
-          navigate('/cooperative/dashboard');
-          break;
-        case 'research':
-          navigate('/research-lab');
-          break;
-        case 'enterprise':
-          navigate('/partner');
-          break;
-        case 'physician':
-          navigate('/physician-portal');
-          break;
-        case 'admin':
-          navigate('/greenlight-command');
-          break;
-        default:
-          navigate('/');
+
+    if (userType === 'cooperative' && useAuth) {
+      const email = username.trim();
+      if (!email || !password) {
+        setError('Vui lòng nhập email và mật khẩu.');
+        return;
       }
-    } else {
+      setLoading(true);
+      try {
+        const authService = new AuthService(new SupabaseAuthAdapter());
+        const result = await authService.signIn({ email, password });
+        if (result.error || !result.user) {
+          setError(result.error || 'Đăng nhập thất bại.');
+          setLoading(false);
+          return;
+        }
+        const cooperativeService = new CooperativeService();
+        const cooperative = await cooperativeService.getCooperativeByAuthUserId(result.user.id);
+        if (!cooperative) {
+          setError('Không tìm thấy thông tin HTX cho tài khoản này.');
+          setLoading(false);
+          return;
+        }
+        sessionStorage.setItem('cooperative_id', cooperative.id);
+        sessionStorage.setItem('brand_authenticated', 'true');
+        sessionStorage.setItem('brand_email', cooperative.email);
+        sessionStorage.setItem('brand_coop_name', cooperative.name);
+        navigate('/cooperative/dashboard');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Đăng nhập thất bại.');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (!useAuth && username === '1' && password === '1') {
+      switch (userType) {
+        case 'cooperative': navigate('/cooperative/dashboard'); break;
+        case 'research': navigate('/research-lab'); break;
+        case 'enterprise': navigate('/partner'); break;
+        case 'physician': navigate('/physician-portal'); break;
+        case 'admin': navigate('/greenlight-command'); break;
+        default: navigate('/');
+      }
+    } else if (!useAuth) {
       setError('Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng nhập: 1');
     }
   };
@@ -164,29 +211,57 @@ export default function Login() {
               ← Quay lại chọn vai trò
             </button>
           </div>
-          {/* Demo Info */}
-          <div className="mb-5 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-xs text-blue-800">
-              <strong>Demo:</strong> Nhập số điện thoại: <strong>1</strong>
-            </p>
-          </div>
-
-          {/* Phone Input */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Số điện thoại <span className="text-red-500">*</span>
-            </label>
-            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-green-500 focus-within:border-transparent transition-all">
-              <span className="px-3 py-3 bg-gray-50 text-gray-700 font-medium text-sm">+84</span>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Nhập số điện thoại"
-                className="flex-1 px-4 py-3 outline-none"
-              />
-            </div>
-          </div>
+          {useAuth ? (
+            <>
+              <div className="mb-5">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  value={memberEmail}
+                  onChange={(e) => setMemberEmail(e.target.value)}
+                  placeholder="email@example.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              </div>
+              <div className="mb-5">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mật khẩu <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mb-5 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-xs text-blue-800">
+                  <strong>Demo:</strong> Nhập số điện thoại: <strong>1</strong>
+                </p>
+              </div>
+              <div className="mb-5">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Số điện thoại <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-green-500 focus-within:border-transparent transition-all">
+                  <span className="px-3 py-3 bg-gray-50 text-gray-700 font-medium text-sm">+84</span>
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="Nhập số điện thoại"
+                    className="flex-1 px-4 py-3 outline-none"
+                  />
+                </div>
+              </div>
+            </>
+          )}
 
           {error && (
             <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -195,6 +270,25 @@ export default function Login() {
             </div>
           )}
 
+          {useAuth ? (
+            <>
+            <button
+              type="button"
+              onClick={handleLogin}
+              disabled={loading}
+              className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
+            >
+              {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            </button>
+            <div className="mt-6 pt-4 border-t border-gray-200 text-center">
+              <p className="text-sm text-gray-600">Chưa có tài khoản?</p>
+              <button type="button" onClick={handleRegister} className="mt-2 text-green-600 font-medium hover:underline">
+                Đăng ký tài khoản xã viên
+              </button>
+            </div>
+            </>
+          ) : (
+            <>
           {/* Face ID Login Button */}
           <button
             onClick={handleFaceIDLogin}
@@ -234,6 +328,8 @@ export default function Login() {
               Cần hỗ trợ? Liên hệ: <span className="text-green-600 font-medium">1900-xxxx</span>
             </p>
           </div>
+          </>
+          )}
         </div>
       </div>
     );
@@ -376,11 +472,13 @@ export default function Login() {
 
         {/* Login Button */}
         <button
+          type="button"
           onClick={handleLogin}
-          className={`w-full bg-gradient-to-r ${getRoleGradient()} text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl mb-4`}
+          disabled={loading}
+          className={`w-full bg-gradient-to-r ${getRoleGradient()} text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl mb-4 disabled:opacity-50`}
         >
           <i className="ri-login-box-line text-xl"></i>
-          <span>Đăng nhập</span>
+          <span>{loading ? 'Đang đăng nhập...' : 'Đăng nhập'}</span>
         </button>
 
         {/* Forgot Password */}

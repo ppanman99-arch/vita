@@ -1,5 +1,6 @@
 export interface Cooperative {
   id: string;
+  authUserId?: string;
   name: string;
   taxCode?: string;
   establishedYear?: number;

@@ -1,7 +1,10 @@
-import { useNavigate, type NavigateFunction } from "react-router-dom";
+import { useNavigate, useLocation, Navigate, type NavigateFunction } from "react-router-dom";
 import { useRoutes } from "react-router-dom";
 import { useEffect } from "react";
 import routes from "./config";
+import { getBadgeVariantForPath, isDemoOnlyRoute } from "../config/goLiveRoutes";
+import { showDemoFeatures } from "../config/featureFlags";
+import FeatureBadge from "../components/shared/FeatureBadge";
 
 let navigateResolver: (navigate: ReturnType<typeof useNavigate>) => void;
 
@@ -16,10 +19,9 @@ export const navigatePromise = new Promise<NavigateFunction>((resolve) => {
 });
 
 export function AppRoutes() {
-
-
   const element = useRoutes(routes);
   const navigate = useNavigate();
+  const location = useLocation();
 
 
 
@@ -43,13 +45,26 @@ export function AppRoutes() {
     // #endregion
   }
 
-  return element || (
+  const content = element || (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
       <div className="text-center">
         <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <p className="text-gray-600 text-lg">Đang tải...</p>
       </div>
     </div>
+  );
+
+  if (!showDemoFeatures() && isDemoOnlyRoute(location.pathname)) {
+    return <Navigate to="/home" replace />;
+  }
+
+  return (
+    <>
+      {content}
+      <div className="fixed top-4 right-4 z-[45]" aria-hidden>
+        <FeatureBadge variant={getBadgeVariantForPath(location.pathname)} size="sm" />
+      </div>
+    </>
   );
 }
 

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from './components/TopBar';
 import GreenPointsBadge from '../../components/shared/GreenPointsBadge';
+import { isRouteVisibleInNav } from '../../config/goLiveRoutes';
+import { showDemoFeatures } from '../../config/featureFlags';
 import VitalSignsWidget from './components/VitalSignsWidget';
 import LiveGISMap from './components/LiveGISMap';
 import LiveFeed from './components/LiveFeed';
@@ -13,6 +15,13 @@ export default function AdminDashboardPage() {
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month'>('today');
 
   const quickLinks = [
+    { 
+      name: 'Đơn đăng ký VITA', 
+      path: '/admin-dashboard/vita-applications', 
+      icon: 'ri-file-list-3-line', 
+      color: 'bg-gradient-to-br from-indigo-600 to-purple-700',
+      description: 'Phê duyệt đơn HTX tham gia hệ sinh thái VITA'
+    },
     { 
       name: 'Quản lý Xã viên', 
       path: '/cooperative/members', 
@@ -69,6 +78,13 @@ export default function AdminDashboardPage() {
       icon: 'ri-file-list-3-line', 
       color: 'bg-gradient-to-br from-teal-600 to-cyan-700',
       description: 'Quản lý tiến độ sinh trưởng'
+    },
+    { 
+      name: 'Dự án kêu gọi vốn', 
+      path: '/cooperative/projects', 
+      icon: 'ri-funds-line', 
+      color: 'bg-gradient-to-br from-teal-600 to-cyan-700',
+      description: 'Tạo và quản lý dự án trồng rừng, kêu gọi vốn, ESG'
     },
     { 
       name: 'Quản lý Rừng & Tài trợ', 
@@ -273,7 +289,7 @@ export default function AdminDashboardPage() {
           </h2>
           <div className="text-sm text-gray-600 mb-4">Phân hệ</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {quickLinks.map((link) => (
+            {quickLinks.filter((link) => isRouteVisibleInNav(link.path, showDemoFeatures())).map((link) => (
               <button
                 key={link.path}
                 onClick={() => {

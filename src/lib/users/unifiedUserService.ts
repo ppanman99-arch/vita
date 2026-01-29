@@ -57,7 +57,7 @@ export class UnifiedUserService {
         query = query.or(conditions.join(','));
       }
 
-      const { data: existing, error: queryError } = await query.single();
+      const { data: existing, error: queryError } = await query.maybeSingle();
 
       if (existing && !queryError) {
         // User đã tồn tại
@@ -104,6 +104,63 @@ export class UnifiedUserService {
       console.error('Error in getOrCreateUnifiedUser:', error);
       throw error;
     }
+  }
+
+  /**
+   * Đảm bảo có bản ghi unified user cho auth user (sau đăng nhập/đăng ký từ một portal).
+   * Dùng auth user id làm external_id để tra cứu/ghi.
+   */
+  static async ensureUnifiedUserForAuth(
+    authUserId: string,
+    platformSource: PlatformSource,
+    options: { email?: string; phone?: string; metadata?: Record<string, unknown> } = {}
+  ): Promise<UnifiedUser> {
+    const { email, phone, metadata } = options;
+    const existing = await supabase
+      .from('users')
+      .select('*')
+      .eq('external_id', authUserId)
+      .maybeSingle();
+
+    if (existing.data) {
+      return {
+        id: existing.data.id,
+        email: existing.data.email,
+        phone: existing.data.phone,
+        platformSource: existing.data.platform_source,
+        externalId: existing.data.external_id,
+        metadata: existing.data.metadata || {},
+        createdAt: existing.data.created_at,
+        updatedAt: existing.data.updated_at,
+      };
+    }
+
+    const { data: newUser, error: insertError } = await supabase
+      .from('users')
+      .insert({
+        email: email || null,
+        phone: phone || null,
+        platform_source: platformSource,
+        external_id: authUserId,
+        metadata: metadata || {},
+      })
+      .select()
+      .single();
+
+    if (insertError || !newUser) {
+      throw new Error(`Failed to ensure unified user: ${insertError?.message}`);
+    }
+
+    return {
+      id: newUser.id,
+      email: newUser.email,
+      phone: newUser.phone,
+      platformSource: newUser.platform_source,
+      externalId: newUser.external_id,
+      metadata: newUser.metadata || {},
+      createdAt: newUser.created_at,
+      updatedAt: newUser.updated_at,
+    };
   }
 
   /**

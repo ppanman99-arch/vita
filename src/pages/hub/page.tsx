@@ -1,9 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { isLiveRoute, isRouteVisibleInNav } from "../../config/goLiveRoutes";
+import { showDemoFeatures } from "../../config/featureFlags";
+import FeatureBadge from "../../components/shared/FeatureBadge";
+
+type PageItem = { name: string; path: string; icon: string; color: string; category?: string };
+
+function filterVisiblePages(pages: PageItem[], showDemo: boolean): PageItem[] {
+  return pages.filter((p) => isRouteVisibleInNav(p.path, showDemo));
+}
 
 export default function Hub() {
   const navigate = useNavigate();
   const [showRoleSelection, setShowRoleSelection] = useState(false);
+  const showDemo = showDemoFeatures();
 
   const landingPages = [
     { name: "Trang chủ Landing", path: "/", icon: "ri-home-4-line", color: "bg-emerald-500" },
@@ -228,13 +238,14 @@ export default function Hub() {
             </div>
 
             {/* Portal Pages */}
+            {filterVisiblePages(portalPages, showDemo).length > 0 && (
             <div className="mt-8">
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <i className="ri-global-line text-emerald-600"></i>
                 Các Portal Khác (Có trang đăng nhập riêng)
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {portalPages.map((portal) => (
+                {filterVisiblePages(portalPages, showDemo).map((portal) => (
                   <button
                     key={portal.path}
                     onClick={() => navigate(portal.path)}
@@ -249,23 +260,28 @@ export default function Hub() {
                 ))}
               </div>
             </div>
+            )}
           </div>
         ) : (
           /* All Pages View (existing Hub content) */
           <div className="space-y-6">
         {/* Landing & Auth Section */}
+        {filterVisiblePages(landingPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-home-line text-xl text-emerald-700"></i>
             <h2 className="text-lg font-bold text-gray-800">Trang chủ & Xác thực</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {landingPages.map((page) => (
+            {filterVisiblePages(landingPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -274,20 +290,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Register Section */}
+        {filterVisiblePages(registerPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-file-list-3-line text-xl text-blue-700"></i>
             <h2 className="text-lg font-bold text-gray-800">Trang Đăng Ký</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {registerPages.map((page) => (
+            {filterVisiblePages(registerPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -296,20 +317,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Coop Section */}
+        {filterVisiblePages(coopPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-store-3-line text-xl text-emerald-700"></i>
             <h2 className="text-lg font-bold text-gray-800">Hợp Tác Xã & Xã viên</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {coopPages.map((page) => (
+            {filterVisiblePages(coopPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -318,20 +344,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Farmer Section */}
+        {filterVisiblePages(farmerPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-user-line text-xl text-emerald-700"></i>
             <h2 className="text-lg font-bold text-gray-800">VITA FARMER - Ứng dụng Nông dân</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {farmerPages.map((page) => (
+            {filterVisiblePages(farmerPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -340,20 +371,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Admin Section */}
+        {filterVisiblePages(adminPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-admin-line text-xl text-blue-700"></i>
             <h2 className="text-lg font-bold text-gray-800">VITA ADMIN - Quản trị HTX</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {adminPages.map((page) => (
+            {filterVisiblePages(adminPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -362,20 +398,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Research Section */}
+        {filterVisiblePages(researchPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-flask-line text-xl text-purple-700"></i>
             <h2 className="text-lg font-bold text-gray-800">VITA RESEARCH - Trung tâm Gen & Khoa học</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {researchPages.map((page) => (
+            {filterVisiblePages(researchPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -384,20 +425,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Partner Section */}
+        {filterVisiblePages(partnerPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-building-line text-xl text-purple-700"></i>
             <h2 className="text-lg font-bold text-gray-800">VITA PARTNER - Đối tác B2B</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {partnerPages.map((page) => (
+            {filterVisiblePages(partnerPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -406,20 +452,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Physician Section */}
+        {filterVisiblePages(physicianPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-stethoscope-line text-xl text-teal-700"></i>
             <h2 className="text-lg font-bold text-gray-800">VITA PHYSICIAN - Cổng Kiểm Định & Lâm Sàng</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {physicianPages.map((page) => (
+            {filterVisiblePages(physicianPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -428,20 +479,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Investor Portal Section */}
+        {filterVisiblePages(investorPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-funds-line text-xl text-emerald-700"></i>
             <h2 className="text-lg font-bold text-gray-800">GREENLIGHT INVESTOR PORTAL - Private Edition</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {investorPages.map((page) => (
+            {filterVisiblePages(investorPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -450,20 +506,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* ESG Portal Section */}
+        {filterVisiblePages(esgPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-leaf-line text-xl text-green-700"></i>
             <h2 className="text-lg font-bold text-gray-800">VITA ESG PORTAL - Impact Investment Hub</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {esgPages.map((page) => (
+            {filterVisiblePages(esgPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -472,20 +533,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Timber Trading Hub Section */}
+        {filterVisiblePages(timberPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-tree-line text-xl text-amber-700"></i>
             <h2 className="text-lg font-bold text-gray-800">VITA TIMBER TRADING HUB - Gỗ Nguyên liệu</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {timberPages.map((page) => (
+            {filterVisiblePages(timberPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -494,20 +560,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* GreenLight Section */}
+        {filterVisiblePages(greenlightPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-shield-star-line text-xl text-emerald-700"></i>
             <h2 className="text-lg font-bold text-gray-800">GREENLIGHT - Trung tâm Điều hành & Giám sát</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {greenlightPages.map((page) => (
+            {filterVisiblePages(greenlightPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -516,20 +587,25 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Other Pages */}
+        {filterVisiblePages(otherPages, showDemo).length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <i className="ri-more-line text-xl text-gray-700"></i>
             <h2 className="text-lg font-bold text-gray-800">Trang khác</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {otherPages.map((page) => (
+            {filterVisiblePages(otherPages, showDemo).map((page) => (
               <button
                 key={page.path}
                 onClick={() => navigate(page.path)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
+                className="relative bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 text-left cursor-pointer"
               >
+                <div className="absolute top-2 right-2">
+                  <FeatureBadge variant={isLiveRoute(page.path) ? 'live' : 'demo'} />
+                </div>
                 <div className={`${page.color} w-12 h-12 rounded-lg flex items-center justify-center mb-3`}>
                   <i className={`${page.icon} text-2xl text-white`}></i>
                 </div>
@@ -538,6 +614,7 @@ export default function Hub() {
             ))}
           </div>
         </section>
+        )}
           </div>
         )}
       </div>

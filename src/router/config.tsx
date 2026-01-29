@@ -56,6 +56,7 @@ const AdminContractsPage = lazy(() => import("../pages/admin-contracts/page"));
 const AdminForestryPage = lazy(() => import("../pages/admin-forestry/page"));
 const AdminForestFundingPage = lazy(() => import("../pages/admin-forest-funding/page"));
 const AdminLandAuditPage = lazy(() => import("../pages/admin-land-audit/page"));
+const AdminVitaApplicationsPage = lazy(() => import("../pages/admin-dashboard/vita-applications/page"));
 
 // VITA RESEARCH - Lab Khoa học
 const ResearchLabPage = lazy(() => import("../pages/research-lab/page"));
@@ -993,6 +994,14 @@ const routes: RouteObject[] = [
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <AdminLandAuditPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/admin-dashboard/vita-applications",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        <AdminVitaApplicationsPage />
       </Suspense>
     ),
   },

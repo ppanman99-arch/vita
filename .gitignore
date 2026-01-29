@@ -35,6 +35,9 @@ pnpm-debug.log*
 coverage
 .nyc_output
 
+# Migration import data (do not commit real user/password lists)
+.scripts/*-import.json
+
 # Misc
 .cache
 .temp

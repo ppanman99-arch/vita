@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { isLiveRoute } from '../../config/goLiveRoutes';
+import FeatureBadge from '../../components/shared/FeatureBadge';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -40,7 +42,8 @@ export default function HomePage() {
       icon: 'ri-seedling-line',
       color: 'from-green-600 to-emerald-700',
       path: '/login?role=farmer',
-      buttonText: 'Truy cập Nông trại số'
+      buttonText: 'Truy cập Nông trại số',
+      badgePath: '/farmer/producer'
     },
     {
       id: 'resource',
@@ -50,7 +53,8 @@ export default function HomePage() {
       icon: 'ri-landscape-line',
       color: 'from-amber-700 to-orange-800',
       path: '/login?role=farmer&redirect=forestry',
-      buttonText: 'Truy cập Quản trị Tài sản'
+      buttonText: 'Truy cập Quản trị Tài sản',
+      badgePath: '/farmer/resource'
     },
     {
       id: 'investor',
@@ -60,7 +64,8 @@ export default function HomePage() {
       icon: 'ri-hand-coin-line',
       color: 'from-yellow-600 to-amber-700',
       path: '/login?role=farmer&redirect=investor',
-      buttonText: 'Truy cập Danh mục Đầu tư'
+      buttonText: 'Truy cập Danh mục Đầu tư',
+      badgePath: '/member-hub/capital'
     },
     {
       id: 'consumer',
@@ -70,7 +75,8 @@ export default function HomePage() {
       icon: 'ri-shopping-cart-line',
       color: 'from-blue-500 to-cyan-600',
       path: '/login?role=farmer&redirect=consumer',
-      buttonText: 'Truy cập Siêu thị'
+      buttonText: 'Truy cập Siêu thị',
+      badgePath: '/member-hub/consumer'
     },
     {
       id: 'esg-individual',
@@ -80,7 +86,8 @@ export default function HomePage() {
       icon: 'ri-leaf-line',
       color: 'from-teal-500 to-emerald-600',
       path: '/esg-individual',
-      buttonText: 'Mở ESG Cá nhân'
+      buttonText: 'Mở ESG Cá nhân',
+      badgePath: '/esg-individual'
     },
 
     // NHÓM 2: QUẢN TRỊ (Management)
@@ -92,7 +99,8 @@ export default function HomePage() {
       icon: 'ri-team-line',
       color: 'from-blue-600 to-cyan-700',
       path: '/login?role=cooperative',
-      buttonText: 'Truy cập Hub Quản lý'
+      buttonText: 'Truy cập Hub Quản lý',
+      badgePath: '/cooperative/dashboard'
     },
     
     // NHÓM 3: ĐỐI TÁC BÊN NGOÀI (External Partners)
@@ -104,7 +112,8 @@ export default function HomePage() {
       icon: 'ri-flask-line',
       color: 'from-purple-600 to-indigo-700',
       path: '/login?role=research',
-      buttonText: 'Truy cập Lab Khoa học'
+      buttonText: 'Truy cập Lab Khoa học',
+      badgePath: '/research-lab'
     },
     {
       id: 'expert-hub',
@@ -114,7 +123,8 @@ export default function HomePage() {
       icon: 'ri-user-star-line',
       color: 'from-pink-600 to-rose-700',
       path: '/expert-portal/login',
-      buttonText: 'Truy cập Expert Hub'
+      buttonText: 'Truy cập Expert Hub',
+      badgePath: '/expert-portal'
     },
     {
       id: 'gov-portal',
@@ -124,7 +134,8 @@ export default function HomePage() {
       icon: 'ri-government-line',
       color: 'from-blue-600 to-indigo-700',
       path: '/gov-portal/login',
-      buttonText: 'Truy cập GOV Portal'
+      buttonText: 'Truy cập GOV Portal',
+      badgePath: '/gov-portal'
     },
     {
       id: 'creator-hub',
@@ -134,7 +145,8 @@ export default function HomePage() {
       icon: 'ri-video-add-line',
       color: 'from-purple-600 to-pink-700',
       path: '/creator-hub/login',
-      buttonText: 'Truy cập Creator Hub'
+      buttonText: 'Truy cập Creator Hub',
+      badgePath: '/creator-hub'
     },
     
     // NHÓM 4: GREENLIGHT & ĐẦU TƯ VÀO CÔNG TY (GreenLight & Corporate Investment)
@@ -146,7 +158,8 @@ export default function HomePage() {
       icon: 'ri-line-chart-line',
       color: 'from-orange-600 to-amber-700',
       path: '/login?role=admin',
-      buttonText: 'Truy cập Trung tâm Điều hành'
+      buttonText: 'Truy cập Trung tâm Điều hành',
+      badgePath: '/greenlight-command'
     },
     {
       id: 'investor-portal',
@@ -157,7 +170,8 @@ export default function HomePage() {
       color: 'from-emerald-600 to-teal-700',
       path: '/investor-portal/login',
       buttonText: 'Truy cập Investor Portal',
-      badge: 'Private'
+      badge: 'Private',
+      badgePath: '/investor-portal'
     },
     
     // NHÓM 5: ĐẦU RA HỆ SINH THÁI (Output & Ecosystem)
@@ -169,7 +183,8 @@ export default function HomePage() {
       icon: 'ri-building-line',
       color: 'from-indigo-700 to-blue-800',
       path: '/login?role=enterprise',
-      buttonText: 'Truy cập Cổng Thu mua'
+      buttonText: 'Truy cập Cổng Thu mua',
+      badgePath: '/partner'
     },
     {
       id: 'esg-portal',
@@ -179,7 +194,8 @@ export default function HomePage() {
       icon: 'ri-leaf-line',
       color: 'from-green-600 to-emerald-700',
       path: '/esg-portal/login',
-      buttonText: 'Truy cập ESG Portal'
+      buttonText: 'Truy cập ESG Portal',
+      badgePath: '/esg-portal'
     },
     {
       id: 'timber-trading',
@@ -189,7 +205,8 @@ export default function HomePage() {
       icon: 'ri-tree-line',
       color: 'from-amber-600 to-orange-700',
       path: '/timber-trading/login',
-      buttonText: 'Truy cập Timber Hub'
+      buttonText: 'Truy cập Timber Hub',
+      badgePath: '/timber-trading'
     },
     {
       id: 'physician',
@@ -199,7 +216,8 @@ export default function HomePage() {
       icon: 'ri-stethoscope-line',
       color: 'from-teal-600 to-cyan-700',
       path: '/login?role=physician',
-      buttonText: 'Truy cập Cổng Kiểm định'
+      buttonText: 'Truy cập Cổng Kiểm định',
+      badgePath: '/physician-portal'
     },
     
     // NHÓM 6: MARKETPLACE & HUB (Marketplace & Hub)
@@ -211,7 +229,8 @@ export default function HomePage() {
       icon: 'ri-seedling-line',
       color: 'from-green-500 to-emerald-600',
       path: '/login?role=research',
-      buttonText: 'Truy cập Sàn Giống'
+      buttonText: 'Truy cập Sàn Giống',
+      badgePath: '/seed-marketplace'
     },
     {
       id: 'gene-nursery-hub',
@@ -221,7 +240,8 @@ export default function HomePage() {
       icon: 'ri-plant-line',
       color: 'from-purple-500 to-pink-600',
       path: '/login?role=research',
-      buttonText: 'Truy cập Gene Hub'
+      buttonText: 'Truy cập Gene Hub',
+      badgePath: '/gene-nursery-hub'
     },
     {
       id: 'member-hub',
@@ -231,7 +251,8 @@ export default function HomePage() {
       icon: 'ri-home-4-line',
       color: 'from-blue-500 to-cyan-600',
       path: '/login?role=farmer',
-      buttonText: 'Truy cập Trung tâm Xã viên'
+      buttonText: 'Truy cập Trung tâm Xã viên',
+      badgePath: '/member-hub'
     },
     {
       id: 'coop-marketplace',
@@ -241,7 +262,8 @@ export default function HomePage() {
       icon: 'ri-store-3-line',
       color: 'from-emerald-500 to-teal-600',
       path: '/login?role=cooperative',
-      buttonText: 'Truy cập Sàn HTX'
+      buttonText: 'Truy cập Sàn HTX',
+      badgePath: '/coop-marketplace'
     },
   ];
 
@@ -321,6 +343,36 @@ export default function HomePage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 lg:py-8 xl:py-12">
+        {/* Cổng truy cập Nguyễn Mạnh Thuận */}
+        <section className="mb-6 sm:mb-8 lg:mb-10" aria-label="Cổng truy cập Nguyễn Mạnh Thuận">
+          <div
+            onClick={() => navigate('/nguyen-manh-thuan')}
+            className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-emerald-200 flex flex-col cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-600 opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+            <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                <i className="ri-door-open-line text-3xl sm:text-4xl md:text-5xl text-white" />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-1">Cổng truy cập Nguyễn Mạnh Thuận</h2>
+                <p className="text-[10px] sm:text-xs md:text-sm text-gray-600 mb-2 sm:mb-3">
+                  Trang chủ, tin tức, giới thiệu và dịch vụ Portal Nguyễn Mạnh Thuận
+                </p>
+                <span className="inline-flex items-center gap-1.5 text-emerald-600 font-semibold text-xs sm:text-sm">
+                  Truy cập portal
+                  <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+              <div className="hidden sm:flex items-center">
+                <span className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-lg">
+                  Vào cổng
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Section Labels */}
         <div className="mb-4 sm:mb-6 lg:mb-8">
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
@@ -332,9 +384,9 @@ export default function HomePage() {
 
         {/* Portal Cards - Grid with sections */}
         <div className="space-y-6 sm:space-y-8 lg:space-y-12">
-          {/* Nhóm 1: Xã viên - 5 thẻ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {portals.slice(0, 4).map((portal) => (
+          {/* Nhóm 1: Xã viên - 5 thẻ (gồm ESG Cá nhân) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+            {portals.slice(0, 5).map((portal) => (
               <div
                 key={portal.id}
                 className="group relative bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-transparent flex flex-col"
@@ -344,6 +396,9 @@ export default function HomePage() {
                 
                 {/* Content */}
                 <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                    <FeatureBadge variant={isLiveRoute(portal.badgePath) ? 'live' : 'demo'} size="sm" />
+                  </div>
                   {/* Icon */}
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
@@ -388,6 +443,9 @@ export default function HomePage() {
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
                 <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                    <FeatureBadge variant={isLiveRoute(portal.badgePath) ? 'live' : 'demo'} size="sm" />
+                  </div>
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
@@ -428,6 +486,9 @@ export default function HomePage() {
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
                 <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                    <FeatureBadge variant={isLiveRoute(portal.badgePath) ? 'live' : 'demo'} size="sm" />
+                  </div>
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>
@@ -468,13 +529,15 @@ export default function HomePage() {
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
                 <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
-                  {/* Badge for Private Portal */}
-                  {portal.badge && (
-                    <div className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-100 text-emerald-700 rounded-full text-[9px] sm:text-xs font-semibold">
-                      <i className="ri-lock-line mr-0.5 sm:mr-1"></i>
-                      {portal.badge}
-                    </div>
-                  )}
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex items-center gap-1.5 flex-wrap justify-end">
+                    <FeatureBadge variant={isLiveRoute(portal.badgePath) ? 'live' : 'demo'} size="sm" />
+                    {portal.badge && (
+                      <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-100 text-emerald-700 rounded-full text-[9px] sm:text-xs font-semibold">
+                        <i className="ri-lock-line mr-0.5 sm:mr-1"></i>
+                        {portal.badge}
+                      </span>
+                    )}
+                  </div>
 
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
@@ -516,6 +579,9 @@ export default function HomePage() {
                 <div className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                 
                 <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col h-full">
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                    <FeatureBadge variant={isLiveRoute(portal.badgePath) ? 'live' : 'demo'} size="sm" />
+                  </div>
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 bg-gradient-to-br ${portal.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <i className={`${portal.icon} text-2xl sm:text-3xl lg:text-4xl text-white`}></i>
                   </div>

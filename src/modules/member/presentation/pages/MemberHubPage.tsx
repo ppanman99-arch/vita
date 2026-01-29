@@ -4,7 +4,10 @@ import { VitaGreenLinkService } from '../../../../lib/vitaScore/linkService';
 import VitaGreenBadge from '../../../../components/shared/VitaGreenBadge';
 import GreenPointsBadge from '../../../../components/shared/GreenPointsBadge';
 import BackButton from '../../../../components/shared/BackButton';
+import FeatureBadge from '../../../../components/shared/FeatureBadge';
 import RoleSwitcher from '../components/RoleSwitcher';
+import { isLiveRoute, isRouteVisibleInNav } from '../../../../config/goLiveRoutes';
+import { showDemoFeatures } from '../../../../config/featureFlags';
 import type { VitaScore } from '../../../../lib/vitaScore/types';
 
 export default function MemberHubPage() {
@@ -225,7 +228,10 @@ export default function MemberHubPage() {
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                   <i className="ri-leaf-line text-4xl" />
                 </div>
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Công dân Xanh</span>
+                <div className="flex items-center gap-2">
+                  <FeatureBadge variant={isLiveRoute('/esg-individual') ? 'live' : 'demo'} />
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Công dân Xanh</span>
+                </div>
               </div>
               <h4 className="text-2xl font-bold mb-2">ESG CÁ NHÂN</h4>
               <p className="text-teal-100 text-sm mb-4">Tổng hợp đóng góp xanh, dấu chân carbon, thử thách & cộng đồng</p>
@@ -252,7 +258,10 @@ export default function MemberHubPage() {
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                   <i className="ri-plant-line text-4xl" />
                 </div>
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                <div className="flex items-center gap-2">
+                  <FeatureBadge variant={isLiveRoute('/farmer/producer') ? 'live' : 'demo'} />
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                </div>
               </div>
               <h4 className="text-2xl font-bold mb-2">SẢN XUẤT</h4>
               <p className="text-emerald-100 text-sm mb-4">Góp sức lao động & Kỹ thuật</p>
@@ -279,7 +288,10 @@ export default function MemberHubPage() {
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                   <i className="ri-landscape-line text-4xl" />
                 </div>
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                <div className="flex items-center gap-2">
+                  <FeatureBadge variant={isLiveRoute('/farmer/resource') ? 'live' : 'demo'} />
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                </div>
               </div>
               <h4 className="text-2xl font-bold mb-2">TÀI NGUYÊN</h4>
               <p className="text-amber-100 text-sm mb-4">Góp Đất & Rừng</p>
@@ -306,7 +318,10 @@ export default function MemberHubPage() {
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                   <i className="ri-funds-line text-4xl" />
                 </div>
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                <div className="flex items-center gap-2">
+                  <FeatureBadge variant={isLiveRoute('/member-hub/capital') ? 'live' : 'demo'} />
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                </div>
               </div>
               <h4 className="text-2xl font-bold mb-2">GÓP VỐN</h4>
               <p className="text-yellow-100 text-sm mb-4">Góp Vốn tiền mặt</p>
@@ -328,12 +343,16 @@ export default function MemberHubPage() {
               </button>
             </div>
 
+            {isRouteVisibleInNav('/member-hub/consumer', showDemoFeatures()) && (
             <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl shadow-lg p-8 text-white hover:shadow-2xl transition-all cursor-pointer transform hover:scale-105">
               <div className="flex items-start justify-between mb-6">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                   <i className="ri-shopping-cart-line text-4xl" />
                 </div>
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                <div className="flex items-center gap-2">
+                  <FeatureBadge variant={isLiveRoute('/member-hub/consumer') ? 'live' : 'demo'} />
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm whitespace-nowrap">Đang hoạt động</span>
+                </div>
               </div>
               <h4 className="text-2xl font-bold mb-2">TIÊU DÙNG</h4>
               <p className="text-blue-100 text-sm mb-4">Mua sản phẩm ưu đãi</p>
@@ -354,6 +373,7 @@ export default function MemberHubPage() {
                 Vào Siêu thị Xã viên
               </button>
             </div>
+            )}
           </div>
         </div>
 

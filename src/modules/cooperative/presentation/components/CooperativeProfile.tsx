@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CooperativeService } from '../../application/CooperativeService';
+import { VitaApplicationService } from '../../application/VitaApplicationService';
 import type { Cooperative } from '../../domain/Cooperative';
 
 interface CooperativeProfileProps {
@@ -8,12 +9,15 @@ interface CooperativeProfileProps {
 
 export default function CooperativeProfile({ cooperativeId }: CooperativeProfileProps) {
   const cooperativeService = new CooperativeService();
+  const vitaApplicationService = new VitaApplicationService();
   const [cooperative, setCooperative] = useState<Cooperative | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [vitaStatus, setVitaStatus] = useState<'pending' | 'approved' | 'rejected' | null>(null);
+  const [vitaSubmitting, setVitaSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -53,6 +57,8 @@ export default function CooperativeProfile({ cooperativeId }: CooperativeProfile
         const coop = await cooperativeService.getCooperativeById(cooperativeId);
         if (coop) {
           setCooperative(coop);
+          const app = await vitaApplicationService.getByCooperative(cooperativeId);
+          if (app) setVitaStatus(app.status);
           setFormData({
             name: coop.name || '',
             taxCode: coop.taxCode || '',
@@ -505,6 +511,61 @@ export default function CooperativeProfile({ cooperativeId }: CooperativeProfile
           <p className="px-4 py-3 bg-gray-50 rounded-xl min-h-[100px]">
             {cooperative?.additionalInfo || formData.additionalInfo || 'Chưa có thông tin'}
           </p>
+        )}
+      </div>
+
+      {/* Đăng ký tham gia hệ sinh thái VITA */}
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Tham gia hệ sinh thái VITA</h3>
+        {vitaStatus === 'approved' && (
+          <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-green-800">
+            <i className="ri-checkbox-circle-fill text-xl mr-2" />
+            Đơn của bạn đã được phê duyệt. HTX đã tham gia hệ sinh thái VITA.
+          </div>
+        )}
+        {vitaStatus === 'rejected' && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800">
+            <i className="ri-close-circle-fill text-xl mr-2" />
+            Đơn đăng ký đã bị từ chối. Vui lòng liên hệ admin để biết thêm chi tiết.
+          </div>
+        )}
+        {vitaStatus === 'pending' && (
+          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800">
+            <i className="ri-time-line text-xl mr-2" />
+            Đơn đăng ký đang chờ admin xem xét. Bạn sẽ nhận email khi có kết quả.
+          </div>
+        )}
+        {!vitaStatus && (cooperative?.id || cooperativeId || (typeof window !== 'undefined' ? sessionStorage.getItem('cooperative_id') : null)) && (
+          <div>
+            <p className="text-gray-600 mb-4">Gửi đơn đăng ký tham gia hệ sinh thái VITA. Admin sẽ xem xét và gửi email xác nhận cho hai bên.</p>
+            <button
+              type="button"
+              disabled={vitaSubmitting}
+              onClick={async () => {
+                const coopId = cooperative?.id || cooperativeId || (typeof window !== 'undefined' ? sessionStorage.getItem('cooperative_id') : null);
+                if (!coopId) {
+                  setError('Không tìm thấy thông tin HTX.');
+                  return;
+                }
+                setVitaSubmitting(true);
+                setError(null);
+                try {
+                  await vitaApplicationService.submit(coopId);
+                  setVitaStatus('pending');
+                  setSuccess(true);
+                  setTimeout(() => setSuccess(false), 3000);
+                  // Email stub: in production would call Edge Function to send email to admin and HTX
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : 'Gửi đơn thất bại.');
+                } finally {
+                  setVitaSubmitting(false);
+                }
+              }}
+              className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {vitaSubmitting ? 'Đang gửi...' : 'Đăng ký tham gia hệ sinh thái VITA'}
+            </button>
+          </div>
         )}
       </div>
 

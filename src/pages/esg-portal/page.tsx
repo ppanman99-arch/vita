@@ -88,51 +88,64 @@ export default function ESGPortalPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // ESG Projects Data
-  const esgProjects = [
-    {
-      id: 'proj-001',
-      name: 'Trồng 50ha rừng Mega 3P + Sâm Ngọc Linh tại Kon Tum',
-      htx: 'HTX Dược liệu Kon Tum',
-      location: 'Kon Tum, Tây Nguyên',
-      area: 50, // ha
-      trees: 'Mega 3P + Sâm Ngọc Linh',
-      co2Absorption: 15000, // tấn trong 10 năm
-      status: 'seeking',
-      targetAmount: 2500, // triệu VNĐ
-      raisedAmount: 0,
-      timeline: '10 năm',
-      description: 'Dự án trồng rừng hỗn giao với cây che bóng Mega 3P và dược liệu Sâm Ngọc Linh',
-    },
-    {
-      id: 'proj-002',
-      name: 'Trồng 30ha rừng Sưa đỏ + Đương Quy tại Phú Thọ',
-      htx: 'HTX Dược liệu Phú Thọ',
-      location: 'Phú Thọ, Đông Bắc',
-      area: 30,
-      trees: 'Sưa đỏ + Đương Quy',
-      co2Absorption: 9000,
-      status: 'seeking',
-      targetAmount: 5000,
-      raisedAmount: 1500,
-      timeline: '15 năm',
-      description: 'Dự án trồng rừng gỗ quý lâu năm kết hợp dược liệu',
-    },
-    {
-      id: 'proj-003',
-      name: 'Trồng 100ha rừng Bạch đàn + Cà Gai Leo tại Hòa Bình',
-      htx: 'HTX Dược liệu Hòa Bình',
-      location: 'Hòa Bình, Tây Bắc',
-      area: 100,
-      trees: 'Bạch đàn + Cà Gai Leo',
-      co2Absorption: 30000,
-      status: 'active',
-      targetAmount: 4000,
-      raisedAmount: 4000,
-      timeline: '12 năm',
-      description: 'Dự án quy mô lớn với cây sinh trưởng nhanh',
-    },
-  ];
+  // ESG Projects Data: load from shared source (HTX-created projects)
+  const [esgProjects, setEsgProjects] = useState<Array<{
+    id: string;
+    name: string;
+    htx: string;
+    location: string;
+    area: number;
+    trees: string;
+    co2Absorption: number;
+    status: string;
+    targetAmount: number;
+    raisedAmount: number;
+    timeline: string;
+    description: string;
+    cooperativeId?: string;
+  }>>([]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { capitalService } = await import('../../modules/member/application/CapitalService');
+        const list = await capitalService.getInvestmentOpportunities();
+        setEsgProjects(
+          list.map((o) => ({
+            id: o.id,
+            name: o.name,
+            htx: o.cooperative,
+            location: o.description?.slice(0, 50) ?? '',
+            area: 0,
+            trees: o.esgCategory ?? '',
+            co2Absorption: o.carbonCreditsEstimate ?? 0,
+            status: o.raised >= o.targetAmount ? 'active' : 'seeking',
+            targetAmount: o.targetAmount / 1_000_000,
+            raisedAmount: o.raised / 1_000_000,
+            timeline: o.duration,
+            description: o.description ?? '',
+            cooperativeId: o.cooperativeId,
+          }))
+        );
+      } catch {
+        setEsgProjects([
+          {
+            id: 'proj-001',
+            name: 'Trồng 50ha rừng Mega 3P + Sâm Ngọc Linh tại Kon Tum',
+            htx: 'HTX Dược liệu Kon Tum',
+            location: 'Kon Tum, Tây Nguyên',
+            area: 50,
+            trees: 'Mega 3P + Sâm Ngọc Linh',
+            co2Absorption: 15000,
+            status: 'seeking',
+            targetAmount: 2500,
+            raisedAmount: 0,
+            timeline: '10 năm',
+            description: 'Dự án trồng rừng hỗn giao với cây che bóng Mega 3P và dược liệu Sâm Ngọc Linh',
+          },
+        ]);
+      }
+    })();
+  }, []);
 
   // My Investments (if logged in as ESG company)
   const myInvestments = [

@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PortalSwitcher from '../../../../components/shared/PortalSwitcher';
+import { AuthService } from '../../../../core/application/auth/AuthService';
+import { SupabaseAuthAdapter } from '../../../../core/infrastructure/adapters/auth/SupabaseAuthAdapter';
+import { CooperativeService } from '../../application/CooperativeService';
+import { useRealAuth } from '../../../../config/featureFlags';
 
 export default function CooperativeRegisterAccountPage() {
   const navigate = useNavigate();
@@ -8,27 +12,29 @@ export default function CooperativeRegisterAccountPage() {
     coopName: '',
     email: '',
     phone: '',
+    taxCode: '',
+    address: '',
     password: '',
     confirmPassword: '',
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const useAuth = useRealAuth();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Demo mode: Accept simple credentials
-    const isDemoMode = formData.email === '1@gmail.com' && formData.phone === '1' && formData.password === '1' && formData.confirmPassword === '1';
-    
+    setError('');
+
+    // Demo mode: Accept simple credentials (when real auth is off)
+    const isDemoMode = !useAuth && formData.email === '1@gmail.com' && formData.phone === '1' && formData.password === '1' && formData.confirmPassword === '1';
+
     if (isDemoMode) {
-      // Skip validation for demo mode – auto-login to HTX admin portal
-      if (formData.coopName) {
-        sessionStorage.setItem('brand_coop_name', formData.coopName);
-      }
+      if (formData.coopName) sessionStorage.setItem('brand_coop_name', formData.coopName);
       sessionStorage.setItem('brand_email', formData.email);
       sessionStorage.setItem('brand_authenticated', 'true');
       navigate('/cooperative/dashboard');
@@ -44,10 +50,45 @@ export default function CooperativeRegisterAccountPage() {
       return;
     }
 
-    // Save registration and auto-login to portal quản trị HTX
-    if (formData.coopName) {
-      sessionStorage.setItem('brand_coop_name', formData.coopName);
+    if (useAuth) {
+      setLoading(true);
+      try {
+        const authService = new AuthService(new SupabaseAuthAdapter());
+        const authResult = await authService.signUp({
+          email: formData.email,
+          password: formData.password,
+          metadata: { coop_name: formData.coopName },
+        });
+        if (authResult.error || !authResult.user) {
+          setError(authResult.error || 'Đăng ký thất bại.');
+          setLoading(false);
+          return;
+        }
+        const cooperativeService = new CooperativeService();
+        const cooperative = await cooperativeService.registerCooperative({
+          authUserId: authResult.user.id,
+          name: formData.coopName,
+          email: formData.email,
+          phone: formData.phone,
+          taxCode: formData.taxCode || undefined,
+          location: formData.address || undefined,
+          status: 'pending',
+        });
+        sessionStorage.setItem('cooperative_id', cooperative.id);
+        sessionStorage.setItem('brand_coop_name', formData.coopName);
+        sessionStorage.setItem('brand_email', formData.email);
+        sessionStorage.setItem('brand_authenticated', 'true');
+        navigate('/cooperative/dashboard');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Đăng ký thất bại. Vui lòng thử lại.');
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
+
+    // Fallback: session-only (no Supabase)
+    if (formData.coopName) sessionStorage.setItem('brand_coop_name', formData.coopName);
     sessionStorage.setItem('brand_email', formData.email);
     sessionStorage.setItem('brand_authenticated', 'true');
     navigate('/cooperative/dashboard');
@@ -185,9 +226,10 @@ export default function CooperativeRegisterAccountPage() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
             >
-              Hoàn tất đăng ký
+              {loading ? 'Đang xử lý...' : 'Hoàn tất đăng ký'}
             </button>
           </form>
 
