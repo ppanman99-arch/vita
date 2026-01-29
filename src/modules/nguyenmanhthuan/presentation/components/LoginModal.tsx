@@ -10,17 +10,13 @@ interface LoginModalProps {
   onLoginSuccess: () => void;
 }
 
-type FlowStep = 'login' | 'forgot-password' | 'forgot-password-done' | 'verify-account' | 'enter-otp' | 'set-password' | 'success';
+type FlowStep = 'login' | 'forgot-password' | 'forgot-password-done';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps) {
   const useAuth = useRealAuth();
   const [flowStep, setFlowStep] = useState<FlowStep>('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [contactInfo, setContactInfo] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
@@ -73,28 +69,6 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
     setLoginError('Tài khoản demo: nhập 1 / 1');
   };
 
-  const handleVerifyAccount = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFlowStep('enter-otp');
-  };
-
-  const handleOtpSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFlowStep('set-password');
-  };
-
-  const handleSetPassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert('Mật khẩu xác nhận không khớp!');
-      return;
-    }
-    setFlowStep('success');
-    setTimeout(() => {
-      onLoginSuccess();
-    }, 2000);
-  };
-
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setForgotError('');
@@ -124,10 +98,6 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
     setFlowStep('login');
     setUsername('');
     setPassword('');
-    setOtp('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setContactInfo('');
     setLoginError('');
     setForgotEmail('');
     setForgotError('');
@@ -222,10 +192,10 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
             <div className="mt-6">
               <button
                 type="button"
-                onClick={() => setFlowStep(useAuth ? 'forgot-password' : 'verify-account')}
+                onClick={() => setFlowStep('forgot-password')}
                 className="w-full text-emerald-600 hover:text-emerald-700 font-medium cursor-pointer whitespace-nowrap text-center py-2 border border-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors"
               >
-                {useAuth ? 'Quên mật khẩu?' : 'Kích hoạt tài khoản cũ / Quên mật khẩu?'}
+                Quên mật khẩu? / Kích hoạt tài khoản cũ
               </button>
             </div>
           </>
@@ -234,9 +204,15 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
         {flowStep === 'forgot-password' && (
           <>
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Lấy lại mật khẩu</h2>
-              <p className="text-gray-600 text-sm">Nhập email đăng ký, chúng tôi sẽ gửi link đặt lại mật khẩu.</p>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Lấy lại mật khẩu / Kích hoạt tài khoản cũ</h2>
+              <p className="text-gray-600 text-sm">Nhập email đăng ký, chúng tôi sẽ gửi link đặt lại mật khẩu. Dùng link này để kích hoạt lại tài khoản trên hệ thống mới.</p>
             </div>
+            {!useAuth && (
+              <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+                <p className="font-medium mb-1">Lưu ý:</p>
+                <p>Gửi email đặt lại mật khẩu chỉ hoạt động khi bật đăng nhập thật (<code className="bg-amber-100 px-1 rounded">VITE_USE_REAL_AUTH=true</code>). Hiện đang dùng chế độ demo.</p>
+              </div>
+            )}
             {forgotError && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
                 {forgotError}
@@ -253,8 +229,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
               />
               <button
                 type="submit"
-                disabled={forgotLoading}
-                className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 disabled:opacity-50"
+                disabled={forgotLoading || !useAuth}
+                className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {forgotLoading ? 'Đang gửi...' : 'Gửi email đặt lại mật khẩu'}
               </button>
@@ -288,180 +264,6 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
           </div>
         )}
 
-        {flowStep === 'verify-account' && (
-          <>
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 flex items-center justify-center bg-emerald-100 rounded-full mx-auto mb-4">
-                <i className="ri-shield-user-line text-3xl text-emerald-600"></i>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Xác thực tài khoản</h2>
-              <p className="text-gray-600">Nhập Email hoặc Số điện thoại đã đăng ký trước đây</p>
-            </div>
-
-            <form onSubmit={handleVerifyAccount} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email hoặc Số điện thoại
-                </label>
-                <input
-                  type="text"
-                  value={contactInfo}
-                  onChange={(e) => setContactInfo(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm"
-                  placeholder="your@email.com hoặc 0912345678"
-                  required
-                />
-              </div>
-
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <div className="flex gap-3">
-                  <div className="w-6 h-6 flex items-center justify-center">
-                    <i className="ri-information-line text-xl text-amber-600"></i>
-                  </div>
-                  <div className="text-sm text-amber-800">
-                    <p className="font-medium mb-1">Lưu ý quan trọng:</p>
-                    <p>Vì đây là hệ thống mới, bạn cần kích hoạt lại tài khoản cũ. Mã OTP sẽ được gửi đến Email/SĐT của bạn để xác thực.</p>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                Gửi mã OTP
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setFlowStep('login')}
-                className="w-full text-gray-600 hover:text-gray-900 font-medium cursor-pointer whitespace-nowrap"
-              >
-                Quay lại đăng nhập
-              </button>
-            </form>
-          </>
-        )}
-
-        {flowStep === 'enter-otp' && (
-          <>
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 flex items-center justify-center bg-emerald-100 rounded-full mx-auto mb-4">
-                <i className="ri-mail-check-line text-3xl text-emerald-600"></i>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Nhập mã OTP</h2>
-              <p className="text-gray-600">Mã xác thực đã được gửi đến {contactInfo}</p>
-            </div>
-
-            <form onSubmit={handleOtpSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mã OTP (6 số)
-                </label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm text-center text-2xl tracking-widest font-semibold"
-                  placeholder="000000"
-                  maxLength={6}
-                  required
-                />
-              </div>
-
-              <div className="text-center">
-                <button
-                  type="button"
-                  className="text-sm text-emerald-600 hover:text-emerald-700 font-medium cursor-pointer whitespace-nowrap"
-                >
-                  Gửi lại mã OTP
-                </button>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                Xác nhận
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setFlowStep('verify-account')}
-                className="w-full text-gray-600 hover:text-gray-900 font-medium cursor-pointer whitespace-nowrap"
-              >
-                Quay lại
-              </button>
-            </form>
-          </>
-        )}
-
-        {flowStep === 'set-password' && (
-          <>
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 flex items-center justify-center bg-emerald-100 rounded-full mx-auto mb-4">
-                <i className="ri-lock-password-line text-3xl text-emerald-600"></i>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Thiết lập mật khẩu mới</h2>
-              <p className="text-gray-600">Tạo mật khẩu mới để bảo mật tài khoản của bạn</p>
-            </div>
-
-            <form onSubmit={handleSetPassword} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mật khẩu mới
-                </label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm"
-                  placeholder="••••••••"
-                  minLength={6}
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">Tối thiểu 6 ký tự</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Xác nhận mật khẩu
-                </label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm"
-                  placeholder="••••••••"
-                  minLength={6}
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                Hoàn tất
-              </button>
-            </form>
-          </>
-        )}
-
-        {flowStep === 'success' && (
-          <div className="text-center py-8">
-            <div className="w-20 h-20 flex items-center justify-center bg-emerald-100 rounded-full mx-auto mb-6">
-              <i className="ri-checkbox-circle-line text-5xl text-emerald-600"></i>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Thành công!</h2>
-            <p className="text-gray-600 mb-6">Tài khoản của bạn đã được kích hoạt thành công</p>
-            <div className="flex items-center justify-center gap-2 text-emerald-600">
-              <div className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
