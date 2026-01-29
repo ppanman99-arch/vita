@@ -7,7 +7,7 @@ export default function HeroBanner() {
 
   const handleLoginSuccess = () => {
     setShowLoginModal(false);
-    window.location.href = '/dashboard';
+    window.location.href = '/nguyen-manh-thuan/dashboard';
   };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">

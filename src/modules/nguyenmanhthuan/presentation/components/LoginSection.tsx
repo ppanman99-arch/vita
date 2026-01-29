@@ -7,7 +7,7 @@ export default function LoginSection() {
 
   const handleLoginSuccess = () => {
     setShowLoginModal(false);
-    window.location.href = '/dashboard';
+    window.location.href = '/nguyen-manh-thuan/dashboard';
   };
 
   return (
